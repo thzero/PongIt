@@ -14,10 +14,10 @@ func open():
 	join_container.hide()
 	host_container.hide()
 	lobby_container.hide()
-	join_container.find_node("label_error").set_text("")
-	host_container.find_node("label_error").set_text("")
+	_clear_error("join")
+	_clear_error("host")
 	menu_container.show()
-	host_container.show()
+	_show_host()
 	
 #### Gamestate
 
@@ -56,32 +56,21 @@ func _on_button_cancel_pressed():
 
 # MAIN MENU
 func _on_button_host_pressed():
-	join_container.hide()
-	host_container.show()
+	_show_host()
 
 # MAIN MENU
 func _on_button_join_pressed():
-	host_container.hide()
-	join_container.show() 
+	_show_join()
 
 # HOST CONTAINER - Continue (from choosing a nickname)
 # Opens the server for connectivity from clients
 func _on_host_button_continue_pressed():
-	# Check if nickname is valid
-	var server_name = host_container.find_node("text_server_name").get_text()
-	if (server_name == ""):
-		host_container.find_node("label_error").set_text("Server name cannot be empty.")
+	var values = _validate_host()
+	if (values == null):
 		return
-	
-	var port = gamestate.validate_address(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
-	if (port == null):
-		return
-	
-	# Clear error (if any)
-	host_container.find_node("label_error").set_text("")
 	
 	# Establish network
-	if (gamestate.host_game(server_name, port)):
+	if (gamestate.host_game(values.server_name, values.port)):
 		return
 	
 	# Refresh Player List (with your own name)
@@ -91,6 +80,42 @@ func _on_host_button_continue_pressed():
 	host_container.hide()
 	lobby_container.show()
 	lobby_container.find_node("button_start").set_disabled(false)
+	
+func _validate_host():
+	_disable_button("host", "button_continue", true)
+	
+	var server_name = _validate_server_name(host_container.find_node("text_server_name").get_text(), _get_error("host"))
+	if (server_name == null):
+		return null
+	
+	var port = gamestate.validate_port(host_container.find_node("text_port").get_text(), _get_error("host"))
+	if (port == null):
+		return false
+	
+	_disable_button("host", "button_continue", false)
+	
+	_clear_error("host")
+	
+	return { "server_name": server_name, "port": port }
+
+func _on_host_text_server_name_focus_exited():
+	_validate_host()
+		
+func _on_host_text_port_focus_exited():
+	_validate_host()
+	
+func _disable_button(type, name, disabled):
+	var container
+	if (type == "host"):
+		container = host_container
+	elif (type == "join"):
+		container = join_container
+	elif (type == "lobby"):
+		container = lobby_container
+	var button = container.find_node(name)
+	if (button == null):
+		return
+	button.disabled = disabled
 
 # JOIN CONTAINER - Connect
 # Attempts to connect to the server
@@ -101,12 +126,13 @@ func _on_join_button_connect_pressed():
 	if (ip_address == null):
 		return
 	
-	var port = gamestate.validate_port(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
+	var port = gamestate.validate_port(join_container.find_node("text_port").get_text(), _get_error("join"))
 	if (port == null):
 		return
 	
 	# Clear error (if any)
 	join_container.find_node("label_error").set_text("")
+	_clear_error("join")
 	
 	# Connect to server
 	if (gamestate.join_game(ip_address, port)):
@@ -134,6 +160,19 @@ func _on_lobby_button_cancel_pressed():
 
 func _on_lobby_refresh():
 	_refresh_lobby()
+	
+func _clear_error(type):
+	_set_error(type, "")
+	
+func _get_error(type):
+	var container
+	if (type == "host"):
+		container = host_container
+	elif (type == "join"):
+		container = join_container
+	elif (type == "lobby"):
+		container = lobby_container
+	return container.find_node("label_error")
 
 # Refresh Lobby's player list
 # This is run after we have gotten updates from the server regarding new players
@@ -154,6 +193,37 @@ func _refresh_lobby():
 	# If you are not the server, we disable the 'start game' button
 	if (!get_tree().is_network_server()):
 		lobby_container.find_node("button_start").set_disabled(true)
+	
+func _set_error(type, message):
+	var label = _get_error(type)
+	if (label == null):
+		return
+	label.set_text(message)
+
+func _show_host():
+	join_container.hide()
+	host_container.show()
+	menu_container.find_node("button_host").disabled = true
+	menu_container.find_node("button_join").disabled = false
+	_validate_host()
+	
+func _show_join():
+	host_container.hide()
+	join_container.show()
+	menu_container.find_node("button_host").disabled = false
+	menu_container.find_node("button_join").disabled = true
+	_disable_button("join", "button_connect", true)
+
+func _validate_server_name(name, error):
+	if (error != null):
+		error.set_text("")
+	
+	if (name == ""):
+		if (error != null):
+			error.set_text(tr("LOBBY_MESSAGE_SERVER_NAME_INVALID"))
+		return null
+	
+	return name
 
 func _on_state_changed(state_from, state_to, args):
 	print("switched to state: ", state_to)

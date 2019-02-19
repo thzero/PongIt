@@ -31,7 +31,7 @@ func get_player_name():
 	return _player_name
 
 func host_game(name, port):
-	if (validate_port(port) == null):
+	if (validate_port(port, null) == null):
 		return false
 		
 	if (name == ""):
@@ -39,7 +39,7 @@ func host_game(name, port):
 	
 	# Store own player name
 	_server_name = name
-	_player_name = configuration_user.name
+	_player_name = configuration_user.Settings.User.Name
 	
 	# Initializing the network as client
 	var host = _create_host()
@@ -153,20 +153,36 @@ remote func user_ready(id, _player_name):
 		rpc_id(id, "register_at_lobby")
 	
 func validate_address(address, error):
+	if (error != null):
+		error.set_text("")
+	
 	if (not address.is_valid_ip_address()):
 		if (error != null):
 			error.set_text(tr("LOBBY_MESSAGE_ADDRESS_INVALID"))
 		return null
-		
+	
 	return address
 	
 func validate_port(port, error):
-	if (not port.is_valid_integer()):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
-		return null
+	if (error != null):
+		error.set_text("")
+	
+	var portN
+	if (typeof(port) != TYPE_INT):
+		if (typeof(port) == TYPE_STRING):
+			if (not port.is_valid_integer()):
+				if (error != null):
+					error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
+				return null
+			else:
+				portN = port.to_int();
+		else:
+			if (error != null):
+				error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
+			return null
+	else:
+		portN = port
 		
-	var portN = port.to_int();
 	if (portN < 1024 || portN > 65535):
 		if (error != null):
 			error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID_RANGE"))
