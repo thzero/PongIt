@@ -1,0 +1,3 @@
+extends Object
+
+var name = ""

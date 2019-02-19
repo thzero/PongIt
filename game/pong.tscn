@@ -1,0 +1,290 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://game/pong.gd" type="Script" id=1]
+[ext_resource path="res://game/paddle.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game/ball.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/separator.png" type="Texture" id=4]
+[ext_resource path="res://game/wall.gd" type="Script" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+
+custom_solver_bias = 0.0
+extents = Vector2( 10, 200 )
+
+[sub_resource type="RectangleShape2D" id=2]
+
+custom_solver_bias = 0.0
+extents = Vector2( 320, 10 )
+
+[node name="game" type="Node2D" index="0"]
+
+position = Vector2( 319.791, 195.976 )
+script = ExtResource( 1 )
+_sections_unfolded = [ "Pause", "Transform", "Visibility", "Z Index" ]
+SCORE_TO_WIN = 2
+BALL_BOUNCE = 1.1
+BALL_SPEED = 100
+PADDLE_SPEED = 150
+
+[node name="left" parent="." index="0" instance=ExtResource( 2 )]
+
+editor/display_folded = true
+position = Vector2( 67.6285, 192.594 )
+_sections_unfolded = [ "Collision", "Pickable", "Transform", "Visibility" ]
+
+[node name="sprite" parent="left" index="0"]
+
+self_modulate = Color( 0.960784, 0.364706, 0.968627, 1 )
+
+[node name="right" parent="." index="1" instance=ExtResource( 2 )]
+
+editor/display_folded = true
+position = Vector2( 563.815, 192.594 )
+_sections_unfolded = [ "Collision", "Pickable", "Transform", "Visibility" ]
+side = 1
+
+[node name="sprite" parent="right" index="0"]
+
+self_modulate = Color( 0.202698, 0.889853, 0.960938, 1 )
+
+[node name="ball" parent="." index="2" instance=ExtResource( 3 )]
+
+[node name="separator" type="Sprite" parent="." index="3"]
+
+position = Vector2( 320, 200 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Visibility" ]
+
+[node name="left_wall" type="Area2D" parent="." index="4"]
+
+editor/display_folded = true
+position = Vector2( -10, 200 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 5 )
+_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
+side = 0
+
+[node name="collision" type="CollisionShape2D" parent="left_wall" index="0"]
+
+shape = SubResource( 1 )
+_sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
+
+[node name="Sprite" type="Sprite" parent="left_wall" index="1"]
+
+position = Vector2( 10, 0 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="right_wall" type="Area2D" parent="." index="5"]
+
+editor/display_folded = true
+position = Vector2( 650, 200 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 5 )
+_sections_unfolded = [ "Transform" ]
+side = 1
+
+[node name="collision" type="CollisionShape2D" parent="right_wall" index="0"]
+
+shape = SubResource( 1 )
+_sections_unfolded = [ "Transform", "Z Index" ]
+
+[node name="Sprite" type="Sprite" parent="right_wall" index="1"]
+
+position = Vector2( -10, 0 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="ceiling" type="Area2D" parent="." index="6"]
+
+editor/display_folded = true
+position = Vector2( 320, -10 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 5 )
+_sections_unfolded = [ "Collision", "Transform" ]
+side = 2
+
+[node name="collision" type="CollisionShape2D" parent="ceiling" index="0"]
+
+shape = SubResource( 2 )
+_sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
+
+[node name="Sprite" type="Sprite" parent="ceiling" index="1"]
+
+position = Vector2( 0, 10 )
+rotation = 1.5708
+scale = Vector2( 1, 1.60139 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="floor" type="Area2D" parent="." index="7"]
+
+position = Vector2( 320, 410 )
+input_pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 5 )
+_sections_unfolded = [ "Collision", "Transform" ]
+side = 3
+
+[node name="collision" type="CollisionShape2D" parent="floor" index="0"]
+
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="floor" index="1"]
+
+position = Vector2( 0, -10 )
+rotation = 1.5708
+scale = Vector2( 1, 1.60139 )
+texture = ExtResource( 4 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="score_left" type="Label" parent="." index="8"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 183.0
+margin_top = 24.0
+margin_right = 223.0
+margin_bottom = 38.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="winner_left" type="Label" parent="." index="9"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 183.0
+margin_top = 40.0
+margin_right = 223.0
+margin_bottom = 54.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "WINNER"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="score_right" type="Label" parent="." index="10"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 425.0
+margin_top = 23.0
+margin_right = 465.0
+margin_bottom = 37.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="winner_right" type="Label" parent="." index="11"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 425.0
+margin_top = 40.0
+margin_right = 465.0
+margin_bottom = 54.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "WINNER"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="button_exit" type="Button" parent="." index="12"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 250.0
+margin_top = 319.0
+margin_right = 393.0
+margin_bottom = 339.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "GAME_BUTTON_EXIT"
+flat = false
+align = 1
+
+[connection signal="area_entered" from="left_wall" to="left_wall" method="_on_wall_area_entered"]
+
+[connection signal="area_entered" from="right_wall" to="right_wall" method="_on_wall_area_entered"]
+
+[connection signal="area_entered" from="ceiling" to="ceiling" method="_on_wall_area_entered"]
+
+[connection signal="area_entered" from="floor" to="floor" method="_on_wall_area_entered"]
+
+[connection signal="pressed" from="button_exit" to="." method="_on_button_exit_pressed"]
+
+
+[editable path="left"]
+[editable path="right"]

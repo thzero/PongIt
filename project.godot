@@ -1,0 +1,53 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=3
+
+[application]
+
+config/name="Pong It!"
+run/main_scene="res://main_menu/menu.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+configuration="*res://configuration.gd"
+configuration_user="*res://configuration_user.gd"
+Console="*res://console/Console.tscn"
+Constants="*res://constants.gd"
+gamestate="*res://gamestate.gd"
+
+[display]
+
+window/size/width=640
+window/size/height=400
+stretch_2d=true
+
+[gdnative]
+
+singletons=[  ]
+
+[input]
+
+move_down=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"unicode":0,"echo":false,"script":null)
+ ]
+move_up=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777232,"unicode":0,"echo":false,"script":null)
+ ]
+console_toggle=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":96,"unicode":0,"echo":false,"script":null)
+ ]
+
+[locale]
+
+translation_remaps={
+
+}
+translations=PoolStringArray( "res://translations.en.translation" )
+
+[rendering]
+
+viewport/default_clear_color=Color( 0, 0, 0, 1 )

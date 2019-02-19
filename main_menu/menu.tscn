@@ -1,0 +1,871 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://main_menu/menu.gd" type="Script" id=1]
+[ext_resource path="res://assets/fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://main_menu/settings.gd" type="Script" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+
+size = 24
+use_mipmaps = false
+use_filter = false
+font_data = ExtResource( 2 )
+_sections_unfolded = [ "Font", "Resource", "Settings" ]
+
+[node name="Main" type="Node"]
+
+[node name="Menu_Control" type="Control" parent="." index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -300.0
+margin_right = 200.0
+margin_bottom = 300.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 1 )
+_sections_unfolded = [ "Anchor", "Grow Direction", "Theme" ]
+
+[node name="panel" type="Panel" parent="Menu_Control" index="0"]
+
+editor/display_folded = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -282.0
+margin_right = 200.0
+margin_bottom = 281.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Anchor", "Margin", "Material", "Rect", "Theme", "Visibility", "custom_styles" ]
+
+[node name="label_title" type="Label" parent="Menu_Control/panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 20.0
+margin_right = 325.0
+margin_bottom = 67.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = SubResource( 1 )
+text = "TITLE"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Size Flags", "custom_fonts" ]
+
+[node name="label_name" type="Label" parent="Menu_Control/panel" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 80.0
+margin_right = 325.0
+margin_bottom = 100.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_NAME"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "custom_fonts" ]
+
+[node name="line_name" type="LineEdit" parent="Menu_Control/panel" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 100.0
+margin_right = 325.0
+margin_bottom = 124.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 1
+size_flags_horizontal = 1
+size_flags_vertical = 1
+focus_mode = 2
+context_menu_enabled = true
+placeholder_alpha = 0.6
+caret_blink = false
+caret_blink_speed = 0.65
+caret_position = 0
+_sections_unfolded = [ "Anchor", "Rect" ]
+
+[node name="button_ok" type="Button" parent="Menu_Control/panel" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 225.0
+margin_top = 129.0
+margin_right = 325.0
+margin_bottom = 156.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "Ok"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags", "Visibility" ]
+
+[node name="button_start" type="Button" parent="Menu_Control/panel" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 190.0
+margin_right = 325.0
+margin_bottom = 240.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "MAIN_MENU_BUTTON_START"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
+
+[node name="button_mutiplayer" type="Button" parent="Menu_Control/panel" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 275.0
+margin_right = 325.0
+margin_bottom = 325.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "MAIN_MENU_BUTTON_MULTIPLAYER"
+flat = false
+align = 1
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="button_settings" type="Button" parent="Menu_Control/panel" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 360.0
+margin_right = 325.0
+margin_bottom = 410.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "MAIN_MENU_BUTTON_SETTINGS"
+flat = false
+align = 1
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="button_exit" type="Button" parent="Menu_Control/panel" index="7"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 445.0
+margin_right = 325.0
+margin_bottom = 495.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "MAIN_MENU_BUTTON_EXIT"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
+
+[node name="label_version" type="Label" parent="Menu_Control/panel" index="8"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -269.0
+margin_top = -31.0
+margin_right = -10.0
+margin_bottom = -20.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="settings" type="Control" parent="Menu_Control" index="1"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -332.0
+margin_top = -249.5
+margin_right = 332.0
+margin_bottom = 249.5
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 3 )
+_sections_unfolded = [ "Visibility" ]
+
+[node name="panel" type="Panel" parent="Menu_Control/settings" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = -1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Material", "Visibility" ]
+
+[node name="label_video" type="Label" parent="Menu_Control/settings" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 280.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_VIDEO"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Grow Direction", "Rect" ]
+
+[node name="label_resolution" type="Label" parent="Menu_Control/settings/label_video" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 5.0
+margin_top = 35.0
+margin_right = 288.0
+margin_bottom = 49.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_VIDEO_RESOLUTION"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Visibility" ]
+
+[node name="options_resolutions" type="OptionButton" parent="Menu_Control/settings/label_video" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 84.0
+margin_top = 30.0
+margin_right = 247.0
+margin_bottom = 50.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+action_mode = 0
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "640x480"
+flat = false
+align = 1
+items = [ "640x480", null, false, 0, null, "800x480", null, false, 1, null, "1024x768", null, false, 2, null, "1200x900", null, false, 3, null, "1280x1024", null, false, 4, null, "1440x900", null, false, 5, null, "1680x1050", null, false, 6, null, "1600x900", null, false, 7, null, "1600x1200", null, false, 8, null, "1366x768", null, false, 9, null, "1368x768", null, false, 10, null, "1920x1200", null, false, 11, null, "2560x1600", null, false, 12, null, "1280x720", null, false, 13, null, "1920x1080", null, false, 14, null, "2560x1440", null, false, 15, null, "2560x1600", null, false, 16, null ]
+selected = 0
+_sections_unfolded = [ "Rect", "Theme", "Visibility", "custom_colors", "custom_constants", "custom_fonts", "custom_styles" ]
+
+[node name="label_fullscreen" type="Label" parent="Menu_Control/settings/label_video" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 5.0
+margin_top = 64.0
+margin_right = 287.0
+margin_bottom = 78.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_VIDEO_FULLSCREEN"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Visibility" ]
+
+[node name="checkbox_fullscreen" type="CheckBox" parent="Menu_Control/settings/label_video" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 84.0
+margin_top = 60.0
+margin_right = 246.0
+margin_bottom = 84.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = true
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+align = 0
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
+
+[node name="label_vsync" type="Label" parent="Menu_Control/settings/label_video" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 5.0
+margin_top = 95.0
+margin_right = 287.0
+margin_bottom = 109.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_VIDEO_VSYNC"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Visibility" ]
+
+[node name="checkbox_vsync" type="CheckBox" parent="Menu_Control/settings/label_video" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 84.0
+margin_top = 90.0
+margin_right = 246.0
+margin_bottom = 114.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = true
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+align = 0
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="label_audio" type="Label" parent="Menu_Control/settings" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 283.0
+margin_top = 10.0
+margin_right = 649.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_AUDIO"
+align = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="label_general" type="Label" parent="Menu_Control/settings/label_audio" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 15.0
+margin_top = 35.0
+margin_right = 276.0
+margin_bottom = 49.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_AUDIO_GENERAL"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="slider_general" type="HSlider" parent="Menu_Control/settings/label_audio" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 115.0
+margin_top = 33.0
+margin_right = 350.0
+margin_bottom = 49.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 0
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+page = 0.0
+value = 100.0
+exp_edit = false
+rounded = false
+editable = true
+tick_count = 10
+ticks_on_borders = true
+focus_mode = 2
+_sections_unfolded = [ "Rect", "Visibility" ]
+
+[node name="label_music" type="Label" parent="Menu_Control/settings/label_audio" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 15.0
+margin_top = 65.0
+margin_right = 260.0
+margin_bottom = 79.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_AUDIO_MUSIC"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect" ]
+
+[node name="slider_music" type="HSlider" parent="Menu_Control/settings/label_audio" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 115.0
+margin_top = 63.0
+margin_right = 350.0
+margin_bottom = 79.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 0
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+page = 0.0
+value = 100.0
+exp_edit = false
+rounded = false
+editable = true
+tick_count = 10
+ticks_on_borders = true
+focus_mode = 2
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="label_sound_effects" type="Label" parent="Menu_Control/settings/label_audio" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 15.0
+margin_top = 95.0
+margin_right = 316.0
+margin_bottom = 109.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_AUDIO_SOUNDEFFECTS"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="slider_sound_effects" type="HSlider" parent="Menu_Control/settings/label_audio" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 115.0
+margin_top = 92.0
+margin_right = 350.0
+margin_bottom = 108.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 0
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+page = 0.0
+value = 100.0
+exp_edit = false
+rounded = false
+editable = true
+tick_count = 10
+ticks_on_borders = true
+focus_mode = 2
+_sections_unfolded = [ "Margin", "Rect", "Visibility" ]
+
+[node name="label_muted" type="Label" parent="Menu_Control/settings/label_audio" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 15.0
+margin_top = 125.0
+margin_right = 316.0
+margin_bottom = 139.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+text = "MAIN_MENU_SETTINGS_AUDIO_MUTED"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="checkbox_muted" type="CheckBox" parent="Menu_Control/settings/label_audio" index="7"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 115.0
+margin_top = 120.0
+margin_right = 392.0
+margin_bottom = 144.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = true
+enabled_focus_mode = 2
+shortcut = null
+group = null
+flat = false
+align = 0
+_sections_unfolded = [ "Rect", "Visibility" ]
+
+[node name="separator_video" type="HSeparator" parent="Menu_Control/settings" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 28.0
+margin_top = 25.0
+margin_right = 271.0
+margin_bottom = 31.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="separator_video2" type="VSeparator" parent="Menu_Control/settings" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 280.0
+margin_top = 12.0
+margin_right = 285.0
+margin_bottom = 268.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="seperator_audio" type="HSeparator" parent="Menu_Control/settings" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 291.0
+margin_top = 25.0
+margin_right = 642.0
+margin_bottom = 31.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="button_cancel" type="Button" parent="Menu_Control/settings" index="6"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -472.0
+margin_top = -34.0
+margin_right = -322.0
+margin_bottom = -14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "CANCEL"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
+
+[node name="button_apply" type="Button" parent="Menu_Control/settings" index="7"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -317.0
+margin_top = -34.0
+margin_right = -167.0
+margin_bottom = -14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "APPLY"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
+
+[node name="button_ok" type="Button" parent="Menu_Control/settings" index="8"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -162.0
+margin_top = -34.0
+margin_right = -12.0
+margin_bottom = -14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "OK"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
+
+[connection signal="pressed" from="Menu_Control/panel/button_ok" to="Menu_Control" method="_on_button_ok_pressed"]
+
+[connection signal="pressed" from="Menu_Control/panel/button_start" to="Menu_Control" method="_on_button_start_pressed"]
+
+[connection signal="pressed" from="Menu_Control/panel/button_mutiplayer" to="Menu_Control" method="_on_button_mutiplayer_pressed"]
+
+[connection signal="pressed" from="Menu_Control/panel/button_settings" to="Menu_Control" method="_on_button_settings_pressed"]
+
+[connection signal="pressed" from="Menu_Control/panel/button_exit" to="Menu_Control" method="_on_button_exit_pressed"]
+
+[connection signal="item_selected" from="Menu_Control/settings/label_video/options_resolutions" to="Menu_Control/settings" method="_on_options_resolutions_item_selected"]
+
+[connection signal="toggled" from="Menu_Control/settings/label_video/checkbox_fullscreen" to="Menu_Control/settings" method="_on_checkbox_fullscreen_toggled"]
+
+[connection signal="toggled" from="Menu_Control/settings/label_video/checkbox_vsync" to="Menu_Control/settings" method="_on_checkbox_vsync_toggled"]
+
+[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_general" to="Menu_Control/settings" method="_on_slider_general_value_changed"]
+
+[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_music" to="Menu_Control/settings" method="_on_slider_music_value_changed"]
+
+[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_sound_effects" to="Menu_Control/settings" method="_on_slider_sound_effects_value_changed"]
+
+[connection signal="toggled" from="Menu_Control/settings/label_audio/checkbox_muted" to="Menu_Control/settings" method="_on_checkbox_muted_toggled"]
+
+[connection signal="pressed" from="Menu_Control/settings/button_cancel" to="Menu_Control/settings" method="_on_button_cancel_pressed"]
+
+[connection signal="pressed" from="Menu_Control/settings/button_apply" to="Menu_Control/settings" method="_on_button_apply_pressed"]
+
+[connection signal="pressed" from="Menu_Control/settings/button_ok" to="Menu_Control/settings" method="_on_button_ok_pressed"]
+
+
