@@ -1,4 +1,4 @@
-# H1 Open Source
+# Open Source
 
 > The code in this repo was based on or uses the following open source projects
 
