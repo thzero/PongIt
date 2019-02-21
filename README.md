@@ -5,7 +5,7 @@
 * A main menu.
 * A host/join menu with a lobby menu.
   * Players can connect to the server lobby
-    * # of players allowed per game is flexible via constant
+    * Number of players allowed per game is flexible via constant
   * Lobby ready feature
-    * # of ready players is flexiblee via constant
+    * Number of ready players is flexiblee via constant
     * Start is available after players are readied
