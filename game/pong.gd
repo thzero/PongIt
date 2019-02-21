@@ -51,7 +51,7 @@ sync func update_score(left, right):
 	get_node("score_right").set_text(str(right))
 
 func _on_button_exit_pressed():
-	rpc("end_game")
+	end_game()
 
 func _ready():
 	._ready()

@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://game/pong.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.tscn" type="PackedScene" id=2]
-[ext_resource path="res://game/ball.tscn" type="PackedScene" id=3]
-[ext_resource path="res://game/separator.png" type="Texture" id=4]
-[ext_resource path="res://game/wall.gd" type="Script" id=5]
+[ext_resource path="res://game/spawn_point_2d.gd" type="Script" id=3]
+[ext_resource path="res://game/ball.tscn" type="PackedScene" id=4]
+[ext_resource path="res://game/separator.png" type="Texture" id=5]
+[ext_resource path="res://game/wall.gd" type="Script" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 
@@ -36,7 +37,14 @@ _sections_unfolded = [ "Collision", "Pickable", "Transform", "Visibility" ]
 
 self_modulate = Color( 0.960784, 0.364706, 0.968627, 1 )
 
-[node name="right" parent="." index="1" instance=ExtResource( 2 )]
+[node name="spawn_left" type="Position2D" parent="." index="1"]
+
+position = Vector2( 67.6285, 192.594 )
+script = ExtResource( 3 )
+_sections_unfolded = [ "Transform" ]
+side = 0
+
+[node name="right" parent="." index="2" instance=ExtResource( 2 )]
 
 editor/display_folded = true
 position = Vector2( 563.815, 192.594 )
@@ -47,15 +55,22 @@ side = 1
 
 self_modulate = Color( 0.202698, 0.889853, 0.960938, 1 )
 
-[node name="ball" parent="." index="2" instance=ExtResource( 3 )]
+[node name="spawn_right" type="Position2D" parent="." index="3"]
 
-[node name="separator" type="Sprite" parent="." index="3"]
+position = Vector2( 563.815, 192.594 )
+script = ExtResource( 3 )
+_sections_unfolded = [ "Transform" ]
+side = 1
+
+[node name="ball" parent="." index="4" instance=ExtResource( 4 )]
+
+[node name="separator" type="Sprite" parent="." index="5"]
 
 position = Vector2( 320, 200 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 _sections_unfolded = [ "Visibility" ]
 
-[node name="left_wall" type="Area2D" parent="." index="4"]
+[node name="left_wall" type="Area2D" parent="." index="6"]
 
 editor/display_folded = true
 position = Vector2( -10, 200 )
@@ -66,7 +81,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 audio_bus_override = false
 audio_bus_name = "Master"
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Collision", "Pickable", "Transform" ]
 side = 0
 
@@ -78,10 +93,10 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 [node name="Sprite" type="Sprite" parent="left_wall" index="1"]
 
 position = Vector2( 10, 0 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="right_wall" type="Area2D" parent="." index="5"]
+[node name="right_wall" type="Area2D" parent="." index="7"]
 
 editor/display_folded = true
 position = Vector2( 650, 200 )
@@ -92,7 +107,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 audio_bus_override = false
 audio_bus_name = "Master"
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
 side = 1
 
@@ -104,10 +119,10 @@ _sections_unfolded = [ "Transform", "Z Index" ]
 [node name="Sprite" type="Sprite" parent="right_wall" index="1"]
 
 position = Vector2( -10, 0 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="ceiling" type="Area2D" parent="." index="6"]
+[node name="ceiling" type="Area2D" parent="." index="8"]
 
 editor/display_folded = true
 position = Vector2( 320, -10 )
@@ -118,7 +133,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 audio_bus_override = false
 audio_bus_name = "Master"
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Collision", "Transform" ]
 side = 2
 
@@ -132,11 +147,12 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 position = Vector2( 0, 10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="floor" type="Area2D" parent="." index="7"]
+[node name="floor" type="Area2D" parent="." index="9"]
 
+editor/display_folded = true
 position = Vector2( 320, 410 )
 input_pickable = true
 gravity_vec = Vector2( 0, 1 )
@@ -145,7 +161,7 @@ linear_damp = 0.1
 angular_damp = 1.0
 audio_bus_override = false
 audio_bus_name = "Master"
-script = ExtResource( 5 )
+script = ExtResource( 6 )
 _sections_unfolded = [ "Collision", "Transform" ]
 side = 3
 
@@ -158,10 +174,10 @@ shape = SubResource( 2 )
 position = Vector2( 0, -10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
-texture = ExtResource( 4 )
+texture = ExtResource( 5 )
 _sections_unfolded = [ "Transform" ]
 
-[node name="score_left" type="Label" parent="." index="8"]
+[node name="score_left" type="Label" parent="." index="10"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -182,7 +198,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect" ]
 
-[node name="winner_left" type="Label" parent="." index="9"]
+[node name="winner_left" type="Label" parent="." index="11"]
 
 visible = false
 anchor_left = 0.0
@@ -205,7 +221,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect" ]
 
-[node name="score_right" type="Label" parent="." index="10"]
+[node name="score_right" type="Label" parent="." index="12"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -226,7 +242,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect" ]
 
-[node name="winner_right" type="Label" parent="." index="11"]
+[node name="winner_right" type="Label" parent="." index="13"]
 
 visible = false
 anchor_left = 0.0
@@ -249,7 +265,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect" ]
 
-[node name="button_exit" type="Button" parent="." index="12"]
+[node name="button_exit" type="Button" parent="." index="14"]
 
 visible = false
 anchor_left = 0.0

@@ -3,13 +3,22 @@ extends Node
 signal lobby_finished()
 
 var _fsm
+var _button_start = false
 
 onready var menu_container = get_node("menu_container")
 onready var host_container = get_node("menu_container/Panel/vbox_container/host_container")
 onready var join_container = get_node("menu_container/Panel/vbox_container/join_container")
 onready var lobby_container = get_node("lobby_container")
 
-func open():
+func close_lobby():
+	menu_container.hide()
+	join_container.hide()
+	host_container.hide()
+	lobby_container.hide()
+	_clear_error("join")
+	_clear_error("host")
+
+func open_menu():
 	menu_container.hide()
 	join_container.hide()
 	host_container.hide()
@@ -18,6 +27,12 @@ func open():
 	_clear_error("host")
 	menu_container.show()
 	_show_host()
+
+func open_lobby():
+	menu_container.hide()
+	join_container.hide()
+	host_container.hide()
+	lobby_container.show()
 	
 #### Gamestate
 
@@ -32,14 +47,17 @@ func _on_connection_success():
 	join_container.hide()
 	lobby_container.show()
 
+# Handles what to happen after game ends
+func _on_game_ended():
+	open_lobby()
+
+# Handles what to happen after game starts
+func _on_game_started():
+	close_lobby()
+
 # Handles what to happen after server ends
 func _on_server_ended():
-	lobby_container.hide()
-	join_container.hide()
-	join_container.find_node("button_connect").set_disabled(false)
-	menu_container.show()
-	
-	gamestate.end_game()
+	open_menu()
 
 func _on_server_error():
 	print("_on_server_error: Unknown error")
@@ -69,78 +87,49 @@ func _on_host_button_continue_pressed():
 	if (values == null):
 		return
 	
-	# Establish network
-	if (gamestate.host_game(values.server_name, values.port)):
+	if (!gamestate.host_game(values.server_name, values.port)):
 		return
 	
-	# Refresh Player List (with your own name)
 	_refresh_lobby()
 	
-	# Toggle to Lobby
 	host_container.hide()
 	lobby_container.show()
-	lobby_container.find_node("button_start").set_disabled(false)
 	
-func _validate_host():
-	_disable_button("host", "button_continue", true)
-	
-	var server_name = _validate_server_name(host_container.find_node("text_server_name").get_text(), _get_error("host"))
-	if (server_name == null):
-		return null
-	
-	var port = gamestate.validate_port(host_container.find_node("text_port").get_text(), _get_error("host"))
-	if (port == null):
-		return false
-	
-	_disable_button("host", "button_continue", false)
-	
-	_clear_error("host")
-	
-	return { "server_name": server_name, "port": port }
+	_button_start = false
+	lobby_container.find_node("button_start").set_disabled(_button_start)
 
 func _on_host_text_server_name_focus_exited():
 	_validate_host()
 		
 func _on_host_text_port_focus_exited():
 	_validate_host()
-	
-func _disable_button(type, name, disabled):
-	var container
-	if (type == "host"):
-		container = host_container
-	elif (type == "join"):
-		container = join_container
-	elif (type == "lobby"):
-		container = lobby_container
-	var button = container.find_node(name)
-	if (button == null):
-		return
-	button.disabled = disabled
+
+func _on_itemlist_players_ready_item_selected(index):
+	var itemlist_ready = lobby_container.find_node("itemlist_players_ready")
+	var ready = itemlist_ready.get_item_text(index)
+	var temp = (ready == "Ready")
+	gamestate.ready_player_request(!temp)
 
 # JOIN CONTAINER - Connect
 # Attempts to connect to the server
 # If successful, continue to Lobby or jump in-game (if running)
 func _on_join_button_connect_pressed():
-	# Check entered IP address for errors
-	var ip_address = gamestate.validate_address(join_container.find_node("text_ip_address").get_text(), join_container.find_node("label_error"))
-	if (ip_address == null):
+	var values = _validate_join()
+	if (values == null):
 		return
 	
-	var port = gamestate.validate_port(join_container.find_node("text_port").get_text(), _get_error("join"))
-	if (port == null):
-		return
-	
-	# Clear error (if any)
-	join_container.find_node("label_error").set_text("")
-	_clear_error("join")
-	
-	# Connect to server
-	if (gamestate.join_game(ip_address, port)):
+	if (gamestate.join_game(values.ip_address, values.port)):
 		return
 	
 	# While we are attempting to connect, disable button for 'continue'
 	join_container.find_node("button_connect").set_disabled(true)
 
+func _on_join_text_ip_address_focus_exited():
+	_validate_join()
+		
+func _on_join_text_port_focus_exited():
+	_validate_join()
+	
 # LOBBY CONTAINER - Starts the Game
 func _on_lobby_button_start_pressed():
 	gamestate.start_game()
@@ -158,11 +147,34 @@ func _on_lobby_button_cancel_pressed():
 	# Enable buttons
 	join_container.find_node("button_connect").set_disabled(false)
 
-func _on_lobby_refresh():
+func _on_refresh_lobby():
 	_refresh_lobby()
+	
+func _on_refresh_lobby_start_enabled():
+	if (get_tree().is_network_server()):
+		_button_start = false
+		lobby_container.find_node("button_start").set_disabled(false)
+
+func _on_refresh_lobby_start_disabled():
+	if (get_tree().is_network_server()):
+		_button_start = true
+		lobby_container.find_node("button_start").set_disabled(true)
 	
 func _clear_error(type):
 	_set_error(type, "")
+	
+func _disable_button(type, name, disabled):
+	var container
+	if (type == "host"):
+		container = host_container
+	elif (type == "join"):
+		container = join_container
+	elif (type == "lobby"):
+		container = lobby_container
+	var button = container.find_node(name)
+	if (button == null):
+		return
+	button.disabled = disabled
 	
 func _get_error(type):
 	var container
@@ -177,22 +189,35 @@ func _get_error(type):
 # Refresh Lobby's player list
 # This is run after we have gotten updates from the server regarding new players
 func _refresh_lobby():
+	lobby_container.find_node("button_start").set_disabled(true)
+	
 	# Get the latest list of players from gamestate
 	var player_list = gamestate.get_player_list()
 	player_list.sort()
 	
 	# Add the updated player_list to the itemlist
 	var itemlist = lobby_container.find_node("itemlist_players")
+	var itemlist_ready = lobby_container.find_node("itemlist_players_ready")
 	itemlist.clear()
-	itemlist.add_item(gamestate.get_player_name() + " (" + tr("LOBBY_YOU").to_upper() + ")")
+	itemlist_ready.clear()
+	
+	itemlist.add_item(gamestate.get_player().name + " (" + tr("LOBBY_YOU").to_upper() + ")")
+	itemlist_ready.add_item(_refresh_lobby_ready(gamestate.get_player().ready))
 	
 	# Add every other player to the list
 	for player in player_list:
-		itemlist.add_item(player)
+		itemlist.add_item(player.name)
+		itemlist_ready.add_item(_refresh_lobby_ready(player.ready))
 	
-	# If you are not the server, we disable the 'start game' button
-	if (!get_tree().is_network_server()):
-		lobby_container.find_node("button_start").set_disabled(true)
+	# If you are the server, enable the 'start game' button
+	if (get_tree().is_network_server()):
+		lobby_container.find_node("button_start").set_disabled(_button_start)
+
+func _refresh_lobby_ready(ready):
+	var state = "Unready"
+	if (ready):
+		state = "Ready"
+	return state
 	
 func _set_error(type, message):
 	var label = _get_error(type)
@@ -213,6 +238,41 @@ func _show_join():
 	menu_container.find_node("button_host").disabled = false
 	menu_container.find_node("button_join").disabled = true
 	_disable_button("join", "button_connect", true)
+	_validate_join()
+	
+func _validate_host():
+	_disable_button("host", "button_continue", true)
+	
+	var server_name = _validate_server_name(host_container.find_node("text_server_name").get_text(), _get_error("host"))
+	if (server_name == null):
+		return null
+	
+	var port = gamestate.validate_port(host_container.find_node("text_port").get_text(), _get_error("host"))
+	if (port == null):
+		return false
+	
+	_disable_button("host", "button_continue", false)
+	
+	_clear_error("host")
+	
+	return { "server_name": server_name, "port": port }
+	
+func _validate_join():
+	_disable_button("join", "button_connect", true)
+	
+	var ip_address = gamestate.validate_address(join_container.find_node("text_ip_address").get_text(), _get_error("join"))
+	if (ip_address == null):
+		return
+	
+	var port = gamestate.validate_port(host_container.find_node("text_port").get_text(), _get_error("host"))
+	if (port == null):
+		return false
+	
+	_disable_button("join", "button_connect", false)
+	
+	_clear_error("join")
+	
+	return { "ip_address": ip_address, "port": port }
 
 func _validate_server_name(name, error):
 	if (error != null):
@@ -282,46 +342,54 @@ func _ready():
 	join_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
 	
 	# Setup Network Signaling between Gamestate and Game UI
-	gamestate.connect("refresh_lobby", self, "_on_lobby_refresh")
+	gamestate.connect("refresh_lobby", self, "_on_refresh_lobby")
+	gamestate.connect("game_ended", self, "_on_game_ended")
+	gamestate.connect("game_started", self, "_on_game_started")
+	gamestate.connect("refresh_lobby_start_enabled", self, "_on_refresh_lobby_start_enabled")
+	gamestate.connect("refresh_lobby_start_disabled", self, "_on_refresh_lobby_start_disabled")
 	gamestate.connect("server_ended", self, "_on_server_ended")
 	gamestate.connect("server_error", self, "_on_server_error")
 	gamestate.connect("connection_success", self, "_on_connection_success")
 	gamestate.connect("connection_fail", self, "_on_connection_fail")
 
 class state extends "res://fsm/base_fsm.gd":
-
-	const Connected = "connected"
-	const Disconnected = "disconnected"
+	
+	const Host = "host"
 	const InGame = "in_game"
-	const Waiting = "waiting"
+	const Join = "join"
+	const Lobby = "lobby"
+	
+	var _fsm_host
+	var _fsm_join
+	var _fsm_lobby
 	
 	func init():
-		add_state(Connected)
-		add_state(Disconnected)
+		add_state(Host)
 		add_state(InGame)
-		add_state(Waiting)
+		add_state(Join)
+		add_state(Lobby)
 		
 	func is_state_connected():
-		return is_state(Connected)
+		return is_state(Host)
 		
 	func is_state_disconnected():
-		return is_state(Disconnected)
-		
-	func is_state_in_game():
 		return is_state(InGame)
 		
+	func is_state_in_game():
+		return is_state(Join)
+		
 	func is_state_waiting():
-		return is_state(Waiting)
+		return is_state(Lobby)
 	
 	func set_state_connected():
-		set_state(Connected)
+		set_state(Host)
 		
 	func set_state_disconnected():
-		set_state(Disconnected)
-		
-	func set_state_in_game():
 		set_state(InGame)
 		
+	func set_state_in_game():
+		set_state(Join)
+		
 	func set_state_waiting():
-		set_state(Waiting)
-
+		set_state(Lobby)
+	

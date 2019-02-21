@@ -1,13 +1,13 @@
 extends "res://networking/base.gd"
 
-func end_game():
+func end_game_ext():
+	.end_game_ext()
 	# If we are ingame, remove world from existence!
 	if (has_node("/root/world")):
 		get_node("/root/main_menu").show() # Enable main menu
 		get_node("/root/world").queue_free() # Terminate world
 
-# Register the player and jump ingame
-func register_new_player_ext(id, name):
+func register_in_game_player_ext(id, player):
 	# Hardcoded spawns; could be done better by getting 
 	# the number of spawns from the map and go from there.
 	# At this stage, hardcoding will suffice...
@@ -21,35 +21,8 @@ func register_new_player_ext(id, name):
 	print("Spawning " + str(name))
 	spawn_player(spawn_pos)
 
-func start_game():
-	.start_game()
-	
-	# Set spawn pos for each player
-	var spawn_points = {}
-
-	# Generate spawn points associated with each player
-	spawn_points[1] = 1 # Set first spawn point to server
-	
-	# Add spawn point with each player in spawn_points dictionary
-	var count = 2
-	for p in _players:
-		print(str(p) + ", spawn at " + str(count))
-		spawn_points[p] = count
-		count += 1
-	
-	# Tell each player 'p' with id 'spawn_points' to spawn at specified 'spawn_points[id]'
-	for p in _players:
-		rpc_id(p, "spawn_player", spawn_points)
-	
-	spawn_player(spawn_points)
-
 func _is_in_game():
 	return has_node("/root/world")
-	
-func remove_player(id):
-	.remove_player(id)
-	if (has_node("/root/world/players/" + str(id))):
-		get_node("/root/world/players/" + str(id)).queue_free()
 
 remote func spawn_player(spawn_points):
 	# A world without identity.
@@ -98,3 +71,30 @@ remote func spawn_player(spawn_points):
 		
 		# Add the player (or you) to the world!
 		world.get_node("players").add_child(player)
+
+func start_game_ext():
+	.start_game_ext()
+	
+	# Set spawn pos for each player
+	var spawn_points = {}
+
+	# Generate spawn points associated with each player
+	spawn_points[1] = 1 # Set first spawn point to server
+	
+	# Add spawn point with each player in spawn_points dictionary
+	var count = 2
+	for p in _players:
+		print(str(p) + ", spawn at " + str(count))
+		spawn_points[p] = count
+		count += 1
+	
+	# Tell each player 'p' with id 'spawn_points' to spawn at specified 'spawn_points[id]'
+	for p in _players:
+		rpc_id(p, "spawn_player", spawn_points)
+	
+	spawn_player(spawn_points)
+
+func unregister_player_ext(id):
+	.unregister_player_ext(id)
+	if (has_node("/root/world/players/" + str(id))):
+		get_node("/root/world/players/" + str(id)).queue_free()
