@@ -12,7 +12,7 @@ use_filter = false
 font_data = ExtResource( 2 )
 _sections_unfolded = [ "Font", "Resource", "Settings" ]
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" index="0"]
 
 [node name="Menu_Control" type="Control" parent="." index="0"]
 

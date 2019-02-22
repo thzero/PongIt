@@ -118,7 +118,7 @@ func _on_state_changed(state_from, state_to, args):
 		get_node("button_ok").set_disabled(true)
 
 func _ready():
-	_audio = preload("res://main_menu/Audio.gd").new()
+	_audio = preload("res://main_menu/audio.gd").new()
 	_display = preload("res://main_menu/display.gd").new()
 
 	_fsm = state.new()

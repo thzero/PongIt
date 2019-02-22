@@ -29,20 +29,18 @@ func end_game():
 	end_game_ext()
 	emit_signal("game_ended")
 	
-remote func end_game_announce():
+remote func end_game_announce(id):
 	if (!get_tree().is_network_server()):
 		return
 	
-	# Send info about server to new player
-	rpc_id(id, "end_game_announce_player", 1, temp)
+	rpc_id(id, "end_game_announce_player", 1)
 	
-	# Send the new player info about the other players
 	for peer_id in _players:
-		rpc_id(id, "end_game_announce_player", peer_id)
-		
-remote func end_game_announce_player(id):
+		rpc_id(peer_id, "end_game_announce_player")
+
+remote func end_game_announce_player():
 	end_game()
-	
+
 func load_world(world):
 	_world = world
 	get_tree().get_root().add_child(_world)
@@ -105,7 +103,7 @@ func quit_game():
 	end_game()
 	_close_connection()
 	_players.clear()
-	emit("server_ended")
+	emit_signal("server_ended")
 	
 func ready_player_request(ready):
 	_player.ready = ready
@@ -148,6 +146,9 @@ remote func register_in_game_player(id, player):
 	_players[id] = player
 	
 	register_in_game_player_ext(id, player)
+	
+func register_in_game_player_ext(id, player):
+	pass
 
 # Register myself with other players at lobby
 remote func register_in_lobby():
@@ -292,7 +293,7 @@ func _on_connection_failed():
 	emit_signal("connection_fail")
 
 func _on_game_ended():
-	rpc_id(1, "end_game_announce")
+	rpc_id(1, "end_game_announce", get_tree().get_network_unique_id())
 
 # Client connected with you (can be both server or client)
 func _on_network_peer_connected(id):
