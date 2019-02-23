@@ -9,3 +9,10 @@
   * Lobby ready feature
     * Number of ready players is flexiblee via constant
     * Start is available after players are readied
+
+## Open Source
+
+[List of open source](opensource.md)
+
+## License
+Distributed under the terms of the MIT license, as described in the [LICENSE](LICENSE) file.
