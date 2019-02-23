@@ -20,7 +20,6 @@ Constants="*res://constants.gd"
 Configuration="*res://configuration.gd"
 ConfigurationUser="*res://configuration_user.gd"
 Gamestate="*res://gamestate.gd"
-Console="*res://console/Console.tscn"
 
 [display]
 
