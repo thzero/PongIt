@@ -1,4 +1,4 @@
-extends Object
+extends Reference
 
 var id
 var name

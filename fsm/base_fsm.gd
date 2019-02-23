@@ -1,25 +1,38 @@
 # https://github.com/gokudomatic/eco-state-machine
-#extends Node
-extends Object
+extends Node
 
 class Group:
+#warning-ignore:unused_class_variable
 	var parent=null
+#warning-ignore:unused_class_variable
 	var links=null
+#warning-ignore:unused_class_variable
 	var attributes=null
 
 class State:
+#warning-ignore:unused_class_variable
 	var attributes=null
+#warning-ignore:unused_class_variable
 	var parent=null
+#warning-ignore:unused_class_variable
 	var links=null
 
 class Link:
+#warning-ignore:unused_class_variable
 	var next_state=null
+#warning-ignore:unused_class_variable
 	var type=null
+#warning-ignore:unused_class_variable
 	var timeout=0
+#warning-ignore:unused_class_variable
 	var timer=null
+#warning-ignore:unused_class_variable
 	var condition_owner=null
+#warning-ignore:unused_class_variable
 	var condition_method=null
+#warning-ignore:unused_class_variable
 	var condition_arguments=[]
+#warning-ignore:unused_class_variable
 	var condition_expected
 
 var timers={}
@@ -181,4 +194,5 @@ func add_timer(name):
 	timers[name]=0
 
 func connect_state_changed(obj, name):
+#warning-ignore:return_value_discarded
 	connect("state_changed", obj, name)

@@ -42,11 +42,17 @@ remote func end_game_announce_player():
 	end_game()
 
 func load_world(world):
+	if (world == null):
+		return
+	
 	_world = world
 	get_tree().get_root().add_child(_world)
 	_world.connect("game_ended", self, "_on_game_ended")
 
 func unload_world():
+	if (_world == null):
+		return
+	
 	get_node(_world.get_path()).queue_free()
 
 func end_game_ext():
@@ -67,11 +73,12 @@ func host_game(name, port):
 	
 	_server_name = name
 	_player = preload("res://networking/player.gd").new()
-	_player.name = configuration_user.Settings.User.Name
+	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
 	
 	# Initializing the network as client
 	var host = _create_host()
+#	var doh = get_tree().get_multiplayer()
 	host.create_server(port, Constants.MAX_PLAYERS)
 	get_tree().set_network_peer(host)
 	
@@ -84,7 +91,7 @@ func join_game(ip_address, port):
 		return false
 	
 	_player = preload("res://networking/player.gd").new()
-	_player.name = configuration_user.Settings.User.Name
+	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
 	
 	# Initializing the network as server

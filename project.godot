@@ -16,11 +16,11 @@ config/icon="res://icon.png"
 
 [autoload]
 
-configuration="*res://configuration.gd"
-configuration_user="*res://configuration_user.gd"
-Console="*res://console/Console.tscn"
 Constants="*res://constants.gd"
+Configuration="*res://configuration.gd"
+ConfigurationUser="*res://configuration_user.gd"
 gamestate="*res://gamestate.gd"
+Console="*res://console/Console.tscn"
 
 [display]
 

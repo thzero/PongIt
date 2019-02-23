@@ -15,9 +15,9 @@ func _end_lobby():
 	_lobby = null
 
 func _load_settings():
-	get_node("panel/line_name").text = configuration_user.Settings.User.Name
+	get_node("panel/line_name").text = ConfigurationUser.Settings.User.Name
 	
-	_user.name = configuration_user.Settings.User.Name
+	_user.name = ConfigurationUser.Settings.User.Name
 
 func _on_button_exit_pressed():
 	get_tree().quit()
@@ -25,7 +25,7 @@ func _on_button_exit_pressed():
 func _on_button_ok_pressed():
 	if (_validate_name()):
 		_fsm.set_state_complete()
-		configuration_user.update_settings(_user)
+		ConfigurationUser.update_settings(_user)
 		return
 
 func _on_button_mutiplayer_pressed():
@@ -34,7 +34,7 @@ func _on_button_mutiplayer_pressed():
 	#_lobby.connect("lobby_finished", self, "_end_lobby", [], CONNECT_DEFERRED)
 	_lobby.connect("lobby_finished", self, "_end_lobby")
 	get_tree().get_root().add_child(_lobby)
-	_lobby.open()
+	_lobby.open_menu()
 	hide()
 
 func _on_button_settings_pressed():

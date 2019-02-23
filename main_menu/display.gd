@@ -1,4 +1,4 @@
-extends Object
+extends Reference
 
 var height = 0
 var width = 0

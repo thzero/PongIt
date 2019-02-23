@@ -1,4 +1,4 @@
-extends Object
+extends Reference
 
 var general = 100
 var music = 100
