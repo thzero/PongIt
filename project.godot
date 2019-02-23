@@ -19,7 +19,7 @@ config/icon="res://icon.png"
 Constants="*res://constants.gd"
 Configuration="*res://configuration.gd"
 ConfigurationUser="*res://configuration_user.gd"
-gamestate="*res://gamestate.gd"
+Gamestate="*res://gamestate.gd"
 Console="*res://console/Console.tscn"
 
 [display]

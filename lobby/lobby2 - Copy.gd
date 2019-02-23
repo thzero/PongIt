@@ -30,7 +30,7 @@ func _on_server_ended():
 	join_container.find_node("button_connect").set_disabled(false)
 	menu_container.show()
 	
-	gamestate.end_game()
+	Gamestate.end_game()
 
 func _on_server_error():
 	print("_on_server_error: Unknown error")
@@ -70,7 +70,7 @@ func _on_host_button_continue_pressed():
 		host_container.find_node("label_error").set_text("Server name cannot be empty.")
 		return
 	
-	var port = gamestate.validate_address(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
+	var port = Gamestate.validate_address(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
 	if (port == null):
 		return
 	
@@ -78,7 +78,7 @@ func _on_host_button_continue_pressed():
 	host_container.find_node("label_error").set_text("")
 	
 	# Establish network
-	if (gamestate.host_game(server_name, port)):
+	if (Gamestate.host_game(server_name, port)):
 		return
 	
 	# Refresh Player List (with your own name)
@@ -94,11 +94,11 @@ func _on_host_button_continue_pressed():
 # If successful, continue to Lobby or jump in-game (if running)
 func _on_join_button_connect_pressed():
 	# Check entered IP address for errors
-	var ip_address = gamestate.validate_address(join_container.find_node("text_ip_address").get_text(), join_container.find_node("label_error"))
+	var ip_address = Gamestate.validate_address(join_container.find_node("text_ip_address").get_text(), join_container.find_node("label_error"))
 	if (ip_address == null):
 		return
 	
-	var port = gamestate.validate_port(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
+	var port = Gamestate.validate_port(join_container.find_node("text_port").get_text(), join_container.find_node("label_error"))
 	if (port == null):
 		return
 	
@@ -106,7 +106,7 @@ func _on_join_button_connect_pressed():
 	join_container.find_node("label_error").set_text("")
 	
 	# Connect to server
-	if (gamestate.join_game(ip_address, port)):
+	if (Gamestate.join_game(ip_address, port)):
 		return
 	
 	# While we are attempting to connect, disable button for 'continue'
@@ -114,7 +114,7 @@ func _on_join_button_connect_pressed():
 
 # LOBBY CONTAINER - Starts the Game
 func _on_lobby_button_start_pressed():
-	gamestate.start_game()
+	Gamestate.start_game()
 
 # LOBBY CONTAINER - Cancel Lobby
 # (The only time you are already connected from main menu)
@@ -124,7 +124,7 @@ func _on_lobby_button_cancel_pressed():
 	menu_container.show()
 	
 	# Disconnect networking
-	gamestate.quit_game()
+	Gamestate.quit_game()
 	
 	# Enable buttons
 	join_container.find_node("button_connect").set_disabled(false)
@@ -136,13 +136,13 @@ func _on_lobby_refresh():
 # This is run after we have gotten updates from the server regarding new players
 func _refresh_lobby():
 	# Get the latest list of players from gamestate
-	var player_list = gamestate.get_player_list()
+	var player_list = Gamestate.get_player_list()
 	player_list.sort()
 	
 	# Add the updated player_list to the itemlist
 	var itemlist = lobby_container.find_node("itemlist_players")
 	itemlist.clear()
-	itemlist.add_item(gamestate.get_player_name() + " (" + tr("LOBBY_YOU").to_upper() + ")")
+	itemlist.add_item(Gamestate.get_player_name() + " (" + tr("LOBBY_YOU").to_upper() + ")")
 	
 	# Add every other player to the list
 	for player in player_list:
@@ -209,11 +209,11 @@ func _ready():
 	join_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
 	
 	# Setup Network Signaling between Gamestate and Game UI
-	gamestate.connect("refresh_lobby", self, "_on_lobby_refresh")
-	gamestate.connect("server_ended", self, "_on_server_ended")
-	gamestate.connect("server_error", self, "_on_server_error")
-	gamestate.connect("connection_success", self, "_on_connection_success")
-	gamestate.connect("connection_fail", self, "_on_connection_fail")
+	Gamestate.connect("refresh_lobby", self, "_on_lobby_refresh")
+	Gamestate.connect("server_ended", self, "_on_server_ended")
+	Gamestate.connect("server_error", self, "_on_server_error")
+	Gamestate.connect("connection_success", self, "_on_connection_success")
+	Gamestate.connect("connection_fail", self, "_on_connection_fail")
 
 class state extends "res://fsm/base_fsm.gd":
 
