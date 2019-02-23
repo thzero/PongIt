@@ -335,11 +335,19 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
-	if (Constants.PING_ENABLED):
-		_accumulator += delta
-		if (_accumulator > Constants.PING_DELAY):
-			rpc_unreliable("ping", _accumulator)
-			_accumulator = 0
+	if (!Constants.PING_ENABLED):
+		return
+	
+	if (Constants.PING_DELAY <= 0):
+		return
+	
+	if (!get_tree().has_network_peer()):
+		return
+	
+	_accumulator += delta
+	if (_accumulator > Constants.PING_DELAY):
+		rpc_unreliable("ping", _accumulator)
+		_accumulator = 0
 
 class state extends "res://fsm/menu_fsm.gd":
 	const Complete = "complete"
