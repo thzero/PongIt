@@ -14,7 +14,7 @@ func start_game_ext():
 	.start_game_ext()
 	
 	var world = load("res://game/pong.tscn").instance()
-	load(world)
+	load_world(world)
 	
 func unregister_player_ext(id):
 	.unregister_player_ext(id)

@@ -1,4 +1,4 @@
-extends Point2D
+extends Node2D
 
 const SIDES = preload("res://game/sides.gd")
 

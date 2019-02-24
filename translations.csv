@@ -1,6 +1,10 @@
 ﻿,en
 TITLE,Pong It!
 ,
+CHAT_GENERAL_ACTION,said
+CHAT_WHISPER_ACTION,whispered
+CHAT_YOU,You
+,
 GAME_BUTTON_EXIT,Exit
 ,
 LOBBY_ADDRESS,IP Address

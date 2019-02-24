@@ -7,6 +7,8 @@ extends Node
 var _accumulator = 0
 var _fsm
 
+const CHAT_TYPES = preload("res://chat/types.gd")
+
 # GAMEDATA
 var _game_name # Name of the game
 var _players = {} # Dictionary containing player names and their ID
@@ -15,6 +17,7 @@ var _server_name
 var _world
 
 # SIGNALS to Main Menu (GUI)
+signal chat_message()
 signal connection_success()
 signal connection_fail()
 signal game_ended()
@@ -25,10 +28,31 @@ signal refresh_lobby_start_enabled()
 signal server_ended()
 signal server_error()
 
+func chat(message, type, args):
+	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
+		rpc(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
+		return
+	
+	if (type == CHAT_TYPES.General):
+		rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.General, null)
+		return
+	
+	if (type == CHAT_TYPES.PrePackaged):
+		rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.PrePackaged, inst2dict(args))
+		return
+	
+	rpc("chat_send", get_tree().get_network_unique_id(), message, type, inst2dict(args))
+
+sync func chat_send(from, message, type, args):
+	var playerFrom = get_player_by_id(from)
+	if (args != null):
+		args = dict2inst(args)
+	emit_signal("chat_message", playerFrom, message, CHAT_TYPES.General, args)
+
 func end_game():
 	end_game_ext()
 	emit_signal("game_ended")
-	
+
 remote func end_game_announce(id):
 	if (!get_tree().is_network_server()):
 		return
@@ -41,20 +65,6 @@ remote func end_game_announce(id):
 remote func end_game_announce_player():
 	end_game()
 
-func load_world(world):
-	if (world == null):
-		return
-	
-	_world = world
-	get_tree().get_root().add_child(_world)
-	_world.connect("game_ended", self, "_on_game_ended")
-
-func unload_world():
-	if (_world == null):
-		return
-	
-	get_node(_world.get_path()).queue_free()
-
 func end_game_ext():
 	pass
 
@@ -63,6 +73,14 @@ func get_player_list():
 
 func get_player():
 	return _player
+
+func get_player_by_id(id):
+	if (id == get_tree().get_network_unique_id()):
+		return _player
+	
+	if (_players.has(id)):
+		return _players[id]
+	return null
 
 func host_game(name, port):
 	if (validate_port(port, null) == null):
@@ -100,6 +118,14 @@ func join_game(ip_address, port):
 	get_tree().set_network_peer(host)
 	
 	return true
+
+func load_world(world):
+	if (world == null):
+		return
+	
+	_world = world
+	get_tree().get_root().add_child(_world)
+	_world.connect("game_ended", self, "_on_game_ended")
 	
 remote func ping(delta):
 	#print("ping " + str(delta))
@@ -120,7 +146,9 @@ func ready_player_request(ready):
 sync func ready_player(id, player):
 	var temp = dict2inst(player)
 	if (_players.has(id)):
-		_players[id].ready = player.ready
+		var playerT = get_player_by_id(id)
+		if (playerT != null):
+			playerT.ready = player.ready
 
 	# Notify lobby (GUI) about changes
 	emit_signal("refresh_lobby")
@@ -145,15 +173,18 @@ remote func register_in_game_player(id, player):
 		# Send info about server to new player
 		rpc_id(id, "register_in_game_player", 1, temp)
 		
+		var playerT
 		# Send the new player info about the other players
 		for peer_id in _players:
-			rpc_id(id, "register_in_game_player", peer_id, inst2dict(_players[peer_id]))
+			playerT  = get_player_by_id(peer_id)
+			if (playerT != null):
+				rpc_id(id, "register_in_game_player", peer_id, inst2dict(playerT))
 	
 	temp = dict2inst(player)
-	_players[id] = player
+	_set_player(id, player)
 	
 	register_in_game_player_ext(id, player)
-	
+
 func register_in_game_player_ext(id, player):
 	pass
 
@@ -172,16 +203,45 @@ remote func register_in_lobby_player(id, player):
 	if (get_tree().is_network_server()):
 		rpc_id(id, "register_in_lobby_player", 1, temp) # Send info about server to new player
 		
+		var playerT
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
-			rpc_id(id, "register_in_lobby_player", peer_id, inst2dict(_players[peer_id])) # Send the new player info about others
+			playerT = get_by_player_id(peer_id)
+			if (playerT != null):
+				rpc_id(id, "register_in_lobby_player", peer_id, inst2dict(playerT)) # Send the new player info about others
 			rpc_id(peer_id, "register_in_lobby_player", player) # Send others info about the new player
 	
 	temp = dict2inst(player)
-	_players[id] = temp
+	_set_player(id, temp)
 
 	# Notify lobby (GUI) about changes
 	emit_signal("refresh_lobby")
+
+func start_game():
+	if (!get_tree().is_network_server()):
+		return
+		
+	rpc("start_game_player", 1)
+	
+	start_game_ext()
+	emit_signal("game_started")
+
+func start_game_ext():
+	pass
+
+remote func start_game_player(id):
+	if (get_tree().is_network_server()):
+		for peer_id in _players:
+			rpc_id(peer_id, "start_game_player")
+	
+	start_game_ext()
+	emit_signal("game_started")
+
+func unload_world():
+	if (_world == null):
+		return
+	
+	get_node(_world.get_path()).queue_free()
 
 # Unregister a player, whether he is in lobby or ingame
 remote func unregister_player(id):
@@ -195,14 +255,6 @@ remote func unregister_player(id):
 	emit_signal("refresh_lobby")
 	
 func unregister_player_ext(id):
-	pass
-
-func start_game():
-	start_game_ext()
-	emit_signal("game_started")
-	pass
-
-func start_game_ext():
 	pass
 
 # Server receives this from players that have just connected
@@ -282,16 +334,23 @@ func _ready_players():
 	var count = 0
 	if (_player.ready):
 		count += 1
+	
+	var playerT
 	for peer_id in _players:
-		ready = ready && _players[peer_id].ready
-		if (_players[peer_id].ready):
-			count += 1
+		playerT = get_player_by_id(peer_id)
+		if (playerT != null):
+			ready = ready && playerT.ready
+			if (playerT.ready):
+				count += 1
 	
 	if ((count >= Constants.MIN_PLAYERS) && ready):
 		emit_signal("refresh_lobby_start_enabled")
 	else:
 		emit_signal("refresh_lobby_start_disabled")
-		
+
+func _set_player(id, player):
+	_players[id] = player;
+	
 #### Events
 
 # Could not connect to server (client)
