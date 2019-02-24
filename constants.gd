@@ -4,6 +4,9 @@ const DEFAULT_SERVER_PORT = 8910 # some random number, pick your port properly
 const DEFAULT_SERVER_ADDRESS = '127.0.0.1'
 const DEFAULT_SERVER_NAME = 'Server'
 
+const PATH_CHAT = "res://chat.gd"
+const PATH_LOBBY = "res://lobby/lobby.tscn"
+
 const PING_ENABLED = true
 const PING_DELAY = 1
 

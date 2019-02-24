@@ -29,9 +29,7 @@ func _on_button_ok_pressed():
 		return
 
 func _on_button_mutiplayer_pressed():
-	_lobby = load("res://lobby/lobby2.tscn").instance()
-	#connect deferred so we can safely erase it from the callback
-	#_lobby.connect("lobby_finished", self, "_end_lobby", [], CONNECT_DEFERRED)
+	_lobby = load(Constants.PATH_LOBBY).instance()
 	_lobby.connect("lobby_finished", self, "_end_lobby")
 	get_tree().get_root().add_child(_lobby)
 	_lobby.open_menu()
