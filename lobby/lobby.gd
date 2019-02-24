@@ -26,7 +26,7 @@ func _network_peer_connected(id):
 	# A player connected, start the game!
 	_level = load("res://game/pong.tscn").instance()
 		# connect deferred so we can safely erase it from the callback
-		_level.connect("game_finished", self, "_end_game", [], CONNECT_DEFERRED)
+	_level.connect("game_finished", self, "_end_game", [], CONNECT_DEFERRED)
 	
 	get_tree().get_root().add_child(_level)
 	_get_panel().hide()
