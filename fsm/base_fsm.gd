@@ -1,38 +1,24 @@
 # https://github.com/gokudomatic/eco-state-machine
-extends Node
+extends Reference
 
-class Group:
-#warning-ignore:unused_class_variable
+class Reference:
 	var parent=null
-#warning-ignore:unused_class_variable
 	var links=null
-#warning-ignore:unused_class_variable
 	var attributes=null
 
-class State:
-#warning-ignore:unused_class_variable
+class Reference:
 	var attributes=null
-#warning-ignore:unused_class_variable
 	var parent=null
-#warning-ignore:unused_class_variable
 	var links=null
 
-class Link:
-#warning-ignore:unused_class_variable
+class Reference:
 	var next_state=null
-#warning-ignore:unused_class_variable
 	var type=null
-#warning-ignore:unused_class_variable
 	var timeout=0
-#warning-ignore:unused_class_variable
 	var timer=null
-#warning-ignore:unused_class_variable
 	var condition_owner=null
-#warning-ignore:unused_class_variable
 	var condition_method=null
-#warning-ignore:unused_class_variable
 	var condition_arguments=[]
-#warning-ignore:unused_class_variable
 	var condition_expected
 
 var timers={}
