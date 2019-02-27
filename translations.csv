@@ -1,6 +1,8 @@
 ﻿,en
 TITLE,Pong It!
 ,
+CHAT_MESSAGE,"%s %s ""%s"""
+CHAT_MESSAGE_SELF,"%s %s ""%s"" to %s"
 CHAT_GENERAL_ACTION,said
 CHAT_WHISPER_ACTION,whispered
 CHAT_YOU,You

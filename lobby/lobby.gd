@@ -3,14 +3,14 @@ extends Node
 signal lobby_finished()
 
 var _fsm
+var _chat
 var _button_start = false
+var _history_current = 0
 
 onready var _menu_container = get_node("menu_container")
 onready var _host_container = get_node("menu_container/Panel/vbox_container/host_container")
 onready var _join_container = get_node("menu_container/Panel/vbox_container/join_container")
 onready var _lobby_container = get_node("lobby_container")
-
-var _chat
 
 func close_lobby():
 	_menu_container.hide()
@@ -35,7 +35,7 @@ func open_lobby():
 	_join_container.hide()
 	_host_container.hide()
 	_lobby_container.show()
-	
+
 #### Gamestate
 
 func _on_chat_message(player_from, message, type, args):
@@ -46,7 +46,7 @@ func _on_chat_message(player_from, message, type, args):
 	if (text == null):
 		return
 	
-	_chat.message(player_from, message, type, args, text)
+	_chat.handle(player_from, message, type, args, text)
 
 func _on_connection_fail():
 	# Display error telling the user that the server cannot be connected
@@ -159,14 +159,38 @@ func _on_lobby_button_cancel_pressed():
 	# Enable buttons
 	_join_container.find_node("button_connect").set_disabled(false)
 
+func _on_lobby_line_chat_input(scancode):
+	var index = 0
+	if (scancode == KEY_UP):
+		index = _chat.increment(true)
+	elif (scancode == KEY_DOWN):
+		index = _chat.increment(false)
+		
+	var message = _chat.history()
+	var text_chat = _lobby_container.find_node("line_chat")
+	if (message != null):
+		text_chat.set_text(message)
+	else:
+		text_chat.clear()
+
 func _on_lobby_button_chat_pressed():
-	var text_chat = _lobby_container.find_node("text_chat_entry")
-	var message = text_chat.get_text()
+	_on_lobby_chat(null)
+	
+func _on_lobby_chat(message):
+	var text_chat = _lobby_container.find_node("line_chat")
+	
+	if (message == null):
+		message = text_chat.get_text()
+		
 	if (message == ""):
 		return
 	
-	text_chat.set_text("")
-	Gamestate.chat(message, Gamestate.CHAT_TYPES.General, null)
+	_chat.message(message)
+	
+	text_chat.clear()
+
+func _on_lobby_line_chat_text_entered(message):
+	_on_lobby_chat(message)
 
 func _on_refresh_lobby():
 	_refresh_lobby()
@@ -357,6 +381,9 @@ func _ready():
 	_fsm.set_state_disconnected()
 	
 	_chat = load(Constants.PATH_CHAT).new()
+	
+	var text_chat = _lobby_container.find_node("line_chat")
+	text_chat.connect("input", self, "_on_lobby_line_chat_input")
 	
 	# Set default nicknames on host/join
 	_host_container.find_node("text_server_name").set_text(Constants.DEFAULT_SERVER_NAME)

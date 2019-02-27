@@ -30,7 +30,9 @@ signal server_error()
 
 func chat(message, type, args):
 	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
-		rpc(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
+		var player_from = get_player_by_id(args)
+		emit_signal("chat_message", Gamestate.get_player(), message, CHAT_TYPES.Whisper, { "player" : player_from, "id" : get_tree().get_network_unique_id() })
+		rpc_id(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
 		return
 	
 	if (type == CHAT_TYPES.General):
@@ -44,10 +46,10 @@ func chat(message, type, args):
 	rpc("chat_send", get_tree().get_network_unique_id(), message, type, inst2dict(args))
 
 sync func chat_send(from, message, type, args):
-	var playerFrom = get_player_by_id(from)
+	var player_from = get_player_by_id(from)
 	if (args != null):
 		args = dict2inst(args)
-	emit_signal("chat_message", playerFrom, message, CHAT_TYPES.General, args)
+	emit_signal("chat_message", player_from, message, CHAT_TYPES.General, args)
 
 func end_game():
 	end_game_ext()
@@ -74,12 +76,34 @@ func get_player_list():
 func get_player():
 	return _player
 
+func get_player_id():
+	return get_tree().get_network_unique_id()
+
 func get_player_by_id(id):
 	if (id == get_tree().get_network_unique_id()):
 		return _player
 	
 	if (_players.has(id)):
 		return _players[id]
+	
+	return null
+	
+func get_player_by_selector(selector):
+	if ((selector == null) || (selector == "")):
+		return null
+	
+	var player_id = ""
+	var playerT = null
+	for peer_id in _players:
+		player_id = peer_id
+		playerT  = get_player_by_id(peer_id)
+		# TODO
+		if ((playerT != null) && (playerT.name.to_lower() == selector.to_lower())):
+			break
+	
+	if (playerT != null):
+		return { "player" : playerT, "id": player_id }
+		
 	return null
 
 func host_game(name, port):

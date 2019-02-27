@@ -3,6 +3,7 @@ extends Control
 var _fsm
 var _user
 var _lobby
+var _regExLib
 
 func _end_lobby():
 	if ((_lobby != null) && has_node(_lobby.get_path())):
@@ -23,7 +24,7 @@ func _on_button_exit_pressed():
 	get_tree().quit()
 
 func _on_button_ok_pressed():
-	if (_validate_name()):
+	if (_validate_name(_user.name)):
 		_fsm.set_state_complete()
 		ConfigurationUser.update_settings(_user)
 		return
@@ -51,15 +52,17 @@ func _on_line_name_text_changed(new_text):
 	if (text == _user.name):
 		return
 	
-	_user.name = text
-	if (_validate_name()):
+	if (_validate_name(text)):
+		_user.name = text
 		_fsm.set_state_dirty()
 		return
 	
 	_fsm.set_state_empty()
 
-func _validate_name():
-	return (_user.name.length() > 3)
+func _validate_name(name):
+	var regex = _regExLib.get("name")
+	return regex.search(name) != null
+#	return (name.length() > 3)
 
 #### State
 func _on_state_changed(state_from, state_to, args):
@@ -75,7 +78,8 @@ func _on_state_changed(state_from, state_to, args):
 		get_node("panel/button_start").set_disabled(true)
 
 func _ready():
-	_user = preload("res://user.gd").new()
+	_regExLib = regExLib.new()
+	_user = load("res://user.gd").new()
 	
 	_fsm = state.new()
 	_fsm.init()
@@ -84,7 +88,7 @@ func _ready():
 	
 	_load_settings()
 	
-	if (_validate_name()):
+	if (_validate_name(_user.name)):
 		_fsm.set_state_complete()
 		
 	get_node("panel/line_name").connect("text_changed", self, "_on_line_name_text_changed")
@@ -116,3 +120,8 @@ class state extends "res://fsm/menu_fsm.gd":
 		
 	func set_state_empty():
 		set_state(Empty)
+
+class regExLib extends "res://utility/regExLib.gd":
+	func _init():
+		._init()
+		_add_pattern_single("name", Constants.REGEX_PLAYER_NAME + Constants.REGEX_PLAYER_NAME_LENGTH)

@@ -1,17 +1,17 @@
 # https://github.com/gokudomatic/eco-state-machine
 extends Reference
 
-class Reference:
+class Group extends Reference:
 	var parent=null
 	var links=null
 	var attributes=null
 
-class Reference:
+class State extends Reference:
 	var attributes=null
 	var parent=null
 	var links=null
 
-class Reference:
+class Link extends Reference:
 	var next_state=null
 	var type=null
 	var timeout=0
@@ -180,5 +180,4 @@ func add_timer(name):
 	timers[name]=0
 
 func connect_state_changed(obj, name):
-#warning-ignore:return_value_discarded
 	connect("state_changed", obj, name)

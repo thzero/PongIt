@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://lobby/lobby.gd" type="Script" id=1]
+[ext_resource path="res://lobby/lineedit_input.gd" type="Script" id=2]
 
 [node name="main_menu" type="Node" index="0"]
 
@@ -883,7 +884,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="text_chat_entry" type="TextEdit" parent="lobby_container/Panel" index="8"]
+[node name="line_chat" type="LineEdit" parent="lobby_container/Panel" index="8"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -897,26 +898,17 @@ rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
 mouse_filter = 0
-mouse_default_cursor_shape = 0
+mouse_default_cursor_shape = 1
 size_flags_horizontal = 1
 size_flags_vertical = 1
-text = ""
-readonly = false
-highlight_current_line = false
-syntax_highlighting = false
-show_line_numbers = false
-highlight_all_occurrences = false
-override_selected_font_color = false
-context_menu_enabled = false
-smooth_scrolling = false
-v_scroll_speed = 80.0
-hiding_enabled = 0
-wrap_lines = false
-caret_block_mode = false
+focus_mode = 2
+context_menu_enabled = true
+placeholder_alpha = 0.6
 caret_blink = false
 caret_blink_speed = 0.65
-caret_moving_by_right_click = true
-_sections_unfolded = [ "Grow Direction", "Rect" ]
+caret_position = 0
+script = ExtResource( 2 )
+_sections_unfolded = [ "Rect" ]
 
 [node name="button_chat" type="Button" parent="lobby_container/Panel" index="9"]
 
@@ -1032,6 +1024,8 @@ align = 1
 [connection signal="pressed" from="menu_container/Panel/vbox_container/join_container/hbox_join_buttons/button_connect" to="." method="_on_join_button_connect_pressed"]
 
 [connection signal="item_selected" from="lobby_container/Panel/itemlist_players_ready" to="." method="_on_itemlist_players_ready_item_selected"]
+
+[connection signal="text_entered" from="lobby_container/Panel/line_chat" to="." method="_on_lobby_line_chat_text_entered"]
 
 [connection signal="pressed" from="lobby_container/Panel/button_chat" to="." method="_on_lobby_button_chat_pressed"]
 
