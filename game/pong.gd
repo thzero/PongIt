@@ -17,9 +17,9 @@ sync func finished(left, right, winner):
 		get_node("winner_left").show()
 	elif (winner == SIDES.right):
 		get_node("winner_right").show()
-
-	get_node("button_exit").show()
 	
+	get_node("button_exit").show()
+
 master func score(side):
 	if (!get_tree().is_network_server()):
 		return
@@ -45,7 +45,7 @@ master func score(side):
 		return
 		
 	rpc("update_score", score_left, score_right)
-		
+
 sync func update_score(left, right):
 	get_node("score_left").set_text(str(left))
 	get_node("score_right").set_text(str(right))
@@ -70,6 +70,7 @@ func _ready():
 		# this function is tree recursive by default
 		right.set_network_master(get_tree().get_network_unique_id())
 	
+	get_node("winner_left").hide()
 	get_node("winner_right").hide()
 	
 	update_score(0, 0)

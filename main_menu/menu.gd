@@ -70,12 +70,15 @@ func _on_state_changed(state_from, state_to, args):
 	if (state_to == _fsm.Complete):
 		get_node("panel/button_ok").set_disabled(true)
 		get_node("panel/button_start").set_disabled(false)
+		get_node("panel/button_mutiplayer").set_disabled(false)
 	elif (state_to == _fsm.Dirty):
 		get_node("panel/button_ok").set_disabled(false)
 		get_node("panel/button_start").set_disabled(true)
+		get_node("panel/button_mutiplayer").set_disabled(true)
 	else:
 		get_node("panel/button_ok").set_disabled(true)
 		get_node("panel/button_start").set_disabled(true)
+		get_node("panel/button_mutiplayer").set_disabled(true)
 
 func _ready():
 	_regExLib = regExLib.new()
