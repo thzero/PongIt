@@ -41,7 +41,7 @@ func _print(method, args):
 			value = ("(null)" if value == null else value)
 			output += " " + key + ": " + str(value)
 	
-	print(method + " id:" + str(get_tree().get_network_unique_id()) + " server:" + str(get_tree().is_network_server()) + " " + output)
+	print(method + " id:" + str(get_tree().get_network_unique_id()) + " server:" + str(get_tree().is_network_server()) + output)
 
 func chat(message, type, args):
 	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
@@ -80,6 +80,7 @@ func end_game_announce(by_id):
 		if (by_id == null):
 			by_id = 1
 		for peer_id in _players:
+			_print("func end_game_announce", { "peer_id": peer_id, "by_id": by_id })
 			rpc_id(peer_id, "end_game_announce_player", { "by_id": by_id })
 		
 		#end_game()
@@ -432,18 +433,22 @@ func _unload_world():
 
 # Could not connect to server (client)
 func _on_connection_failed():
+	_print("_on_connection_failed", null)
 	get_tree().set_network_peer(null)
 	emit_signal("connection_fail")
 
 func _on_game_ended():
+	_print("_on_game_ended", null)
 	end_game_announce(get_tree().get_network_unique_id())
 
 # Client connected with you (can be both server or client)
 func _on_network_peer_connected(id):
+	_print("_on_network_peer_connected", null)
 	pass
 
 # Client disconnected from you
 func _on_network_peer_disconnected(id):
+	_print("_on_network_peer_disconnected", null)
 	# If I am server, send a signal to inform that an player disconnected
 	if (!get_tree().is_network_server()):
 		return
@@ -453,6 +458,7 @@ func _on_network_peer_disconnected(id):
 
 # Successfully connected to server (client)
 func _on_connected_to_server():
+	_print("_on_connected_to_server", null)
 	# Record the player's id.
 	_player.id = get_tree().get_network_unique_id()
 	# Send signal to server that we are ready to be assigned;
@@ -460,6 +466,7 @@ func _on_connected_to_server():
 
 # Server disconnected (client)
 func _on_server_disconnected():
+	_print("_on_server_disconnected", null)
 	quit_game()
 
 func _ready():
