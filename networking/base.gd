@@ -76,24 +76,25 @@ func end_game_announce(by_id):
 	_print("end_game_announce", { "by_id": by_id })
 	if (get_tree().is_network_server()):
 		_print("end_game_announce_server", { "by_id": by_id })
+		
 		# Server sends out the announcement to each player that the game ended
 		if (by_id == null):
 			by_id = 1
 		for peer_id in _players:
-			_print("end_game_announce", { "peer_id": peer_id, "by_id": by_id })
-			rpc_id(peer_id, "end_game_announce_player", { "by_id": by_id })
+			_print("end_game_announce_player_server_call_client", { "peer_id": peer_id, "by_id": by_id })
+			rpc_id(peer_id, "end_game_announce_player", by_id)
 		
-		#end_game()
-	else:
-		_print("end_game_announce_request", null)
-		# Non-server player requests the server to end the game
-		rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
+		end_game()
+		return
+	
+	_print("end_game_announce_request", null)
+	# Non-server player requests the server to end the game
+	rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
 
 remote func end_game_announce_player(by_id):
 	_print("end_game_announce_player", { "by_id": by_id })
 	# Call end_game on the non-server player
-	#end_game()
-	pass
+	end_game()
 	
 # TODO: probably need to flag that the game has ended, so if someone trips 
 # it simulateously we only take the first user's input
