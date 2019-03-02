@@ -8,6 +8,7 @@ var _accumulator = 0
 var _fsm
 
 const CHAT_TYPES = preload("res://chat/types.gd")
+const IS_DEBUG = true
 
 # GAMEDATA
 var _game_name # Name of the game
@@ -27,6 +28,20 @@ signal refresh_lobby_start_disabled()
 signal refresh_lobby_start_enabled()
 signal server_ended()
 signal server_error()
+
+func _print(method, args):
+	if (!IS_DEBUG):
+		return
+	
+	var output = ""
+	if (args != null):
+		var value = null
+		for key in args.keys():
+			value = args[key]
+			value = ("(null)" if value == null else value)
+			output += " " + key + ": " + str(value)
+	
+	print(method + " id:" + str(get_tree().get_network_unique_id()) + " server:" + str(get_tree().is_network_server()) + " " + output)
 
 func chat(message, type, args):
 	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
@@ -49,37 +64,45 @@ sync func chat_send(from, message, type, args):
 	var player_from = get_player_by_id(from)
 	if (args != null):
 		args = dict2inst(args)
+	_print("chat_message", { "chat_type": CHAT_TYPES.General, "player": player_from, "message": message } )
 	emit_signal("chat_message", player_from, message, CHAT_TYPES.General, args)
 
 func end_game():
+	_print("end_game", null);
 	end_game_ext()
 	emit_signal("game_ended")
 
 func end_game_announce(by_id):
+	_print("func end_game_announce", { "by_id": by_id })
 	if (get_tree().is_network_server()):
+		_print("func end_game_announce_server", { "by_id": by_id })
 		# Server sends out the announcement to each player that the game ended
 		if (by_id == null):
 			by_id = 1
 		for peer_id in _players:
-			rpc_id(peer_id, "end_game_announce_player", by_id)
+			rpc_id(peer_id, "end_game_announce_player", { "by_id": by_id })
 		
-		end_game()
+		#end_game()
 	else:
 		# Non-server player requests the server to end the game
 		rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
 
 remote func end_game_announce_player(by_id):
+	_print("func end_game_announce_player", { "by_id": by_id })
 	# Call end_game on the non-server player
-	end_game()
+	#end_game()
+	pass
 	
 # TODO: probably need to flag that the game has ended, so if someone trips 
 # it simulateously we only take the first user's input
 # player requesting game has ended
 remote func end_game_announce_request(by_id):
+	_print("func end_game_announce_request", { "by_id": by_id })
 	if (!get_tree().is_network_server()):
 		return
 	
 	# server to send out announcement that the game has ended
+	_print("func end_game_announce_request_server", { "by_id": by_id })
 	end_game_announce(by_id)
 
 func end_game_ext():
@@ -133,6 +156,8 @@ func host_game(name, port):
 	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
 	
+	_print("host_game", null)
+	
 	# Initializing the network as client
 	var host = _create_host()
 #	var doh = get_tree().get_multiplayer()
@@ -151,20 +176,14 @@ func join_game(ip_address, port):
 	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
 	
+	_print("join_game", null)
+	
 	# Initializing the network as server
 	var host = _create_host()
 	host.create_client(ip_address, port)
 	get_tree().set_network_peer(host)
 	
 	return true
-
-func load_world(world):
-	if (world == null):
-		return
-	
-	_world = world
-	get_tree().get_root().add_child(_world)
-	_world.connect("game_ended", self, "_on_game_ended")
 	
 remote func ping(delta):
 	#print("ping " + str(delta))
@@ -172,6 +191,7 @@ remote func ping(delta):
 
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
+	_print("quit_game", null)
 	end_game()
 	_close_connection()
 	_players.clear()
@@ -179,6 +199,7 @@ func quit_game():
 	
 func ready_player_request(ready):
 	_player.ready = ready
+	_print("ready_player", { "ready": ready })
 	rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
 
 # Call it locally as well as calling it remotely
@@ -276,12 +297,6 @@ remote func start_game_player(id):
 	start_game_ext()
 	emit_signal("game_started")
 
-func unload_world():
-	if (_world == null):
-		return
-	
-	get_node(_world.get_path()).queue_free()
-
 # Unregister a player, whether he is in lobby or ingame
 remote func unregister_player(id):
 	if (_is_in_game()):
@@ -364,10 +379,24 @@ func _create_host():
 	host.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
 	get_tree().set_meta("network_peer", host)
 	return host
-		
+
+func _get_world():
+	return _world
+
+func _has_world():
+	return (_get_world() != null) && (has_node(_world.get_path()))
+
 func _is_in_game():
-	return false
+	return _has_world()
+
+func _load_world(world):
+	if (world == null):
+		return
 	
+	_world = world
+	get_tree().get_root().add_child(_world)
+	_world.connect("game_ended", self, "_on_game_ended")
+
 func _ready_players():
 	var ready = _player.ready
 	var count = 0
@@ -389,7 +418,16 @@ func _ready_players():
 
 func _set_player(id, player):
 	_players[id] = player;
+
+func _unload_world():
+	if (_world == null):
+		return
 	
+	_world.hide()
+	_world.disconnect("game_ended")
+	get_node(_world.get_path()).queue_free()
+	_world = null
+
 #### Events
 
 # Could not connect to server (client)
