@@ -427,7 +427,7 @@ func _unload_world():
 		return
 	
 	_world.hide()
-	_world.disconnect("game_ended")
+	_world.disconnect("game_ended", self, "_on_game_ended")
 	get_node(_world.get_path()).queue_free()
 	_world = null
 
