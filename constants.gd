@@ -13,6 +13,7 @@ const PATH_CHAT = "res://chat.gd"
 const PATH_CHAT_TYPES = "res://chat/types.gd"
 const PATH_GAMESTATE_CHAT = "res://networking/chat.gd"
 const PATH_GAMESTATE_PLAYER_SELECTOR = "res://networking/player_selector.gd"
+const PATH_GAMESTATE_VALIDATOR = "res://networking/validator.gd"
 const PATH_LOBBY = "res://lobby/lobby.tscn"
 
 const PING_ENABLED = true

@@ -9,6 +9,7 @@ var _fsm
 var _handler_chat
 var _handler_player_selector
 var _handler_print = preload("res://utility/print.gd").new()
+var _handler_validator
 
 # GAMEDATA
 var _game_name # Name of the game
@@ -39,20 +40,18 @@ func chat_message_emit(player_from, message, type, args):
 	emit_signal("chat_message", player_from, message, type, args)
 	
 func chat_message_send(id, message, type, args, id_to):
-	var out_args = null
-	if (args != null):
-		out_args = inst2dict(args)
+	args = null if args == null else inst2dict(args)
 	
 	if (id_to != null):
-		rpc_id(id_to, "chat_send", id, message, type, out_args)
+		rpc_id(id_to, "chat_send", id, message, type, args)
 		return
 	
-	rpc("chat_send", id, message, type, out_args)
+	rpc("chat_send", id, message, type, args)
 
 sync func chat_send(from, message, type, args):
 	var player_from = get_player_by_id(from)
-	if (args != null):
-		args = dict2inst(args)
+	args = null if args == null else dict2inst(args)
+	
 	_print("chat_message", { "chat_type": type, "player": player_from, "message": message } )
 	chat_message_emit(player_from, message, type, args)
 	
@@ -74,8 +73,7 @@ func end_game_announce(by_id):
 		_print("end_game_announce_server", { "by_id": by_id })
 		
 		# Server sends out the announcement to each player that the game ended
-		if (by_id == null):
-			by_id = 1
+		by_id = 1 if by_id == null else by_id
 		for peer_id in _players:
 			_print("end_game_announce_player_server_call_client", { "peer_id": peer_id, "by_id": by_id })
 			rpc_id(peer_id, "end_game_announce_player", by_id)
@@ -135,11 +133,10 @@ func get_player_by_selector(selector):
 	return _handler_player_selector.get_player(selector)
 
 func host_game(name, port):
-	if (validate_port(port, null) == null):
+	if (_handler_validator.validate_port(port, null) == null):
 		return false
-		
-	if (name == ""):
-		name = Constants.DEFAULT_SERVER_NAME
+	
+	name = Constants.DEFAULT_SERVER_NAME if name == "" else name
 	
 	_server_name = name
 	_player = preload("res://networking/player.gd").new()
@@ -157,9 +154,10 @@ func host_game(name, port):
 	return true
 
 func join_game(ip_address, port):
-	if (validate_address(ip_address, null) == null):
+	if (_handler_validator.validate_address(ip_address, null) == null):
 		return false
-	if (validate_port(port, null) == null):
+	
+	if (_handler_validator.validate_port(port, null) == null):
 		return false
 	
 	_player = preload("res://networking/player.gd").new()
@@ -228,6 +226,7 @@ remote func register_in_game_player(id, player):
 			playerT  = get_player_by_id(peer_id)
 			if (playerT == null):
 				continue
+			
 			rpc_id(id, "register_in_game_player", peer_id, inst2dict(playerT))
 	
 	temp = dict2inst(player)
@@ -259,6 +258,7 @@ remote func register_in_lobby_player(id, player):
 			playerT = get_by_player_id(peer_id)
 			if (playerT == null):
 				continue
+			
 			rpc_id(id, "register_in_lobby_player", peer_id, inst2dict(playerT)) # Send the new player info about others
 			rpc_id(peer_id, "register_in_lobby_player", player) # Send others info about the new player
 	
@@ -270,7 +270,7 @@ remote func register_in_lobby_player(id, player):
 func start_game():
 	if (!get_tree().is_network_server()):
 		return
-		
+	
 	rpc("start_game_player", 1)
 	
 	start_game_ext()
@@ -316,43 +316,8 @@ remote func user_connected(id):
 	else:
 		rpc_id(id, "register_in_lobby")
 
-func validate_address(address, error):
-	if (error != null):
-		error.set_text("")
-	
-	if (not address.is_valid_ip_address()):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_ADDRESS_INVALID"))
-		return null
-	
-	return address
-
-func validate_port(port, error):
-	if (error != null):
-		error.set_text("")
-	
-	var portN
-	if (typeof(port) != TYPE_INT):
-		if (typeof(port) == TYPE_STRING):
-			if (not port.is_valid_integer()):
-				if (error != null):
-					error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
-				return null
-			else:
-				portN = port.to_int();
-		else:
-			if (error != null):
-				error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
-			return null
-	else:
-		portN = port
-		
-	if (portN < 1024 || portN > 65535):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID_RANGE"))
-		return null
-		
-	return portN
+func validator():
+	return _handler_validator
 
 func _can_join_in_game():
 	return true
@@ -361,7 +326,8 @@ func _close_connection():
 	if (get_tree().is_network_server()):
 		var host = get_tree().get_meta("network_peer")
 		if (host != null):
-			host.close_connection() 
+			host.close_connection()
+	
 	get_tree().set_network_peer(null)
 
 func _create_host():
@@ -381,6 +347,9 @@ func _initialize_chat():
 
 func _initialize_player_selector():
 	return load(Constants.PATH_GAMESTATE_PLAYER_SELECTOR).new()
+
+func _initialize_validator():
+	return load(Constants.PATH_GAMESTATE_VALIDATOR).new()
 
 func _is_in_game():
 	return _has_world()
@@ -418,6 +387,7 @@ func _ready_players_check():
 		playerT = get_player_by_id(peer_id)
 		if (playerT == null):
 			continue
+		
 		ready = ready && playerT.ready
 		if (playerT.ready):
 			count += 1
@@ -443,6 +413,7 @@ func _ready_players_reset():
 			playerT  = get_player_by_id(peer_id)
 			if (playerT == null):
 				continue
+			
 			playerT.ready = false
 			rpc("ready_player", peer_id, inst2dict(playerT))
 
@@ -503,6 +474,8 @@ func _ready():
 	_handler_chat.initialize(self)
 	_handler_player_selector = _initialize_player_selector()
 	_handler_player_selector.initialize(self)
+	_handler_validator = _initialize_validator()
+	_handler_validator.initialize(self)
 	
 	# Networking signals (high level networking)
 	get_tree().connect("connected_to_server", self, "_on_connected_to_server")

@@ -216,9 +216,11 @@ func _disable_button(type, name, disabled):
 		container = _join_container
 	elif (type == "lobby"):
 		container = _lobby_container
+	
 	var button = container.find_node(name)
 	if (button == null):
 		return
+	
 	button.disabled = disabled
 	
 func _get_error(type):
@@ -229,6 +231,7 @@ func _get_error(type):
 		container = _join_container
 	elif (type == "lobby"):
 		container = _lobby_container
+	
 	return container.find_node("label_error")
 
 # Refresh Lobby's player list
@@ -262,12 +265,14 @@ func _refresh_lobby_ready(ready):
 	var state = "Unready"
 	if (ready):
 		state = "Ready"
+	
 	return state
 	
 func _set_error(type, message):
 	var label = _get_error(type)
 	if (label == null):
 		return
+	
 	label.set_text(message)
 
 func _show_host():
@@ -288,11 +293,11 @@ func _show_join():
 func _validate_host():
 	_disable_button("host", "button_continue", true)
 	
-	var server_name = _validate_server_name(_host_container.find_node("text_server_name").get_text(), _get_error("host"))
+	var server_name = Gamestate.validator().validate_server_name(_host_container.find_node("text_server_name").get_text(), _get_error("host"))
 	if (server_name == null):
 		return null
 	
-	var port = Gamestate.validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
+	var port = Gamestate.validator().validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
 	if (port == null):
 		return false
 	
@@ -305,11 +310,11 @@ func _validate_host():
 func _validate_join():
 	_disable_button("join", "button_connect", true)
 	
-	var ip_address = Gamestate.validate_address(_join_container.find_node("text_ip_address").get_text(), _get_error("join"))
+	var ip_address = Gamestate.validator().validate_address(_join_container.find_node("text_ip_address").get_text(), _get_error("join"))
 	if (ip_address == null):
 		return
 	
-	var port = Gamestate.validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
+	var port = Gamestate.validator().validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
 	if (port == null):
 		return false
 	
@@ -318,17 +323,6 @@ func _validate_join():
 	_clear_error("join")
 	
 	return { "ip_address": ip_address, "port": port }
-
-func _validate_server_name(name, error):
-	if (error != null):
-		error.set_text("")
-	
-	if (name == ""):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_SERVER_NAME_INVALID"))
-		return null
-	
-	return name
 
 func _on_state_changed(state_from, state_to, args):
 	print("switched to state: ", state_to)

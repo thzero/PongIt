@@ -28,5 +28,5 @@ func initialize(gamestate):
 func _print(method, args):
 	if (_handler_print == null):
 		return
-	
+
 	_handler_print.output(method, args)
