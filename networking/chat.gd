@@ -8,7 +8,7 @@ var _handler_print = preload("res://utility/print.gd").new()
 func message(id, message, type, args):
 	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
 		var player_from = _gamestate.get_player_by_id(args)
-		_gamestate.chat_message_emit(_gamestate.get_player(), message, CHAT_TYPES.Whisper, { "player" : player_from, "id" : get_tree().get_network_unique_id() })
+		_gamestate.chat_message_emit(_gamestate.get_player(), message, CHAT_TYPES.Whisper, { "player" : player_from, "id" : args })
 		#rpc_id(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
 		_gamestate.chat_message_send(id, message, CHAT_TYPES.Whisper, null, args)
 		return
