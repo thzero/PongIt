@@ -106,8 +106,9 @@ func _message_whisper(name, message, args, text):
 	
 	var action = tr("CHAT_WHISPER_ACTION")
 	var output = ""
-	if ((args!= null) && (args.id == Gamestate.get_player_id())):
-		output = tr("CHAT_MESSAGE_SELF") % [ tr("CHAT_YOU"), action, message, args.player.name ]
+	if ((args!= null) && (args.id_from == Gamestate.get_player_id())):
+		var player = '' if args.player_to == null else args.player_to.name
+		output = tr("CHAT_MESSAGE_SELF") % [ tr("CHAT_YOU"), action, message, player ]
 	else:
 		output = tr("CHAT_MESSAGE") % [ name, action, message, ]
 	
