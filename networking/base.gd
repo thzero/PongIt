@@ -68,7 +68,8 @@ sync func chat_send(from, message, type, args):
 	emit_signal("chat_message", player_from, message, CHAT_TYPES.General, args)
 
 func end_game():
-	_print("end_game", null);
+	_print("end_game", null)
+	_ready_players_reset()
 	end_game_ext()
 	emit_signal("game_ended")
 
@@ -401,6 +402,8 @@ func _load_world(world):
 	_world.connect("game_ended", self, "_on_game_ended")
 
 func _ready_players():
+	_print("_ready_players", null)
+	
 	var ready = _player.ready
 	var count = 0
 	if (_player.ready):
@@ -418,6 +421,25 @@ func _ready_players():
 		emit_signal("refresh_lobby_start_enabled")
 	else:
 		emit_signal("refresh_lobby_start_disabled")
+
+func _ready_players_reset():
+	_print("_ready_players_reset", null)
+	if (get_tree().is_network_server()):
+		_print("_ready_players_reset_server", null)
+		var playerT
+		for peer_id in _players:
+			playerT  = get_player_by_id(peer_id)
+			if (playerT != null):
+				playerT.ready = false
+	
+	_print("_ready_players_reset_client", null)
+	_player.ready = false
+	
+	# Notify lobby (GUI) about changes
+	emit_signal("refresh_lobby")
+	
+	if (get_tree().is_network_server()):
+		_ready_players()
 
 func _set_player(id, player):
 	_players[id] = player;
