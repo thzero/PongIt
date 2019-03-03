@@ -132,7 +132,7 @@ func get_player_by_selector(selector):
 	if (_handler_player_selector == null):
 		return null
 	
-	return _handler_player_selector.get_player(self, selector)
+	return _handler_player_selector.get_player(selector)
 
 func host_game(name, port):
 	if (validate_port(port, null) == null):
