@@ -12,7 +12,7 @@ func get_player(selector):
 	var players = _gamestate.get_player_list(false)
 	for peer_id in players:
 		player_id = peer_id
-		playerT  = get_player_by_id(peer_id)
+		playerT  = _gamestate.get_player_by_id(peer_id)
 		# TODO
 		if ((playerT != null) && (playerT.name.to_lower() == selector.to_lower())):
 			break
