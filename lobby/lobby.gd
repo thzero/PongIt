@@ -237,7 +237,7 @@ func _refresh_lobby():
 	_lobby_container.find_node("button_start").set_disabled(true)
 	
 	# Get the latest list of players from gamestate
-	var player_list = Gamestate.get_player_list()
+	var player_list = Gamestate.get_player_list(true)
 	player_list.sort()
 	
 	# Add the updated player_list to the itemlist
@@ -376,7 +376,7 @@ func _on_state_changed(state_from, state_to, args):
 
 func _ready():
 	_fsm = state.new()
-	_fsm.init()
+	_fsm.initialize()
 	_fsm.connect_state_changed(self, "_on_state_changed")
 	_fsm.set_state_disconnected()
 	
@@ -414,21 +414,15 @@ class state extends "res://fsm/base_fsm.gd":
 	var _fsm_join
 	var _fsm_lobby
 	
-	func init():
-		add_state(Host)
-		add_state(InGame)
-		add_state(Join)
-		add_state(Lobby)
-		
 	func is_state_connected():
 		return is_state(Host)
-		
+	
 	func is_state_disconnected():
 		return is_state(InGame)
-		
+	
 	func is_state_in_game():
 		return is_state(Join)
-		
+	
 	func is_state_waiting():
 		return is_state(Lobby)
 	
@@ -437,9 +431,16 @@ class state extends "res://fsm/base_fsm.gd":
 		
 	func set_state_disconnected():
 		set_state(InGame)
-		
+	
 	func set_state_in_game():
 		set_state(Join)
-		
+	
 	func set_state_waiting():
 		set_state(Lobby)
+	
+	func _initialize():
+		._initialize()
+		add_state(Host)
+		add_state(InGame)
+		add_state(Join)
+		add_state(Lobby)

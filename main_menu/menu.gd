@@ -15,6 +15,9 @@ func _end_lobby():
 	
 	_lobby = null
 
+func _initialize_lobby():
+	return load(Constants.PATH_LOBBY).instance()
+
 func _load_settings():
 	get_node("panel/line_name").text = ConfigurationUser.Settings.User.Name
 	
@@ -30,7 +33,7 @@ func _on_button_ok_pressed():
 		return
 
 func _on_button_mutiplayer_pressed():
-	_lobby = load(Constants.PATH_LOBBY).instance()
+	_lobby = _initialize_lobby()
 	_lobby.connect("lobby_finished", self, "_end_lobby")
 	get_tree().get_root().add_child(_lobby)
 	_lobby.open_menu()
@@ -85,7 +88,7 @@ func _ready():
 	_user = load("res://user.gd").new()
 	
 	_fsm = state.new()
-	_fsm.init()
+	_fsm.initialize()
 	_fsm.connect_state_changed(self, "_on_state_changed")
 	_fsm.set_state_empty()
 	
@@ -106,11 +109,6 @@ func _ready():
 class state extends "res://fsm/menu_fsm.gd":
 	const Complete = "complete"
 	const Empty = "empty"
-	
-	func init():
-		.init()
-		add_state(Complete)
-		add_state(Empty)
 		
 	func is_state_complete():
 		return is_state(Complete)
@@ -123,8 +121,13 @@ class state extends "res://fsm/menu_fsm.gd":
 		
 	func set_state_empty():
 		set_state(Empty)
+	
+	func _initialize():
+		._initialize()
+		add_state(Complete)
+		add_state(Empty)
 
 class regExLib extends "res://utility/regExLib.gd":
-	func _init():
-		._init()
+	func _initialize():
+		._initialize()
 		_add_pattern_single("name", Constants.REGEX_PLAYER_NAME + Constants.REGEX_PLAYER_NAME_LENGTH)

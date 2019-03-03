@@ -122,7 +122,7 @@ func _ready():
 	_display = preload("res://main_menu/display.gd").new()
 
 	_fsm = state.new()
-	_fsm.init()
+	_fsm.initialize()
 	_fsm.connect_state_changed(self, "_on_state_changed")
 	
 	_load_settings()
@@ -133,4 +133,6 @@ func _ready():
 	get_node("button_ok").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_OK"))
 
 class state extends "res://fsm/menu_fsm.gd":
-	var blank
+	
+	func _initialize():
+		._initialize()

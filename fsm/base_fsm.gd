@@ -31,8 +31,8 @@ var links=[]
 
 signal state_changed(state_from,state_to,params)
 
-func init():
-	pass
+func initialize():
+	_initialize()
 
 func process(delta=0):
 	if current_state==null or current_state_object==null or links.size()==0:
@@ -181,3 +181,6 @@ func add_timer(name):
 
 func connect_state_changed(obj, name):
 	connect("state_changed", obj, name)
+
+func _initialize():
+	pass
