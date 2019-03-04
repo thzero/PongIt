@@ -13,28 +13,13 @@ onready var _join_container = get_node("menu_container/Panel/vbox_container/join
 onready var _lobby_container = get_node("lobby_container")
 
 func close_lobby():
-	_menu_container.hide()
-	_join_container.hide()
-	_host_container.hide()
-	_lobby_container.hide()
-	_clear_error("join")
-	_clear_error("host")
+	_fsm.set_state_none()
 
 func open_menu():
-	_menu_container.hide()
-	_join_container.hide()
-	_host_container.hide()
-	_lobby_container.hide()
-	_clear_error("join")
-	_clear_error("host")
-	_menu_container.show()
-	_show_host()
+	_fsm.set_state_menu()
 
 func open_lobby():
-	_menu_container.hide()
-	_join_container.hide()
-	_host_container.hide()
-	_lobby_container.show()
+	_fsm.set_state_lobby()
 
 #### Gamestate
 
@@ -56,8 +41,7 @@ func _on_connection_fail():
 	_join_container.find_node("button_connect").set_disabled(false)
 
 func _on_connection_success():
-	_join_container.hide()
-	_lobby_container.show()
+	_fsm.set_state_lobby()
 
 # Handles what to happen after game ends
 func _on_game_ended():
@@ -78,19 +62,16 @@ func _on_server_error():
 
 # ALL - Cancel (from any container)
 func _on_button_cancel_pressed():
-	_menu_container.hide()
-	_join_container.hide()
-	_host_container.hide()
-	_lobby_container.hide()
+	_fsm.set_state_none()
 	emit_signal("lobby_finished")
 
 # MAIN MENU
 func _on_button_host_pressed():
-	_show_host()
+	_fsm.menu().set_state_host()
 
 # MAIN MENU
 func _on_button_join_pressed():
-	_show_join()
+	_fsm.menu().set_state_join()
 
 # HOST CONTAINER - Continue (from choosing a nickname)
 # Opens the server for connectivity from clients
@@ -104,8 +85,7 @@ func _on_host_button_continue_pressed():
 	
 	_refresh_lobby()
 	
-	_host_container.hide()
-	_lobby_container.show()
+	_fsm.menu().set_state_host()
 	
 	_button_start = false
 	_lobby_container.find_node("button_start").set_disabled(_button_start)
@@ -134,7 +114,7 @@ func _on_join_button_connect_pressed():
 		return
 	
 	# While we are attempting to connect, disable button for 'continue'
-	_join_container.find_node("button_connect").set_disabled(true)
+	_fsm.menu().set_state_join()
 
 func _on_join_text_ip_address_focus_exited():
 	_validate_join()
@@ -144,20 +124,17 @@ func _on_join_text_port_focus_exited():
 	
 # LOBBY CONTAINER - Starts the Game
 func _on_lobby_button_start_pressed():
+	_fsm.set_state_in_game()
+	
 	Gamestate.start_game()
 
 # LOBBY CONTAINER - Cancel Lobby
 # (The only time you are already connected from main menu)
 func _on_lobby_button_cancel_pressed():
-	# Toggle containers
-	_lobby_container.hide()
-	_menu_container.show()
+	_fsm.set_state_menu()
 	
 	# Disconnect networking
 	Gamestate.quit_game()
-	
-	# Enable buttons
-	_join_container.find_node("button_connect").set_disabled(false)
 
 func _on_lobby_line_chat_input(scancode):
 	var index = 0
@@ -168,10 +145,9 @@ func _on_lobby_line_chat_input(scancode):
 		
 	var message = _chat.history()
 	var text_chat = _lobby_container.find_node("line_chat")
+	text_chat.clear()
 	if (message != null):
 		text_chat.set_text(message)
-	else:
-		text_chat.clear()
 
 func _on_lobby_button_chat_pressed():
 	_on_lobby_chat(null)
@@ -274,21 +250,6 @@ func _set_error(type, message):
 		return
 	
 	label.set_text(message)
-
-func _show_host():
-	_join_container.hide()
-	_host_container.show()
-	_menu_container.find_node("button_host").disabled = true
-	_menu_container.find_node("button_join").disabled = false
-	_validate_host()
-	
-func _show_join():
-	_host_container.hide()
-	_join_container.show()
-	_menu_container.find_node("button_host").disabled = false
-	_menu_container.find_node("button_join").disabled = true
-	_disable_button("join", "button_connect", true)
-	_validate_join()
 	
 func _validate_host():
 	_disable_button("host", "button_continue", true)
@@ -299,11 +260,9 @@ func _validate_host():
 	
 	var port = Gamestate.validator().validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
 	if (port == null):
-		return false
+		return null
 	
-	_disable_button("host", "button_continue", false)
-	
-	_clear_error("host")
+	_fsm.menu().set_state_host_ready()
 	
 	return { "server_name": server_name, "port": port }
 	
@@ -312,26 +271,95 @@ func _validate_join():
 	
 	var ip_address = Gamestate.validator().validate_address(_join_container.find_node("text_ip_address").get_text(), _get_error("join"))
 	if (ip_address == null):
-		return
+		return null
 	
-	var port = Gamestate.validator().validate_port(_host_container.find_node("text_port").get_text(), _get_error("host"))
+	var port = Gamestate.validator().validate_port(_join_container.find_node("text_port").get_text(), _get_error("join"))
 	if (port == null):
-		return false
+		return null
 	
-	_disable_button("join", "button_connect", false)
-	
-	_clear_error("join")
+	_fsm.menu().set_state_join_ready()
 	
 	return { "ip_address": ip_address, "port": port }
 
 func _on_state_changed(state_from, state_to, args):
-	print("switched to state: ", state_to)
+	_fsm._print_state(state_from, state_to, args)
+	if (state_to ==  _fsm.InGame):
+		return
+		
+	if (state_to == _fsm.Lobby):
+		_menu_container.hide()
+		_host_container.hide()
+		_join_container.hide()
+		_lobby_container.show()
+		return
+		
+	if (state_to == _fsm.Menu):
+		_menu_container.show()
+		_host_container.hide()
+		_join_container.hide()
+		_lobby_container.hide()
+		_clear_error("join")
+		_clear_error("host")
+		if (_fsm.menu().is_state_join() || _fsm.menu().is_state_join_ready()):
+			_fsm.menu().set_state_join()
+			return
+		_fsm.menu().set_state_host()
+		return
+	
+	_menu_container.hide()
+	_host_container.hide()
+	_join_container.hide()
+	_lobby_container.hide()
+	_fsm.menu().set_state_none()
+
+func _on_state_lobby_changed(state_from, state_to, args):
+	_fsm.lobby()._print_state(state_from, state_to, args)
+
+func _on_state_menu_changed(state_from, state_to, args):
+	_fsm.menu()._print_state(state_from, state_to, args)
+	if (state_to == _fsm.menu().Host):
+		_menu_container.show()
+		_join_container.hide()
+		_host_container.show()
+		_lobby_container.hide()
+		_menu_container.find_node("button_host").disabled = true
+		_menu_container.find_node("button_join").disabled = false
+		_clear_error("host")
+		_disable_button("host", "button_continue", true)
+		_validate_host()
+		return
+	
+	if (state_to ==  _fsm.menu().Host_Ready):
+		_disable_button("host", "button_continue", false)
+		_clear_error("host")
+		return
+	
+	if (state_to == _fsm.menu().Join):
+		_menu_container.show()
+		_host_container.hide()
+		_join_container.show()
+		_lobby_container.hide()
+		_menu_container.find_node("button_host").disabled = false
+		_menu_container.find_node("button_join").disabled = true
+		_clear_error("join")
+		_disable_button("join", "button_connect", true)
+		_validate_join()
+		return
+	
+	if (state_to ==  _fsm.menu().Join_Ready):
+		_clear_error("join")
+		_disable_button("join", "button_connect", false)
+		return
+	
+	_host_container.hide()
+	_join_container.hide()
+	_clear_error("host")
+	_clear_error("join")
 
 func _ready():
 	_fsm = state.new()
-	_fsm.initialize()
-	_fsm.connect_state_changed(self, "_on_state_changed")
-	_fsm.set_state_disconnected()
+	_fsm.initialize(self)
+	_fsm.set_state_menu()
 	
 	_chat = load(Constants.PATH_CHAT).new()
 	
@@ -356,44 +384,139 @@ func _ready():
 	Gamestate.connect("connection_success", self, "_on_connection_success")
 	Gamestate.connect("connection_fail", self, "_on_connection_fail")
 
+class state_lobby extends "res://fsm/base_fsm.gd":
+	
+	const None = "none"
+	
+	func is_state_none():
+		return is_state(None)
+	
+	func set_state_none():
+		set_state(None)
+	
+	func _initialize(parent):
+		._initialize(parent)
+		set_name("multiplayer_lobby")
+		connect_state_changed(parent, "_on_state_lobby_changed")
+		add_state(None)
+
+class state_menu extends "res://fsm/base_fsm.gd":
+	
+	const Host = "host"
+	const Host_Ready = "host_ready"
+	const Join = "join"
+	const Join_Ready = "join_ready"
+	const None = "none"
+	
+	func is_state_host():
+		return is_state(Host)
+	
+	func is_state_host_ready():
+		return is_state(Host_Ready)
+	
+	func is_state_join():
+		return is_state(Join)
+	
+	func is_state_join_ready():
+		return is_state(Join_Ready)
+	
+	func is_state_none():
+		return is_state(None)
+	
+	func set_state_host():
+		set_state(Host)
+	
+	func set_state_host_ready():
+		set_state(Host_Ready)
+		
+	func set_state_join():
+		set_state(Join)
+	
+	func set_state_join_ready():
+		set_state(Join_Ready)
+	
+	func set_state_none():
+		set_state(None)
+	
+	func _initialize(parent):
+		._initialize(parent)
+		set_name("multiplayer_menu")
+		connect_state_changed(parent, "_on_state_menu_changed")
+		add_state(Host)
+		add_state(Host_Ready)
+		add_state(Join)
+		add_state(Join_Ready)
+		add_state(None)
+
 class state extends "res://fsm/base_fsm.gd":
 	
 	const Host = "host"
 	const InGame = "in_game"
 	const Join = "join"
 	const Lobby = "lobby"
+	const Menu = "menu"
+	const None = "none"
 	
-	var _fsm_host
-	var _fsm_join
 	var _fsm_lobby
+	var _fsm_menu
 	
-	func is_state_connected():
+	func lobby():
+		return _fsm_lobby
+	
+	func menu():
+		return _fsm_menu
+	
+	func is_state_host():
 		return is_state(Host)
 	
-	func is_state_disconnected():
+	func is_state_in_game():
 		return is_state(InGame)
 	
-	func is_state_in_game():
+	func is_state_join():
 		return is_state(Join)
 	
-	func is_state_waiting():
+	func is_state_lobby():
 		return is_state(Lobby)
 	
-	func set_state_connected():
+	func is_state_menu():
+		return is_state(Menu)
+	
+	func is_state_none():
+		return is_state(None)
+	
+	func set_state_host():
 		set_state(Host)
 		
-	func set_state_disconnected():
+	func set_state_in_game():
 		set_state(InGame)
 	
-	func set_state_in_game():
+	func set_state_join():
 		set_state(Join)
 	
-	func set_state_waiting():
+	func set_state_lobby():
 		set_state(Lobby)
 	
-	func _initialize():
-		._initialize()
+	func set_state_menu():
+		set_state(Menu)
+	
+	func set_state_none():
+		set_state(None)
+	
+	func _initialize(parent):
+		._initialize(parent)
+		set_name("multiplayer")
+		connect_state_changed(parent, "_on_state_changed")
 		add_state(Host)
 		add_state(InGame)
 		add_state(Join)
 		add_state(Lobby)
+		add_state(Menu)
+		add_state(None)
+		
+		_fsm_lobby = state_lobby.new()
+		_fsm_lobby.initialize(parent)
+		_fsm_lobby.set_state_none()
+		
+		_fsm_menu = state_menu.new()
+		_fsm_menu.initialize(parent)
+		_fsm_menu.set_state_none()

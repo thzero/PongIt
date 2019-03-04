@@ -105,7 +105,7 @@ func _on_slider_sound_effects_value_changed(value):
 
 #### State
 func _on_state_changed(state_from, state_to, args):
-	print("switched to state: ", state_to)
+	_fsm._print_state(state_from, state_to, args)
 	if (state_to == _fsm.Dirty):
 		find_node("button_apply").set_disabled(false)
 		find_node("button_cancel").set_disabled(false)
@@ -122,12 +122,12 @@ func _on_state_changed(state_from, state_to, args):
 func _ready():
 	_audio = preload("res://main_menu/audio.gd").new()
 	_display = preload("res://main_menu/display.gd").new()
-
+	
 	_fsm = state.new()
-	_fsm.initialize()
-	_fsm.connect_state_changed(self, "_on_state_changed")
+	_fsm.initialize(self)
 	
 	_load_settings()
+	
 	_fsm.set_state_clean()
 	
 	find_node("button_apply").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_APPLY"))
@@ -136,5 +136,8 @@ func _ready():
 
 class state extends "res://fsm/menu_fsm.gd":
 	
-	func _initialize():
-		._initialize()
+	func _initialize(parent):
+		._initialize(parent)
+		set_name("main_menu settings")
+		
+		connect_state_changed(parent, "_on_state_changed")

@@ -22,8 +22,9 @@ func set_state_clean():
 func set_state_dirty():
 	set_state(Dirty)
 
-func _initialize():
-	._initialize()
+func _initialize(parent):
+	._initialize(parent)
+	
 	add_state(Applied)
 	add_state(Clean)
 	add_state(Dirty)

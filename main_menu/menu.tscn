@@ -2,8 +2,8 @@
 
 [ext_resource path="res://main_menu/menu.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://main_menu/settings.gd" type="Script" id=3]
-[ext_resource path="res://main_menu/about.gd" type="Script" id=4]
+[ext_resource path="res://main_menu/about.gd" type="Script" id=3]
+[ext_resource path="res://main_menu/settings.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -34,7 +34,7 @@ size_flags_vertical = 1
 script = ExtResource( 1 )
 _sections_unfolded = [ "Anchor", "Grow Direction", "Theme" ]
 
-[node name="main" type="Panel" parent="Menu_Control" index="0"]
+[node name="main_container" type="Panel" parent="Menu_Control" index="0"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -52,7 +52,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Anchor", "Margin", "Material", "Rect", "Theme", "Visibility", "custom_styles" ]
 
-[node name="label_title" type="Label" parent="Menu_Control/main" index="0"]
+[node name="label_title" type="Label" parent="Menu_Control/main_container" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -77,7 +77,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Size Flags", "custom_fonts" ]
 
-[node name="label_name" type="Label" parent="Menu_Control/main" index="1"]
+[node name="label_name" type="Label" parent="Menu_Control/main_container" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -99,7 +99,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="line_name" type="LineEdit" parent="Menu_Control/main" index="2"]
+[node name="line_name" type="LineEdit" parent="Menu_Control/main_container" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -124,7 +124,7 @@ caret_blink_speed = 0.65
 caret_position = 0
 _sections_unfolded = [ "Anchor", "Rect" ]
 
-[node name="button_ok" type="Button" parent="Menu_Control/main" index="3"]
+[node name="button_ok" type="Button" parent="Menu_Control/main_container" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -150,7 +150,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags", "Visibility" ]
 
-[node name="button_start" type="Button" parent="Menu_Control/main" index="4"]
+[node name="button_start" type="Button" parent="Menu_Control/main_container" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -176,7 +176,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="button_mutiplayer" type="Button" parent="Menu_Control/main" index="5"]
+[node name="button_mutiplayer" type="Button" parent="Menu_Control/main_container" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -202,7 +202,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="button_settings" type="Button" parent="Menu_Control/main" index="6"]
+[node name="button_settings" type="Button" parent="Menu_Control/main_container" index="6"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -228,7 +228,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="button_about" type="Button" parent="Menu_Control/main" index="7"]
+[node name="button_about" type="Button" parent="Menu_Control/main_container" index="7"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -254,7 +254,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="button_exit" type="Button" parent="Menu_Control/main" index="8"]
+[node name="button_exit" type="Button" parent="Menu_Control/main_container" index="8"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -280,7 +280,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="label_version" type="Label" parent="Menu_Control/main" index="9"]
+[node name="label_version" type="Label" parent="Menu_Control/main_container" index="9"]
 
 anchor_left = 1.0
 anchor_top = 1.0
@@ -302,7 +302,349 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="settings" type="Control" parent="Menu_Control" index="1"]
+[node name="about_container" type="Control" parent="Menu_Control" index="1"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -250.0
+margin_top = -250.0
+margin_right = 250.0
+margin_bottom = 250.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 3 )
+_sections_unfolded = [ "Rect" ]
+
+[node name="panel" type="Panel" parent="Menu_Control/about_container" index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -250.0
+margin_top = -250.0
+margin_right = 250.0
+margin_bottom = 250.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Material", "Rect", "Visibility" ]
+
+[node name="label_title2" type="Label" parent="Menu_Control/about_container/panel" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 125.0
+margin_top = 5.0
+margin_right = 375.0
+margin_bottom = 52.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_fonts/font = SubResource( 1 )
+text = "TITLE"
+align = 1
+valign = 1
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Rect", "Size Flags", "custom_fonts" ]
+
+[node name="Container" type="Container" parent="Menu_Control/about_container/panel" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 20.0
+margin_top = 50.0
+margin_right = 480.0
+margin_bottom = 120.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Menu_Control/about_container/panel/Container" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 0.0
+anchor_bottom = 0.5
+margin_top = -35.0
+margin_right = 70.0
+margin_bottom = 35.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="label_version" type="RichTextLabel" parent="Menu_Control/about_container/panel/Container" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 80.0
+margin_right = 440.0
+margin_bottom = 14.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = "sdfsdf"
+scroll_active = false
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "Rect" ]
+
+[node name="label_copyright" type="RichTextLabel" parent="Menu_Control/about_container/panel/Container" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 80.0
+margin_top = 20.0
+margin_right = 440.0
+margin_bottom = 70.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = "dfgdfgdfg"
+scroll_active = false
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "Anchor", "Margin", "Rect" ]
+
+[node name="CenterContainer" type="CenterContainer" parent="Menu_Control/about_container/panel" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 17.0
+margin_top = 50.0
+margin_right = 477.0
+margin_bottom = 120.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+use_top_left = false
+_sections_unfolded = [ "Rect" ]
+
+[node name="button_container" type="HBoxContainer" parent="Menu_Control/about_container/panel" index="3"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -259.0
+margin_top = -41.0
+margin_right = -18.0
+margin_bottom = -17.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 2
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="button_ok" type="Button" parent="Menu_Control/about_container/panel/button_container" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 210.0
+margin_right = 241.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "OK"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
+
+[node name="tabs" type="TabContainer" parent="Menu_Control/about_container/panel" index="4"]
+
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -230.0
+margin_top = -360.0
+margin_right = 230.0
+margin_bottom = -50.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+tab_align = 1
+tabs_visible = true
+_sections_unfolded = [ "Rect" ]
+
+[node name="tab_authors" type="Control" parent="Menu_Control/about_container/panel/tabs" index="0"]
+
+visible = false
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 30.0
+margin_right = -4.0
+margin_bottom = -6.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="label_authors" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_authors" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = ""
+scroll_active = true
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+
+[node name="tab_license" type="Control" parent="Menu_Control/about_container/panel/tabs" index="1"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -226.0
+margin_top = -125.0
+margin_right = 226.0
+margin_bottom = 149.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="label_license" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_license" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = ""
+scroll_active = true
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "Rect" ]
+
+[node name="tab_license_third_party" type="Control" parent="Menu_Control/about_container/panel/tabs" index="2"]
+
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -226.0
+margin_top = -125.0
+margin_right = 226.0
+margin_bottom = 149.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Rect" ]
+
+[node name="settings_container" type="Control" parent="Menu_Control" index="2"]
 
 visible = false
 anchor_left = 0.5
@@ -319,10 +661,10 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-script = ExtResource( 3 )
+script = ExtResource( 4 )
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="panel" type="Panel" parent="Menu_Control/settings" index="0"]
+[node name="panel" type="Panel" parent="Menu_Control/settings_container" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -338,7 +680,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Material", "Rect", "Visibility" ]
 
-[node name="label_video" type="Label" parent="Menu_Control/settings" index="1"]
+[node name="label_video" type="Label" parent="Menu_Control/settings_container" index="1"]
 
 editor/display_folded = true
 anchor_left = 0.0
@@ -362,7 +704,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Grow Direction", "Rect" ]
 
-[node name="label_resolution" type="Label" parent="Menu_Control/settings/label_video" index="0"]
+[node name="label_resolution" type="Label" parent="Menu_Control/settings_container/label_video" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -384,7 +726,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="options_resolutions" type="OptionButton" parent="Menu_Control/settings/label_video" index="1"]
+[node name="options_resolutions" type="OptionButton" parent="Menu_Control/settings_container/label_video" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -413,7 +755,7 @@ items = [ "640x480", null, false, 0, null, "800x480", null, false, 1, null, "102
 selected = 0
 _sections_unfolded = [ "Rect", "Theme", "Visibility", "custom_colors", "custom_constants", "custom_fonts", "custom_styles" ]
 
-[node name="label_fullscreen" type="Label" parent="Menu_Control/settings/label_video" index="2"]
+[node name="label_fullscreen" type="Label" parent="Menu_Control/settings_container/label_video" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -435,7 +777,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="checkbox_fullscreen" type="CheckBox" parent="Menu_Control/settings/label_video" index="3"]
+[node name="checkbox_fullscreen" type="CheckBox" parent="Menu_Control/settings_container/label_video" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -460,7 +802,7 @@ flat = false
 align = 0
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="label_vsync" type="Label" parent="Menu_Control/settings/label_video" index="4"]
+[node name="label_vsync" type="Label" parent="Menu_Control/settings_container/label_video" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -482,7 +824,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="checkbox_vsync" type="CheckBox" parent="Menu_Control/settings/label_video" index="5"]
+[node name="checkbox_vsync" type="CheckBox" parent="Menu_Control/settings_container/label_video" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -507,7 +849,7 @@ flat = false
 align = 0
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="label_audio" type="Label" parent="Menu_Control/settings" index="2"]
+[node name="label_audio" type="Label" parent="Menu_Control/settings_container" index="2"]
 
 editor/display_folded = true
 anchor_left = 0.0
@@ -531,7 +873,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="label_general" type="Label" parent="Menu_Control/settings/label_audio" index="0"]
+[node name="label_general" type="Label" parent="Menu_Control/settings_container/label_audio" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -553,7 +895,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="slider_general" type="HSlider" parent="Menu_Control/settings/label_audio" index="1"]
+[node name="slider_general" type="HSlider" parent="Menu_Control/settings_container/label_audio" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -583,7 +925,7 @@ ticks_on_borders = true
 focus_mode = 2
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="label_music" type="Label" parent="Menu_Control/settings/label_audio" index="2"]
+[node name="label_music" type="Label" parent="Menu_Control/settings_container/label_audio" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -605,7 +947,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect" ]
 
-[node name="slider_music" type="HSlider" parent="Menu_Control/settings/label_audio" index="3"]
+[node name="slider_music" type="HSlider" parent="Menu_Control/settings_container/label_audio" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -635,7 +977,7 @@ ticks_on_borders = true
 focus_mode = 2
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="label_sound_effects" type="Label" parent="Menu_Control/settings/label_audio" index="4"]
+[node name="label_sound_effects" type="Label" parent="Menu_Control/settings_container/label_audio" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -657,7 +999,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="slider_sound_effects" type="HSlider" parent="Menu_Control/settings/label_audio" index="5"]
+[node name="slider_sound_effects" type="HSlider" parent="Menu_Control/settings_container/label_audio" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -687,7 +1029,7 @@ ticks_on_borders = true
 focus_mode = 2
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="label_muted" type="Label" parent="Menu_Control/settings/label_audio" index="6"]
+[node name="label_muted" type="Label" parent="Menu_Control/settings_container/label_audio" index="6"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -709,7 +1051,7 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="checkbox_muted" type="CheckBox" parent="Menu_Control/settings/label_audio" index="7"]
+[node name="checkbox_muted" type="CheckBox" parent="Menu_Control/settings_container/label_audio" index="7"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -734,7 +1076,7 @@ flat = false
 align = 0
 _sections_unfolded = [ "Rect", "Visibility" ]
 
-[node name="separator_video" type="HSeparator" parent="Menu_Control/settings" index="3"]
+[node name="separator_video" type="HSeparator" parent="Menu_Control/settings_container" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -752,7 +1094,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="separator_video2" type="VSeparator" parent="Menu_Control/settings" index="4"]
+[node name="separator_video2" type="VSeparator" parent="Menu_Control/settings_container" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -770,7 +1112,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="seperator_audio" type="HSeparator" parent="Menu_Control/settings" index="5"]
+[node name="seperator_audio" type="HSeparator" parent="Menu_Control/settings_container" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -788,7 +1130,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Menu_Control/settings" index="6"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu_Control/settings_container" index="6"]
 
 anchor_left = 1.0
 anchor_top = 1.0
@@ -807,7 +1149,7 @@ size_flags_vertical = 1
 alignment = 2
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="button_cancel" type="Button" parent="Menu_Control/settings/HBoxContainer" index="0"]
+[node name="button_cancel" type="Button" parent="Menu_Control/settings_container/HBoxContainer" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -832,7 +1174,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="button_apply" type="Button" parent="Menu_Control/settings/HBoxContainer" index="1"]
+[node name="button_apply" type="Button" parent="Menu_Control/settings_container/HBoxContainer" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -857,7 +1199,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
 
-[node name="button_ok" type="Button" parent="Menu_Control/settings/HBoxContainer" index="2"]
+[node name="button_ok" type="Button" parent="Menu_Control/settings_container/HBoxContainer" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -882,148 +1224,38 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
 
-[node name="about" type="Control" parent="Menu_Control" index="2"]
+[connection signal="pressed" from="Menu_Control/main_container/button_ok" to="Menu_Control" method="_on_button_ok_pressed"]
 
-visible = false
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -250.0
-margin_top = -250.0
-margin_right = 250.0
-margin_bottom = 250.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-script = ExtResource( 4 )
-_sections_unfolded = [ "Rect" ]
+[connection signal="pressed" from="Menu_Control/main_container/button_start" to="Menu_Control" method="_on_button_start_pressed"]
 
-[node name="panel2" type="Panel" parent="Menu_Control/about" index="0"]
+[connection signal="pressed" from="Menu_Control/main_container/button_mutiplayer" to="Menu_Control" method="_on_button_mutiplayer_pressed"]
 
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -250.0
-margin_top = -250.0
-margin_right = 250.0
-margin_bottom = 250.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-_sections_unfolded = [ "Material", "Rect", "Visibility" ]
+[connection signal="pressed" from="Menu_Control/main_container/button_settings" to="Menu_Control" method="_on_button_settings_pressed"]
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Menu_Control/about/panel2" index="0"]
+[connection signal="pressed" from="Menu_Control/main_container/button_about" to="Menu_Control" method="_on_button_about_pressed"]
 
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -233.0
-margin_top = -236.0
-margin_right = 233.0
-margin_bottom = 200.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-bbcode_enabled = false
-bbcode_text = ""
-visible_characters = -1
-percent_visible = 1.0
-meta_underlined = true
-tab_size = 4
-text = ""
-scroll_active = true
-scroll_following = false
-selection_enabled = false
-override_selected_font_color = false
+[connection signal="pressed" from="Menu_Control/main_container/button_exit" to="Menu_Control" method="_on_button_exit_pressed"]
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Menu_Control/about/panel2" index="1"]
+[connection signal="pressed" from="Menu_Control/about_container/panel/button_container/button_ok" to="Menu_Control/about_container" method="_on_button_ok_pressed"]
 
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -259.0
-margin_top = -41.0
-margin_right = -18.0
-margin_bottom = -17.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 1
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-alignment = 2
-_sections_unfolded = [ "Margin", "Rect" ]
+[connection signal="item_selected" from="Menu_Control/settings_container/label_video/options_resolutions" to="Menu_Control/settings_container" method="_on_options_resolutions_item_selected"]
 
-[node name="button_ok" type="Button" parent="Menu_Control/about/panel2/HBoxContainer2" index="0"]
+[connection signal="toggled" from="Menu_Control/settings_container/label_video/checkbox_fullscreen" to="Menu_Control/settings_container" method="_on_checkbox_fullscreen_toggled"]
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 210.0
-margin_right = 241.0
-margin_bottom = 24.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-text = "OK"
-flat = false
-align = 1
-_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
+[connection signal="toggled" from="Menu_Control/settings_container/label_video/checkbox_vsync" to="Menu_Control/settings_container" method="_on_checkbox_vsync_toggled"]
 
-[connection signal="pressed" from="Menu_Control/main/button_ok" to="Menu_Control" method="_on_button_ok_pressed"]
+[connection signal="value_changed" from="Menu_Control/settings_container/label_audio/slider_general" to="Menu_Control/settings_container" method="_on_slider_general_value_changed"]
 
-[connection signal="pressed" from="Menu_Control/main/button_start" to="Menu_Control" method="_on_button_start_pressed"]
+[connection signal="value_changed" from="Menu_Control/settings_container/label_audio/slider_music" to="Menu_Control/settings_container" method="_on_slider_music_value_changed"]
 
-[connection signal="pressed" from="Menu_Control/main/button_mutiplayer" to="Menu_Control" method="_on_button_mutiplayer_pressed"]
+[connection signal="value_changed" from="Menu_Control/settings_container/label_audio/slider_sound_effects" to="Menu_Control/settings_container" method="_on_slider_sound_effects_value_changed"]
 
-[connection signal="pressed" from="Menu_Control/main/button_settings" to="Menu_Control" method="_on_button_settings_pressed"]
+[connection signal="toggled" from="Menu_Control/settings_container/label_audio/checkbox_muted" to="Menu_Control/settings_container" method="_on_checkbox_muted_toggled"]
 
-[connection signal="pressed" from="Menu_Control/main/button_about" to="Menu_Control" method="_on_button_about_pressed"]
+[connection signal="pressed" from="Menu_Control/settings_container/HBoxContainer/button_cancel" to="Menu_Control/settings_container" method="_on_button_cancel_pressed"]
 
-[connection signal="pressed" from="Menu_Control/main/button_exit" to="Menu_Control" method="_on_button_exit_pressed"]
+[connection signal="pressed" from="Menu_Control/settings_container/HBoxContainer/button_apply" to="Menu_Control/settings_container" method="_on_button_apply_pressed"]
 
-[connection signal="item_selected" from="Menu_Control/settings/label_video/options_resolutions" to="Menu_Control/settings" method="_on_options_resolutions_item_selected"]
-
-[connection signal="toggled" from="Menu_Control/settings/label_video/checkbox_fullscreen" to="Menu_Control/settings" method="_on_checkbox_fullscreen_toggled"]
-
-[connection signal="toggled" from="Menu_Control/settings/label_video/checkbox_vsync" to="Menu_Control/settings" method="_on_checkbox_vsync_toggled"]
-
-[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_general" to="Menu_Control/settings" method="_on_slider_general_value_changed"]
-
-[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_music" to="Menu_Control/settings" method="_on_slider_music_value_changed"]
-
-[connection signal="value_changed" from="Menu_Control/settings/label_audio/slider_sound_effects" to="Menu_Control/settings" method="_on_slider_sound_effects_value_changed"]
-
-[connection signal="toggled" from="Menu_Control/settings/label_audio/checkbox_muted" to="Menu_Control/settings" method="_on_checkbox_muted_toggled"]
-
-[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_cancel" to="Menu_Control/settings" method="_on_button_cancel_pressed"]
-
-[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_apply" to="Menu_Control/settings" method="_on_button_apply_pressed"]
-
-[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_ok" to="Menu_Control/settings" method="_on_button_ok_pressed"]
-
-[connection signal="pressed" from="Menu_Control/about/panel2/HBoxContainer2/button_ok" to="Menu_Control/about" method="_on_button_ok_pressed"]
+[connection signal="pressed" from="Menu_Control/settings_container/HBoxContainer/button_ok" to="Menu_Control/settings_container" method="_on_button_ok_pressed"]
 
 
