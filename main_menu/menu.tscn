@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://main_menu/menu.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://main_menu/settings.gd" type="Script" id=3]
+[ext_resource path="res://main_menu/about.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -33,7 +34,7 @@ size_flags_vertical = 1
 script = ExtResource( 1 )
 _sections_unfolded = [ "Anchor", "Grow Direction", "Theme" ]
 
-[node name="panel" type="Panel" parent="Menu_Control" index="0"]
+[node name="main" type="Panel" parent="Menu_Control" index="0"]
 
 anchor_left = 0.5
 anchor_top = 0.5
@@ -51,7 +52,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Anchor", "Margin", "Material", "Rect", "Theme", "Visibility", "custom_styles" ]
 
-[node name="label_title" type="Label" parent="Menu_Control/panel" index="0"]
+[node name="label_title" type="Label" parent="Menu_Control/main" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -76,16 +77,16 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Rect", "Size Flags", "custom_fonts" ]
 
-[node name="label_name" type="Label" parent="Menu_Control/panel" index="1"]
+[node name="label_name" type="Label" parent="Menu_Control/main" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 80.0
+margin_top = 70.0
 margin_right = 325.0
-margin_bottom = 100.0
+margin_bottom = 90.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -96,18 +97,18 @@ text = "MAIN_MENU_NAME"
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
-_sections_unfolded = [ "custom_fonts" ]
+_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="line_name" type="LineEdit" parent="Menu_Control/panel" index="2"]
+[node name="line_name" type="LineEdit" parent="Menu_Control/main" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 100.0
+margin_top = 90.0
 margin_right = 325.0
-margin_bottom = 124.0
+margin_bottom = 114.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -123,16 +124,16 @@ caret_blink_speed = 0.65
 caret_position = 0
 _sections_unfolded = [ "Anchor", "Rect" ]
 
-[node name="button_ok" type="Button" parent="Menu_Control/panel" index="3"]
+[node name="button_ok" type="Button" parent="Menu_Control/main" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 225.0
-margin_top = 129.0
+margin_top = 120.0
 margin_right = 325.0
-margin_bottom = 156.0
+margin_bottom = 147.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -149,16 +150,16 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags", "Visibility" ]
 
-[node name="button_start" type="Button" parent="Menu_Control/panel" index="4"]
+[node name="button_start" type="Button" parent="Menu_Control/main" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 190.0
+margin_top = 170.0
 margin_right = 325.0
-margin_bottom = 240.0
+margin_bottom = 220.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -175,16 +176,16 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="button_mutiplayer" type="Button" parent="Menu_Control/panel" index="5"]
+[node name="button_mutiplayer" type="Button" parent="Menu_Control/main" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 275.0
+margin_top = 240.0
 margin_right = 325.0
-margin_bottom = 325.0
+margin_bottom = 290.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -201,16 +202,16 @@ flat = false
 align = 1
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="button_settings" type="Button" parent="Menu_Control/panel" index="6"]
+[node name="button_settings" type="Button" parent="Menu_Control/main" index="6"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 360.0
+margin_top = 315.0
 margin_right = 325.0
-margin_bottom = 410.0
+margin_bottom = 365.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -227,16 +228,42 @@ flat = false
 align = 1
 _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
-[node name="button_exit" type="Button" parent="Menu_Control/panel" index="7"]
+[node name="button_about" type="Button" parent="Menu_Control/main" index="7"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 75.0
-margin_top = 445.0
+margin_top = 390.0
 margin_right = 325.0
-margin_bottom = 495.0
+margin_bottom = 440.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "MAIN_MENU_BUTTON_ABOUT"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
+
+[node name="button_exit" type="Button" parent="Menu_Control/main" index="8"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 75.0
+margin_top = 465.0
+margin_right = 325.0
+margin_bottom = 515.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -253,7 +280,7 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="label_version" type="Label" parent="Menu_Control/panel" index="8"]
+[node name="label_version" type="Label" parent="Menu_Control/main" index="9"]
 
 anchor_left = 1.0
 anchor_top = 1.0
@@ -277,7 +304,6 @@ _sections_unfolded = [ "Margin", "Rect" ]
 
 [node name="settings" type="Control" parent="Menu_Control" index="1"]
 
-editor/display_folded = true
 visible = false
 anchor_left = 0.5
 anchor_top = 0.5
@@ -285,8 +311,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -332.0
 margin_top = -249.5
-margin_right = 332.0
-margin_bottom = 249.5
+margin_right = 333.0
+margin_bottom = 250.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -294,7 +320,7 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
 script = ExtResource( 3 )
-_sections_unfolded = [ "Visibility" ]
+_sections_unfolded = [ "Rect", "Visibility" ]
 
 [node name="panel" type="Panel" parent="Menu_Control/settings" index="0"]
 
@@ -310,10 +336,11 @@ mouse_filter = 0
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 1
-_sections_unfolded = [ "Material", "Visibility" ]
+_sections_unfolded = [ "Material", "Rect", "Visibility" ]
 
 [node name="label_video" type="Label" parent="Menu_Control/settings" index="1"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -482,6 +509,7 @@ _sections_unfolded = [ "Margin", "Rect", "Visibility" ]
 
 [node name="label_audio" type="Label" parent="Menu_Control/settings" index="2"]
 
+editor/display_folded = true
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -760,16 +788,34 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Margin", "Rect" ]
 
-[node name="button_cancel" type="Button" parent="Menu_Control/settings" index="6"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu_Control/settings" index="6"]
 
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -472.0
-margin_top = -34.0
-margin_right = -322.0
-margin_bottom = -14.0
+margin_left = -183.0
+margin_top = -40.0
+margin_right = -14.0
+margin_bottom = -16.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 2
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="button_cancel" type="Button" parent="Menu_Control/settings/HBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 18.0
+margin_right = 79.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -786,16 +832,15 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Margin", "Rect", "Visibility" ]
 
-[node name="button_apply" type="Button" parent="Menu_Control/settings" index="7"]
+[node name="button_apply" type="Button" parent="Menu_Control/settings/HBoxContainer" index="1"]
 
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -317.0
-margin_top = -34.0
-margin_right = -167.0
-margin_bottom = -14.0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 83.0
+margin_right = 134.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -812,16 +857,15 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
 
-[node name="button_ok" type="Button" parent="Menu_Control/settings" index="8"]
+[node name="button_ok" type="Button" parent="Menu_Control/settings/HBoxContainer" index="2"]
 
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -162.0
-margin_top = -34.0
-margin_right = -12.0
-margin_bottom = -14.0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 138.0
+margin_right = 169.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -838,15 +882,127 @@ flat = false
 align = 1
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
 
-[connection signal="pressed" from="Menu_Control/panel/button_ok" to="Menu_Control" method="_on_button_ok_pressed"]
+[node name="about" type="Control" parent="Menu_Control" index="2"]
 
-[connection signal="pressed" from="Menu_Control/panel/button_start" to="Menu_Control" method="_on_button_start_pressed"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -250.0
+margin_top = -250.0
+margin_right = 250.0
+margin_bottom = 250.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+script = ExtResource( 4 )
+_sections_unfolded = [ "Rect" ]
 
-[connection signal="pressed" from="Menu_Control/panel/button_mutiplayer" to="Menu_Control" method="_on_button_mutiplayer_pressed"]
+[node name="panel2" type="Panel" parent="Menu_Control/about" index="0"]
 
-[connection signal="pressed" from="Menu_Control/panel/button_settings" to="Menu_Control" method="_on_button_settings_pressed"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -250.0
+margin_top = -250.0
+margin_right = 250.0
+margin_bottom = 250.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+_sections_unfolded = [ "Material", "Rect", "Visibility" ]
 
-[connection signal="pressed" from="Menu_Control/panel/button_exit" to="Menu_Control" method="_on_button_exit_pressed"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Menu_Control/about/panel2" index="0"]
+
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -233.0
+margin_top = -236.0
+margin_right = 233.0
+margin_bottom = 200.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = ""
+scroll_active = true
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Menu_Control/about/panel2" index="1"]
+
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -259.0
+margin_top = -41.0
+margin_right = -18.0
+margin_bottom = -17.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 2
+_sections_unfolded = [ "Margin", "Rect" ]
+
+[node name="button_ok" type="Button" parent="Menu_Control/about/panel2/HBoxContainer2" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 210.0
+margin_right = 241.0
+margin_bottom = 24.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+toggle_mode = false
+enabled_focus_mode = 2
+shortcut = null
+group = null
+text = "OK"
+flat = false
+align = 1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility" ]
+
+[connection signal="pressed" from="Menu_Control/main/button_ok" to="Menu_Control" method="_on_button_ok_pressed"]
+
+[connection signal="pressed" from="Menu_Control/main/button_start" to="Menu_Control" method="_on_button_start_pressed"]
+
+[connection signal="pressed" from="Menu_Control/main/button_mutiplayer" to="Menu_Control" method="_on_button_mutiplayer_pressed"]
+
+[connection signal="pressed" from="Menu_Control/main/button_settings" to="Menu_Control" method="_on_button_settings_pressed"]
+
+[connection signal="pressed" from="Menu_Control/main/button_about" to="Menu_Control" method="_on_button_about_pressed"]
+
+[connection signal="pressed" from="Menu_Control/main/button_exit" to="Menu_Control" method="_on_button_exit_pressed"]
 
 [connection signal="item_selected" from="Menu_Control/settings/label_video/options_resolutions" to="Menu_Control/settings" method="_on_options_resolutions_item_selected"]
 
@@ -862,10 +1018,12 @@ _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility
 
 [connection signal="toggled" from="Menu_Control/settings/label_audio/checkbox_muted" to="Menu_Control/settings" method="_on_checkbox_muted_toggled"]
 
-[connection signal="pressed" from="Menu_Control/settings/button_cancel" to="Menu_Control/settings" method="_on_button_cancel_pressed"]
+[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_cancel" to="Menu_Control/settings" method="_on_button_cancel_pressed"]
 
-[connection signal="pressed" from="Menu_Control/settings/button_apply" to="Menu_Control/settings" method="_on_button_apply_pressed"]
+[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_apply" to="Menu_Control/settings" method="_on_button_apply_pressed"]
 
-[connection signal="pressed" from="Menu_Control/settings/button_ok" to="Menu_Control/settings" method="_on_button_ok_pressed"]
+[connection signal="pressed" from="Menu_Control/settings/HBoxContainer/button_ok" to="Menu_Control/settings" method="_on_button_ok_pressed"]
+
+[connection signal="pressed" from="Menu_Control/about/panel2/HBoxContainer2/button_ok" to="Menu_Control/about" method="_on_button_ok_pressed"]
 
 

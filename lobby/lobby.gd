@@ -326,47 +326,6 @@ func _validate_join():
 
 func _on_state_changed(state_from, state_to, args):
 	print("switched to state: ", state_to)
-	"""
-	if (state_to == _fsm.Disconnected):
-		_get_button_cancel().set_disabled(true)
-		_get_button_exit().set_disabled(false)
-		_get_button_host().set_disabled(false)
-		_get_button_join().set_disabled(false)
-		
-		_get_label_status().set("custom_colors/font_color", Color(1,0,0))
-		_get_label_status().set_text(tr("LOBBY_STATUS_DISCONNECTED"))
-		_set_status("", false)
-	elif (state_to == _fsm.Connected):
-		_get_button_cancel().set_disabled(true)
-		_get_button_exit().set_disabled(false)
-		_get_button_host().set_disabled(false)
-		_get_button_join().set_disabled(false)
-		
-		_get_label_status().set("custom_colors/font_color", Color(0,1,0))
-		_get_label_status().set_text(tr("LOBBY_STATUS_CONNECTED"))
-		_set_status("", false)
-	elif (state_to == _fsm.InGame):
-		_get_button_cancel().set_disabled(true)
-		_get_button_exit().set_disabled(true)
-		_get_button_host().set_disabled(true)
-		_get_button_join().set_disabled(true)
-		
-		_get_label_status().set("custom_colors/font_color", Color(0,0,1))
-		_get_label_status().set_text(tr("LOBBY_STATUS_IN_GAME"))
-		_set_status("", false)
-	else:
-		_get_button_cancel().set_disabled(false)
-		_get_button_exit().set_disabled(true)
-		_get_button_host().set_disabled(true)
-		_get_button_join().set_disabled(true)
-		
-		_get_label_status().set("custom_colors/font_color", Color(0,1,0))
-		if (get_tree().is_network_server()):
-			_get_label_status().set_text(tr("LOBBY_STATUS_WAITING"))
-		else:
-			_get_label_status().set_text(tr("LOBBY_STATUS_WAITING_SERVER"))
-		_set_status("", false)
-	"""
 
 func _ready():
 	_fsm = state.new()

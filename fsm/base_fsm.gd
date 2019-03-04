@@ -60,7 +60,7 @@ func process(delta=0):
 
 func get_state():
 	return current_state
-	
+
 func is_state(state):
 	return current_state == state
 
