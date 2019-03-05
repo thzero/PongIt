@@ -630,7 +630,6 @@ _sections_unfolded = [ "Rect" ]
 
 [node name="tab_license_third_party" type="Control" parent="Menu_Control/about_container/panel/tabs" index="2"]
 
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -647,62 +646,7 @@ size_flags_horizontal = 1
 size_flags_vertical = 1
 _sections_unfolded = [ "Rect" ]
 
-[node name="tree_license_third_party" type="Tree" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 1.0
-margin_left = 3.0
-margin_top = 50.0
-margin_right = 188.0
-margin_bottom = -1.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-columns = 1
-allow_reselect = false
-allow_rmb_select = false
-hide_folding = false
-hide_root = false
-drop_mode_flags = 0
-select_mode = 0
-_sections_unfolded = [ "Rect" ]
-
-[node name="label_license_third_party" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="1"]
-
-anchor_left = 1.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -255.0
-margin_top = 50.0
-margin_right = -2.0
-margin_bottom = -6.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = true
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-bbcode_enabled = false
-bbcode_text = ""
-visible_characters = -1
-percent_visible = 1.0
-meta_underlined = true
-tab_size = 4
-text = ""
-scroll_active = true
-scroll_following = false
-selection_enabled = false
-override_selected_font_color = false
-_sections_unfolded = [ "Material", "Rect" ]
-
-[node name="label_license_third_party_description" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="2"]
+[node name="label_license_third_party_description" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -730,6 +674,61 @@ scroll_following = false
 selection_enabled = false
 override_selected_font_color = false
 _sections_unfolded = [ "Rect" ]
+
+[node name="tree_license_third_party" type="Tree" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = 50.0
+margin_right = 188.0
+margin_bottom = -1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+focus_mode = 2
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+columns = 1
+allow_reselect = false
+allow_rmb_select = false
+hide_folding = false
+hide_root = false
+drop_mode_flags = 0
+select_mode = 0
+_sections_unfolded = [ "Rect" ]
+
+[node name="label_license_third_party" type="RichTextLabel" parent="Menu_Control/about_container/panel/tabs/tab_license_third_party" index="2"]
+
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -255.0
+margin_top = 50.0
+margin_right = -2.0
+margin_bottom = -6.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = true
+mouse_filter = 0
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+bbcode_enabled = false
+bbcode_text = ""
+visible_characters = -1
+percent_visible = 1.0
+meta_underlined = true
+tab_size = 4
+text = ""
+scroll_active = true
+scroll_following = false
+selection_enabled = false
+override_selected_font_color = false
+_sections_unfolded = [ "Material", "Rect" ]
 
 [node name="settings_container" type="Control" parent="Menu_Control" index="2"]
 
@@ -1326,6 +1325,8 @@ _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Visibility
 [connection signal="pressed" from="Menu_Control/about_container/panel/button_container/button_ok" to="Menu_Control/about_container" method="_on_button_ok_pressed"]
 
 [connection signal="item_selected" from="Menu_Control/about_container/panel/tabs/tab_license_third_party/tree_license_third_party" to="Menu_Control/about_container" method="_on_tree_license_third_party_item_selected"]
+
+[connection signal="meta_clicked" from="Menu_Control/about_container/panel/tabs/tab_license_third_party/label_license_third_party" to="Menu_Control/about_container" method="_on_label_license_third_party_meta_clicked"]
 
 [connection signal="item_selected" from="Menu_Control/settings_container/label_video/options_resolutions" to="Menu_Control/settings_container" method="_on_options_resolutions_item_selected"]
 

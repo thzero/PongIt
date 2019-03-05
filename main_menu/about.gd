@@ -15,6 +15,9 @@ var _license_all = ""
 func _on_button_ok_pressed():
 	emit_signal("about_finished")
 
+func _on_label_license_third_party_meta_clicked(meta):
+	 OS.shell_open(meta)
+
 func _on_tree_license_third_party_item_selected():
 	_tree_label.clear()
 	
@@ -25,7 +28,8 @@ func _on_tree_license_third_party_item_selected():
 	print(selected.get_text(0))
 	
 	if (selected == _tree_all):
-		_tree_label.add_text(_license_all)
+		#_tree_label.add_text(_license_all)
+		_tree_label.append_bbcode(_license_all)
 		return
 	
 	var license
@@ -35,16 +39,20 @@ func _on_tree_license_third_party_item_selected():
 			continue
 		
 		_tree_label.clear()
-		_tree_label.add_text(license["output"])
+		#_tree_label.add_text(license["output"])
+		_tree_label.append_bbcode(license["output"])
+		_tree_label.scroll_to_line(0)
 
 func _generate_license(license):
 	var output = license.Name + line_break
 	if (license.Url != null && license.Url != ""):
-		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_REPOSITORY") + ": " + license.Url + line_break
+		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_REPOSITORY") + ": "
+		output += "[url=" + license.Url + "]" + license.Url + "[/url]"
+		output += line_break
 	if (license.License != null && license.License != ""):
 		if (output.length() > 0):
 			output += line_break
-		output += license.License + "\n"
+		output += license.License
 	if (license.Type != null && license.Type != ""):
 		if (output.length() > 0):
 			output += line_break
