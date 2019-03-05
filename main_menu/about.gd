@@ -31,13 +31,13 @@ func _on_tree_license_third_party_item_selected():
 	var license
 	for i in _info.license_thirdparty:
 		license = _info.license_thirdparty[i]
-		if (selected != license.node):
+		if (selected != license["node"]):
 			continue
 		
 		_tree_label.clear()
-		_tree_label.add_text(license.output)
+		_tree_label.add_text(license["output"])
 
-func _generate_output(license):
+func _generate_license(license):
 	var output = license.Name + line_break
 	if (license.Url != null && license.Url != ""):
 		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_REPOSITORY") + ": " + license.Url + line_break
@@ -49,6 +49,19 @@ func _generate_output(license):
 		if (output.length() > 0):
 			output += line_break
 		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_LICENSE") + ": " + license.Type
+	return output
+	
+func _generate_team(key, group):
+	var output = tr("MAIN_ABOUT_TEAM_" + key) + line_break + line_break
+	if (group == null):
+		return output
+	var members = group.Members
+	if (members == null):
+		return output
+	var member
+	for j in members:
+		member = members[j]
+		output += tab + member.Name + line_break
 	return output
 
 #### State
@@ -97,28 +110,14 @@ func _ready():
 		child.set_text(0, license.Name)
 		license["node"] = child
 		
-		license["output"] = _generate_output(license)
-		_license_all += license["output"]
-		_license_all += line_break + line_break
+		license["output"] = _generate_license(license)
+		_license_all += license["output"] + line_break + line_break
+	
+	_tree_all.select(0)
 	
 	var output = ""
-	var group
-	var members
-	var member
 	for i in _info.team:
-		output += tr("MAIN_ABOUT_TEAM_" + i) + line_break + line_break
-		group = _info.team[i]
-		if (group == null):
-			continue
-		members = group.Members
-		if (members == null):
-			continue
-		for j in members:
-			member = members[j]
-			output += tab + member.Name + line_break
-		
-		output += line_break + line_break
-		
+		output += _generate_team(i, _info.team[i]) + line_break + line_break
 	find_node("label_team").set_text(output)
 	
 	find_node("button_ok").set_text(tr("BUTTON_OK"))
