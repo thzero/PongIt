@@ -60,5 +60,8 @@ func _clear_pattern(type):
 		
 	_patterns.erase(type)
 	
-func _init():
+func _initialize():
 	pass
+	
+func _init():
+	_initialize()

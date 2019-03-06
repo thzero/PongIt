@@ -28,11 +28,9 @@ var state_time=0
 var current_state=null
 var current_state_object=null
 var links=[]
+var _name
 
 signal state_changed(state_from,state_to,params)
-
-func init():
-	pass
 
 func process(delta=0):
 	if current_state==null or current_state_object==null or links.size()==0:
@@ -60,7 +58,7 @@ func process(delta=0):
 
 func get_state():
 	return current_state
-	
+
 func is_state(state):
 	return current_state == state
 
@@ -181,3 +179,18 @@ func add_timer(name):
 
 func connect_state_changed(obj, name):
 	connect("state_changed", obj, name)
+
+func initialize(parent):
+	_initialize(parent)
+	
+func set_name(name):
+	_name = name;
+
+func _initialize(parent):
+	pass
+
+func _print_state(state_from, state_to, args):
+	var name = (_name if _name != null else "(none)")
+	var state_from_out = (state_from if state_from != null else "(unknown)")
+	var state_to_out = (state_to if state_to != null else "(unknown)")
+	print(name + " switched to state: " + state_to_out + " from state: " + state_from_out)

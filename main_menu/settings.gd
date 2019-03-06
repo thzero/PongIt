@@ -4,6 +4,8 @@ var _fsm
 var _audio
 var _display
 
+signal settings_finished()
+
 func open():
 	_fsm.set_state_clean()
 	show()
@@ -47,6 +49,27 @@ func _save_settings():
 	Configuration.update_settings(_display, _audio)
 	_fsm.set_state_clean()
 
+func _on_button_apply_pressed():
+	_save_settings()
+	_load_settings()
+	_fsm.set_state_applied()
+
+func _on_button_cancel_pressed():
+	_load_settings()
+	_fsm.set_state_clean()
+	emit_signal("settings_finished")
+
+func _on_button_ok_pressed():
+	_save_settings()
+	_load_settings()
+	_fsm.set_state_clean()
+	emit_signal("settings_finished")
+
+func _on_button_save_pressed():
+	Configuration.update_settings(_display, _audio)
+	_fsm.set_state_clean()
+	emit_signal("settings_finished")
+
 func _on_checkbox_fullscreen_toggled(button_pressed):
 	_display.fullscreen = button_pressed
 	_fsm.set_state_dirty()
@@ -80,57 +103,41 @@ func _on_slider_sound_effects_value_changed(value):
 	_audio.soundeffects = value
 	_fsm.set_state_dirty()
 
-func _on_button_apply_pressed():
-	_save_settings()
-	_load_settings()
-	_fsm.set_state_applied()
-
-func _on_button_cancel_pressed():
-	_load_settings()
-	_fsm.set_state_clean()
-	self.hide()
-
-func _on_button_ok_pressed():
-	_save_settings()
-	_load_settings()
-	_fsm.set_state_clean()
-	self.hide()
-
-func _on_button_save_pressed():
-	Configuration.update_settings(_display, _audio)
-	_fsm.set_state_clean()
-	self.hide()
-
 #### State
 func _on_state_changed(state_from, state_to, args):
-	print("switched to state: ", state_to)
+	_fsm._print_state(state_from, state_to, args)
 	if (state_to == _fsm.Dirty):
-		get_node("button_apply").set_disabled(false)
-		get_node("button_cancel").set_disabled(false)
-		get_node("button_ok").set_disabled(false)
+		find_node("button_apply").set_disabled(false)
+		find_node("button_cancel").set_disabled(false)
+		find_node("button_ok").set_disabled(false)
 	elif (state_to == _fsm.Applied):
-		get_node("button_apply").set_disabled(true)
-		get_node("button_cancel").set_disabled(true)
-		get_node("button_ok").set_disabled(false)
+		find_node("button_apply").set_disabled(true)
+		find_node("button_cancel").set_disabled(true)
+		find_node("button_ok").set_disabled(false)
 	else:
-		get_node("button_apply").set_disabled(true)
-		get_node("button_cancel").set_disabled(false)
-		get_node("button_ok").set_disabled(true)
+		find_node("button_apply").set_disabled(true)
+		find_node("button_cancel").set_disabled(false)
+		find_node("button_ok").set_disabled(true)
 
 func _ready():
 	_audio = preload("res://main_menu/audio.gd").new()
 	_display = preload("res://main_menu/display.gd").new()
-
+	
 	_fsm = state.new()
-	_fsm.init()
-	_fsm.connect_state_changed(self, "_on_state_changed")
+	_fsm.initialize(self)
 	
 	_load_settings()
+	
 	_fsm.set_state_clean()
 	
-	get_node("button_apply").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_APPLY"))
-	get_node("button_cancel").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_CANCEL"))
-	get_node("button_ok").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_OK"))
+	find_node("button_apply").set_text(tr("MAIN_MENU_SETTINGS_BUTTON_APPLY"))
+	find_node("button_cancel").set_text(tr("BUTTON_CANCEL"))
+	find_node("button_ok").set_text(tr("BUTTON_OK"))
 
 class state extends "res://fsm/menu_fsm.gd":
-	var blank
+	
+	func _initialize(parent):
+		._initialize(parent)
+		set_name("main_menu settings")
+		
+		connect_state_changed(parent, "_on_state_changed")

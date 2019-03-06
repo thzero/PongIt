@@ -6,8 +6,10 @@ extends Node
 
 var _accumulator = 0
 var _fsm
-
-const CHAT_TYPES = preload("res://chat/types.gd")
+var _handler_chat
+var _handler_player_selector
+var _handler_print = preload("res://utility/print.gd").new()
+var _handler_validator
 
 # GAMEDATA
 var _game_name # Name of the game
@@ -29,46 +31,62 @@ signal server_ended()
 signal server_error()
 
 func chat(message, type, args):
-	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
-		var player_from = get_player_by_id(args)
-		emit_signal("chat_message", Gamestate.get_player(), message, CHAT_TYPES.Whisper, { "player" : player_from, "id" : get_tree().get_network_unique_id() })
-		rpc_id(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
+	if (_handler_chat == null):
 		return
 	
-	if (type == CHAT_TYPES.General):
-		rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.General, null)
+	_handler_chat.message(get_tree().get_network_unique_id(), message, type, args)
+	
+func chat_message_emit(player_from, message, type, args):
+	emit_signal("chat_message", player_from, message, type, args)
+	
+func chat_message_send(id, message, type, args, id_to):
+	args = null if args == null else inst2dict(args)
+	
+	if (id_to != null):
+		rpc_id(id_to, "chat_send", id, message, type, args)
 		return
 	
-	if (type == CHAT_TYPES.PrePackaged):
-		rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.PrePackaged, inst2dict(args))
-		return
-	
-	rpc("chat_send", get_tree().get_network_unique_id(), message, type, inst2dict(args))
+	rpc("chat_send", id, message, type, args)
 
 sync func chat_send(from, message, type, args):
 	var player_from = get_player_by_id(from)
-	if (args != null):
-		args = dict2inst(args)
-	emit_signal("chat_message", player_from, message, CHAT_TYPES.General, args)
+	args = null if args == null else dict2inst(args)
+	
+	_print("chat_message", { "chat_type": type, "player": player_from, "message": message } )
+	chat_message_emit(player_from, message, type, args)
+	
+func chat_types():
+	if (_handler_chat == null):
+		return null
+	
+	return _handler_chat.CHAT_TYPES
 
 func end_game():
+	_print("end_game", null)
+	_ready_players_reset()
 	end_game_ext()
 	emit_signal("game_ended")
 
 func end_game_announce(by_id):
+	_print("end_game_announce", { "by_id": by_id })
 	if (get_tree().is_network_server()):
+		_print("end_game_announce_server", { "by_id": by_id })
+		
 		# Server sends out the announcement to each player that the game ended
-		if (by_id == null):
-			by_id = 1
+		by_id = 1 if by_id == null else by_id
 		for peer_id in _players:
+			_print("end_game_announce_player_server_call_client", { "peer_id": peer_id, "by_id": by_id })
 			rpc_id(peer_id, "end_game_announce_player", by_id)
 		
 		end_game()
-	else:
-		# Non-server player requests the server to end the game
-		rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
+		return
+	
+	_print("end_game_announce_request", null)
+	# Non-server player requests the server to end the game
+	rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
 
 remote func end_game_announce_player(by_id):
+	_print("end_game_announce_player", { "by_id": by_id })
 	# Call end_game on the non-server player
 	end_game()
 	
@@ -76,17 +94,22 @@ remote func end_game_announce_player(by_id):
 # it simulateously we only take the first user's input
 # player requesting game has ended
 remote func end_game_announce_request(by_id):
+	_print("end_game_announce_request", { "by_id": by_id })
 	if (!get_tree().is_network_server()):
 		return
 	
 	# server to send out announcement that the game has ended
+	_print("end_game_announce_request_server", { "by_id": by_id })
 	end_game_announce(by_id)
 
 func end_game_ext():
 	pass
 
-func get_player_list():
-	return _players.values()
+func get_player_list(values):
+	if (values):
+		return _players.values()
+		
+	return _players
 
 func get_player():
 	return _player
@@ -104,34 +127,23 @@ func get_player_by_id(id):
 	return null
 	
 func get_player_by_selector(selector):
-	if ((selector == null) || (selector == "")):
+	if (_handler_player_selector == null):
 		return null
 	
-	var player_id = ""
-	var playerT = null
-	for peer_id in _players:
-		player_id = peer_id
-		playerT  = get_player_by_id(peer_id)
-		# TODO
-		if ((playerT != null) && (playerT.name.to_lower() == selector.to_lower())):
-			break
-	
-	if (playerT != null):
-		return { "player" : playerT, "id": player_id }
-		
-	return null
+	return _handler_player_selector.get_player(selector)
 
 func host_game(name, port):
-	if (validate_port(port, null) == null):
+	if (_handler_validator.validate_port(port, null) == null):
 		return false
-		
-	if (name == ""):
-		name = Constants.DEFAULT_SERVER_NAME
+	
+	name = Constants.DEFAULT_SERVER_NAME if name == "" else name
 	
 	_server_name = name
 	_player = preload("res://networking/player.gd").new()
 	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
+	
+	_print("host_game", null)
 	
 	# Initializing the network as client
 	var host = _create_host()
@@ -142,14 +154,17 @@ func host_game(name, port):
 	return true
 
 func join_game(ip_address, port):
-	if (validate_address(ip_address, null) == null):
+	if (_handler_validator.validate_address(ip_address, null) == null):
 		return false
-	if (validate_port(port, null) == null):
+	
+	if (_handler_validator.validate_port(port, null) == null):
 		return false
 	
 	_player = preload("res://networking/player.gd").new()
 	_player.name = ConfigurationUser.Settings.User.Name
 	_player.ready = false
+	
+	_print("join_game", null)
 	
 	# Initializing the network as server
 	var host = _create_host()
@@ -157,14 +172,6 @@ func join_game(ip_address, port):
 	get_tree().set_network_peer(host)
 	
 	return true
-
-func load_world(world):
-	if (world == null):
-		return
-	
-	_world = world
-	get_tree().get_root().add_child(_world)
-	_world.connect("game_ended", self, "_on_game_ended")
 	
 remote func ping(delta):
 	#print("ping " + str(delta))
@@ -172,14 +179,11 @@ remote func ping(delta):
 
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
+	_print("quit_game", null)
 	end_game()
 	_close_connection()
 	_players.clear()
 	emit_signal("server_ended")
-	
-func ready_player_request(ready):
-	_player.ready = ready
-	rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
 
 # Call it locally as well as calling it remotely
 sync func ready_player(id, player):
@@ -188,12 +192,16 @@ sync func ready_player(id, player):
 		var playerT = get_player_by_id(id)
 		if (playerT != null):
 			playerT.ready = player.ready
-
-	# Notify lobby (GUI) about changes
+	
 	emit_signal("refresh_lobby")
 	
 	if (get_tree().is_network_server()):
-		_ready_players()
+		_ready_players_check()
+
+func ready_player_request(ready):
+	_player.ready = ready
+	_print("ready_player", { "ready": ready })
+	rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
 
 # Register yourself directly ingame
 remote func register_in_game():
@@ -216,8 +224,10 @@ remote func register_in_game_player(id, player):
 		# Send the new player info about the other players
 		for peer_id in _players:
 			playerT  = get_player_by_id(peer_id)
-			if (playerT != null):
-				rpc_id(id, "register_in_game_player", peer_id, inst2dict(playerT))
+			if (playerT == null):
+				continue
+			
+			rpc_id(id, "register_in_game_player", peer_id, inst2dict(playerT))
 	
 	temp = dict2inst(player)
 	_set_player(id, player)
@@ -246,20 +256,21 @@ remote func register_in_lobby_player(id, player):
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
 			playerT = get_by_player_id(peer_id)
-			if (playerT != null):
-				rpc_id(id, "register_in_lobby_player", peer_id, inst2dict(playerT)) # Send the new player info about others
+			if (playerT == null):
+				continue
+			
+			rpc_id(id, "register_in_lobby_player", peer_id, inst2dict(playerT)) # Send the new player info about others
 			rpc_id(peer_id, "register_in_lobby_player", player) # Send others info about the new player
 	
 	temp = dict2inst(player)
 	_set_player(id, temp)
 
-	# Notify lobby (GUI) about changes
 	emit_signal("refresh_lobby")
 
 func start_game():
 	if (!get_tree().is_network_server()):
 		return
-		
+	
 	rpc("start_game_player", 1)
 	
 	start_game_ext()
@@ -275,12 +286,6 @@ remote func start_game_player(id):
 	
 	start_game_ext()
 	emit_signal("game_started")
-
-func unload_world():
-	if (_world == null):
-		return
-	
-	get_node(_world.get_path()).queue_free()
 
 # Unregister a player, whether he is in lobby or ingame
 remote func unregister_player(id):
@@ -311,43 +316,8 @@ remote func user_connected(id):
 	else:
 		rpc_id(id, "register_in_lobby")
 
-func validate_address(address, error):
-	if (error != null):
-		error.set_text("")
-	
-	if (not address.is_valid_ip_address()):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_ADDRESS_INVALID"))
-		return null
-	
-	return address
-
-func validate_port(port, error):
-	if (error != null):
-		error.set_text("")
-	
-	var portN
-	if (typeof(port) != TYPE_INT):
-		if (typeof(port) == TYPE_STRING):
-			if (not port.is_valid_integer()):
-				if (error != null):
-					error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
-				return null
-			else:
-				portN = port.to_int();
-		else:
-			if (error != null):
-				error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID"))
-			return null
-	else:
-		portN = port
-		
-	if (portN < 1024 || portN > 65535):
-		if (error != null):
-			error.set_text(tr("LOBBY_MESSAGE_PORT_INVALID_RANGE"))
-		return null
-		
-	return portN
+func validator():
+	return _handler_validator
 
 func _can_join_in_game():
 	return true
@@ -356,7 +326,8 @@ func _close_connection():
 	if (get_tree().is_network_server()):
 		var host = get_tree().get_meta("network_peer")
 		if (host != null):
-			host.close_connection() 
+			host.close_connection()
+	
 	get_tree().set_network_peer(null)
 
 func _create_host():
@@ -364,11 +335,48 @@ func _create_host():
 	host.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
 	get_tree().set_meta("network_peer", host)
 	return host
-		
+
+func _get_world():
+	return _world
+
+func _has_world():
+	return (_get_world() != null) && (has_node(_world.get_path()))
+
+func _initialize_chat():
+	return load(Constants.PATH_GAMESTATE_CHAT).new()
+
+func _initialize_player_selector():
+	return load(Constants.PATH_GAMESTATE_PLAYER_SELECTOR).new()
+
+func _initialize_validator():
+	return load(Constants.PATH_GAMESTATE_VALIDATOR).new()
+
 func _is_in_game():
-	return false
+	return _has_world()
+
+func _load_world(world):
+	if (world == null):
+		return
 	
-func _ready_players():
+	_world = world
+	get_tree().get_root().add_child(_world)
+	_world.connect("game_ended", self, "_on_game_ended")
+
+func _print(method, args):
+	if (_handler_print == null):
+		return
+	
+	if (args == null):
+		args = {}
+	
+	args["id"] = str(get_tree().get_network_unique_id())
+	args["server"] = str(get_tree().is_network_server())
+	
+	_handler_print.output(method, args)
+
+func _ready_players_check():
+	_print("_ready_players_check", null)
+	
 	var ready = _player.ready
 	var count = 0
 	if (_player.ready):
@@ -377,35 +385,70 @@ func _ready_players():
 	var playerT
 	for peer_id in _players:
 		playerT = get_player_by_id(peer_id)
-		if (playerT != null):
-			ready = ready && playerT.ready
-			if (playerT.ready):
-				count += 1
+		if (playerT == null):
+			continue
+		
+		ready = ready && playerT.ready
+		if (playerT.ready):
+			count += 1
 	
 	if ((count >= Constants.MIN_PLAYERS) && ready):
 		emit_signal("refresh_lobby_start_enabled")
 	else:
 		emit_signal("refresh_lobby_start_disabled")
 
+func _ready_players_reset():
+	_print("_ready_players_reset", null)
+	
+	_player.ready = false
+	if (get_tree().is_network_server()):
+		_print("_ready_players_reset_server", null)
+		
+		# Send server resets
+		rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
+		
+		# Send client resets
+		var playerT
+		for peer_id in _players:
+			playerT  = get_player_by_id(peer_id)
+			if (playerT == null):
+				continue
+			
+			playerT.ready = false
+			rpc("ready_player", peer_id, inst2dict(playerT))
+
 func _set_player(id, player):
 	_players[id] = player;
+
+func _unload_world():
+	if (_world == null):
+		return
 	
+	_world.hide()
+	_world.disconnect("game_ended", self, "_on_game_ended")
+	get_node(_world.get_path()).queue_free()
+	_world = null
+
 #### Events
 
 # Could not connect to server (client)
 func _on_connection_failed():
+	_print("_on_connection_failed", null)
 	get_tree().set_network_peer(null)
 	emit_signal("connection_fail")
 
 func _on_game_ended():
+	_print("_on_game_ended", null)
 	end_game_announce(get_tree().get_network_unique_id())
 
 # Client connected with you (can be both server or client)
 func _on_network_peer_connected(id):
+	_print("_on_network_peer_connected", null)
 	pass
 
 # Client disconnected from you
 func _on_network_peer_disconnected(id):
+	_print("_on_network_peer_disconnected", null)
 	# If I am server, send a signal to inform that an player disconnected
 	if (!get_tree().is_network_server()):
 		return
@@ -415,6 +458,7 @@ func _on_network_peer_disconnected(id):
 
 # Successfully connected to server (client)
 func _on_connected_to_server():
+	_print("_on_connected_to_server", null)
 	# Record the player's id.
 	_player.id = get_tree().get_network_unique_id()
 	# Send signal to server that we are ready to be assigned;
@@ -422,9 +466,17 @@ func _on_connected_to_server():
 
 # Server disconnected (client)
 func _on_server_disconnected():
+	_print("_on_server_disconnected", null)
 	quit_game()
 
 func _ready():
+	_handler_chat = _initialize_chat()
+	_handler_chat.initialize(self)
+	_handler_player_selector = _initialize_player_selector()
+	_handler_player_selector.initialize(self)
+	_handler_validator = _initialize_validator()
+	_handler_validator.initialize(self)
+	
 	# Networking signals (high level networking)
 	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
 	get_tree().connect("connection_failed", self, "_on_connection_failed")
@@ -450,11 +502,6 @@ func _process(delta):
 class state extends "res://fsm/menu_fsm.gd":
 	const Complete = "complete"
 	const Empty = "empty"
-	
-	func init():
-		.init()
-		add_state(Complete)
-		add_state(Empty)
 		
 	func is_state_complete():
 		return is_state(Complete)
@@ -468,3 +515,7 @@ class state extends "res://fsm/menu_fsm.gd":
 	func set_state_empty():
 		set_state(Empty)
 	
+	func _initialize():
+		._initialize()
+		add_state(Complete)
+		add_state(Empty)

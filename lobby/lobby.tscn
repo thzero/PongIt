@@ -3,7 +3,7 @@
 [ext_resource path="res://lobby/lobby.gd" type="Script" id=1]
 [ext_resource path="res://lobby/lineedit_input.gd" type="Script" id=2]
 
-[node name="main_menu" type="Node" index="0"]
+[node name="main_menu" type="Node"]
 
 script = ExtResource( 1 )
 
@@ -22,7 +22,6 @@ size_flags_vertical = 1
 
 [node name="Panel" type="Panel" parent="menu_container" index="0"]
 
-editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -133,6 +132,7 @@ group = null
 text = "LOBBY_HOST_SERVER"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="button_join" type="Button" parent="menu_container/Panel/vbox_container/hbox_tabs" index="1"]
 
@@ -157,6 +157,7 @@ group = null
 text = "LOBBY_JOIN_SERVER"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="spacer2" type="Label" parent="menu_container/Panel/vbox_container" index="3"]
 
@@ -182,6 +183,7 @@ max_lines_visible = -1
 
 [node name="host_container" type="VBoxContainer" parent="menu_container/Panel/vbox_container" index="4"]
 
+visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
@@ -364,6 +366,7 @@ group = null
 text = "LOBBY_BUTTON_CANCEL"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="button_continue" type="Button" parent="menu_container/Panel/vbox_container/host_container/hbox_host_buttons" index="1"]
 
@@ -388,17 +391,17 @@ group = null
 text = "LOBBY_BUTTON_CONTINUE"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="join_container" type="VBoxContainer" parent="menu_container/Panel/vbox_container" index="5"]
 
-visible = false
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 158.0
+margin_top = 68.0
 margin_right = 369.0
-margin_bottom = 288.0
+margin_bottom = 162.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -413,9 +416,8 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 18.0
 margin_right = 369.0
-margin_bottom = 88.0
+margin_bottom = 52.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -519,9 +521,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 92.0
+margin_top = 56.0
 margin_right = 369.0
-margin_bottom = 106.0
+margin_bottom = 70.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -541,9 +543,9 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 110.0
+margin_top = 74.0
 margin_right = 369.0
-margin_bottom = 130.0
+margin_bottom = 94.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -575,6 +577,7 @@ group = null
 text = "LOBBY_BUTTON_CANCEL"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="button_connect" type="Button" parent="menu_container/Panel/vbox_container/join_container/hbox_join_buttons" index="1"]
 
@@ -599,9 +602,12 @@ group = null
 text = "LOBBY_BUTTON_CONNECT"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="lobby_container" type="Container" parent="." index="1"]
 
+editor/display_folded = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -963,7 +969,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 32.0
 margin_right = 202.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -978,6 +984,7 @@ group = null
 text = "LOBBY_BUTTON_CANCEL"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [node name="button_start" type="Button" parent="lobby_container/Panel/hbox_buttons" index="1"]
 
@@ -987,7 +994,7 @@ anchor_right = 0.0
 anchor_bottom = 0.0
 margin_left = 206.0
 margin_right = 365.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -1002,6 +1009,7 @@ group = null
 text = "LOBBY_BUTTON_START"
 flat = false
 align = 1
+_sections_unfolded = [ "Rect" ]
 
 [connection signal="pressed" from="menu_container/Panel/vbox_container/hbox_tabs/button_host" to="." method="_on_button_host_pressed"]
 

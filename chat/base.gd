@@ -20,15 +20,15 @@ func handle(player, message, type, args, text):
 	if (player == Gamestate.get_player()):
 		name = tr("CHAT_YOU")
 	
-	if (type == Gamestate.CHAT_TYPES.General):
+	if (type == Gamestate.chat_types().General):
 		_message_general(name, message, text)
 		return
 	
-	if (type == Gamestate.CHAT_TYPES.PrePackaged):	
+	if (type == Gamestate.chat_types().PrePackaged):	
 		_message_pre_packaged(name, message, args, text)
 		return
 	
-	if (type == Gamestate.CHAT_TYPES.Whisper):
+	if (type == Gamestate.chat_types().Whisper):
 		_message_whisper(name, message, args, text)
 		return
 		
@@ -54,7 +54,7 @@ func message(message):
 	if (result == null):
 		return FAILED
 	
-	var type = Gamestate.CHAT_TYPES.General
+	var type = Gamestate.chat_types().General
 	var args = null
 	
 	_history.push_front(message)
@@ -74,7 +74,7 @@ func message(message):
 			return FAILED
 		var resultS = Gamestate.get_player_by_selector(selector)
 		if (resultS != null):
-			type = Gamestate.CHAT_TYPES.Whisper
+			type = Gamestate.chat_types().Whisper
 			args = resultS.id
 		else:
 			valid = false
@@ -106,8 +106,9 @@ func _message_whisper(name, message, args, text):
 	
 	var action = tr("CHAT_WHISPER_ACTION")
 	var output = ""
-	if ((args!= null) && (args.id == Gamestate.get_player_id())):
-		output = tr("CHAT_MESSAGE_SELF") % [ tr("CHAT_YOU"), action, message, args.player.name ]
+	if ((args!= null) && (args.id_from == Gamestate.get_player_id())):
+		var player = '' if args.player_to == null else args.player_to.name
+		output = tr("CHAT_MESSAGE_SELF") % [ tr("CHAT_YOU"), action, message, player ]
 	else:
 		output = tr("CHAT_MESSAGE") % [ name, action, message, ]
 	
@@ -121,8 +122,8 @@ func _init():
 	_regex = regExLib.new()
 
 class regExLib extends "res://utility/regExLib.gd":
-	func _init():
-		._init()
+	func _initialize():
+		._initialize()
 		var selector = Constants.REGEX_PLAYER_NAME
 		_add_pattern_single("message", "(\\/(?<command>\\w+) (?<selector>" + selector + "+) )?(?<message>.+)")
 		_add_pattern_single("command_whisper", "msg|w")
