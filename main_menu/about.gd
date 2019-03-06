@@ -46,7 +46,7 @@ func _on_tree_license_third_party_item_selected():
 func _generate_license(license):
 	var output = license.Name + line_break
 	if (license.Url != null && license.Url != ""):
-		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_REPOSITORY") + ": "
+		output += tab + tr("MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY_REPOSITORY") + ": "
 		output += "[url=" + license.Url + "]" + license.Url + "[/url]"
 		output += line_break
 	if (license.License != null && license.License != ""):
@@ -56,11 +56,11 @@ func _generate_license(license):
 	if (license.Type != null && license.Type != ""):
 		if (output.length() > 0):
 			output += line_break
-		output += tab + tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_LICENSE") + ": " + license.Type
+		output += tab + tr("MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY_LICENSE") + ": " + license.Type
 	return output
 	
 func _generate_team(key, group):
-	var output = tr("MAIN_ABOUT_TEAM_" + key) + line_break + line_break
+	var output = tr("MAIN_MENU_ABOUT_TEAM_" + key) + line_break + line_break
 	if (group == null):
 		return output
 	var members = group.Members
@@ -83,17 +83,16 @@ func _ready():
 	_info = load("res://info.gd")
 	
 	var tabs = find_node("tabs")
-	tabs.set_tab_title(0, tr("MAIN_ABOUT_TEAM"))
-	tabs.set_tab_title(1, tr("MAIN_ABOUT_LICENSE"))
-	tabs.set_tab_title(2, tr("MAIN_ABOUT_LICENSE_THIRD_PARTY"))
+	tabs.set_tab_title(0, tr("MAIN_MENU_ABOUT_TEAM"))
+	tabs.set_tab_title(1, tr("MAIN_MENU_ABOUT_LICENSE"))
+	tabs.set_tab_title(2, tr("MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY"))
 	
-	find_node("label_version").set_text("somsoneone")
-	find_node("label_copyright").add_text("sdfsdf\n")
-	find_node("label_copyright").add_text("werwer")
+	find_node("label_version").set_text(tr("MAIN_MENU_ABOUT_VERSION") + " " + Constants.VERSION)
+	find_node("label_copyright").add_text(_info.copyright)
 	
 	find_node("label_license").set_text(_info.license)
 	
-	var description = tr("MAIN_ABOUT_LICENSE_THIRD_PARTY_DESCRIPTION")
+	var description = tr("MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY_DESCRIPTION")
 	description = description % [tr("TITLE"), tr("TITLE")]
 	find_node("label_license_third_party_description").add_text(description)
 	
@@ -105,9 +104,9 @@ func _ready():
 	_tree.set_hide_root(true)
 	
 	_tree_all = _tree.create_item()
-	_tree_all.set_text(0, tr('MAIN_ABOUT_LICENSE_THIRD_PARTY_ALL'))
+	_tree_all.set_text(0, tr('MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY_ALL'))
 	var tree_components = _tree.create_item()
-	tree_components.set_text(0, tr('MAIN_ABOUT_LICENSE_THIRD_PARTY_COMPONENTS'))
+	tree_components.set_text(0, tr('MAIN_MENU_ABOUT_LICENSE_THIRD_PARTY_COMPONENTS'))
 	
 	_license_all = ""
 	var license
