@@ -5,7 +5,6 @@ extends Node
 # Port Tip #2: If you are the server; you may want to open it (NAT, Firewall)
 
 var _accumulator = 0
-var _fsm
 var _handler_chat
 var _handler_player_selector
 var _handler_print = preload("res://utility/print.gd").new()
@@ -255,7 +254,7 @@ remote func register_in_lobby_player(id, player):
 		var playerT
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
-			playerT = get_by_player_id(peer_id)
+			playerT = get_player_by_id(peer_id)
 			if (playerT == null):
 				continue
 			
@@ -498,24 +497,3 @@ func _process(delta):
 	if (_accumulator > Constants.PING_DELAY):
 		rpc_unreliable("ping", _accumulator)
 		_accumulator = 0
-
-class state extends "res://fsm/menu_fsm.gd":
-	const Complete = "complete"
-	const Empty = "empty"
-		
-	func is_state_complete():
-		return is_state(Complete)
-		
-	func is_state_empty():
-		return is_state(Empty)
-	
-	func set_state_complete():
-		set_state(Complete)
-		
-	func set_state_empty():
-		set_state(Empty)
-	
-	func _initialize():
-		._initialize()
-		add_state(Complete)
-		add_state(Empty)

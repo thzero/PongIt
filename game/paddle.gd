@@ -14,8 +14,8 @@ slave func set_position_and_motion(p_position, p_motion):
 
 func _process(delta):
 	var which = get_name()
-		
-	if (is_network_master()):		
+	
+	if (is_network_master()):
 		motion = 0
 		if (Input.is_action_pressed("move_up")):
 			motion -= 1
