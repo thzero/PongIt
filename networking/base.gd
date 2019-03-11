@@ -5,6 +5,7 @@ extends Node
 # Port Tip #2: If you are the server; you may want to open it (NAT, Firewall)
 
 var _accumulator = 0
+var _fsm
 var _handler_chat
 var _handler_player_selector
 var _handler_print = preload("res://utility/print.gd").new()
@@ -146,8 +147,11 @@ func host_game(name, port):
 	
 	# Initializing the network as client
 	var host = _create_host()
-#	var doh = get_tree().get_multiplayer()
-	host.create_server(port, Constants.MAX_PLAYERS)
+	var err = host.create_server(port, Constants.MAX_PLAYERS)
+	if (err != OK):
+		_print("Can't host, address in use.", null)
+		return false
+		
 	get_tree().set_network_peer(host)
 	
 	return true
@@ -179,10 +183,9 @@ remote func ping(delta):
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
 	_print("quit_game", null)
-	end_game()
+	end_game_ext()
 	_close_connection()
 	_players.clear()
-	emit_signal("server_ended")
 
 # Call it locally as well as calling it remotely
 sync func ready_player(id, player):
@@ -254,7 +257,7 @@ remote func register_in_lobby_player(id, player):
 		var playerT
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
-			playerT = get_player_by_id(peer_id)
+			playerT = get_by_player_id(peer_id)
 			if (playerT == null):
 				continue
 			
@@ -399,7 +402,9 @@ func _ready_players_check():
 func _ready_players_reset():
 	_print("_ready_players_reset", null)
 	
-	_player.ready = false
+	if (_player == null):
+		return
+	
 	if (get_tree().is_network_server()):
 		_print("_ready_players_reset_server", null)
 		
@@ -466,7 +471,8 @@ func _on_connected_to_server():
 # Server disconnected (client)
 func _on_server_disconnected():
 	_print("_on_server_disconnected", null)
-	quit_game()
+	quit_game()	
+	emit_signal("server_ended")
 
 func _ready():
 	_handler_chat = _initialize_chat()
@@ -497,3 +503,24 @@ func _process(delta):
 	if (_accumulator > Constants.PING_DELAY):
 		rpc_unreliable("ping", _accumulator)
 		_accumulator = 0
+
+class state extends "res://fsm/menu_fsm.gd":
+	const Complete = "complete"
+	const Empty = "empty"
+		
+	func is_state_complete():
+		return is_state(Complete)
+		
+	func is_state_empty():
+		return is_state(Empty)
+	
+	func set_state_complete():
+		set_state(Complete)
+		
+	func set_state_empty():
+		set_state(Empty)
+	
+	func _initialize():
+		._initialize()
+		add_state(Complete)
+		add_state(Empty)

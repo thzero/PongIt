@@ -63,6 +63,10 @@ func _on_server_error():
 # ALL - Cancel (from any container)
 func _on_button_cancel_pressed():
 	_fsm.set_state_none()
+	
+	# Disconnect networking
+	Gamestate.quit_game()
+	
 	emit_signal("lobby_finished")
 
 # MAIN MENU
@@ -76,19 +80,19 @@ func _on_button_join_pressed():
 # HOST CONTAINER - Continue (from choosing a nickname)
 # Opens the server for connectivity from clients
 func _on_host_button_continue_pressed():
+	_fsm.menu().set_state_host()
+	
 	var values = _validate_host()
 	if (values == null):
 		return
 	
 	if (!Gamestate.host_game(values.server_name, values.port)):
+		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
-	
-	_refresh_lobby()
-	
-	_fsm.menu().set_state_host()
-	
+		
 	_button_start = false
-	_lobby_container.find_node("button_start").set_disabled(_button_start)
+	_fsm.set_state_lobby()
+	_refresh_lobby()
 
 func _on_host_text_server_name_focus_exited():
 	_validate_host()
@@ -486,7 +490,7 @@ class state extends "res://fsm/base_fsm.gd":
 	
 	func set_state_host():
 		set_state(Host)
-		
+	
 	func set_state_in_game():
 		set_state(InGame)
 	
