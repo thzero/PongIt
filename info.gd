@@ -1,5 +1,7 @@
 extends Reference
 
+const copyright = """Copyright (C) 2019 thZero.com"""
+
 const license = """
 MIT License
 
