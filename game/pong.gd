@@ -61,7 +61,7 @@ func _ready():
 	
 	# by default, all nodes in server inherit from master
 	# while all nodes in clients inherit from slave
-	if (get_tree().is_network_server()):		
+	if (get_tree().is_network_server()):
 		# if in the server, give control of player 2 to the other peer, 
 		# this function is tree recursive by default
 		right.set_network_master(get_tree().get_network_connected_peers()[0])
