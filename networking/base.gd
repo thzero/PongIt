@@ -183,7 +183,7 @@ remote func ping(delta):
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
 	_print("quit_game", null)
-	end_game()
+	end_game_ext()
 	_close_connection()
 	_players.clear()
 
@@ -402,7 +402,9 @@ func _ready_players_check():
 func _ready_players_reset():
 	_print("_ready_players_reset", null)
 	
-	_player.ready = false
+	if (_player == null):
+		return
+	
 	if (get_tree().is_network_server()):
 		_print("_ready_players_reset_server", null)
 		
@@ -469,7 +471,7 @@ func _on_connected_to_server():
 # Server disconnected (client)
 func _on_server_disconnected():
 	_print("_on_server_disconnected", null)
-	quit_game()
+	quit_game()	
 	emit_signal("server_ended")
 
 func _ready():
