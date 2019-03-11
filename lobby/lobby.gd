@@ -63,6 +63,10 @@ func _on_server_error():
 # ALL - Cancel (from any container)
 func _on_button_cancel_pressed():
 	_fsm.set_state_none()
+	
+	# Disconnect networking
+	Gamestate.quit_game()
+	
 	emit_signal("lobby_finished")
 
 # MAIN MENU
@@ -81,6 +85,7 @@ func _on_host_button_continue_pressed():
 		return
 	
 	if (!Gamestate.host_game(values.server_name, values.port)):
+		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
 	
 	_refresh_lobby()

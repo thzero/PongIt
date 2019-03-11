@@ -147,8 +147,11 @@ func host_game(name, port):
 	
 	# Initializing the network as client
 	var host = _create_host()
-#	var doh = get_tree().get_multiplayer()
-	host.create_server(port, Constants.MAX_PLAYERS)
+	var err = host.create_server(port, Constants.MAX_PLAYERS)
+	if (err != OK):
+		_print("Can't host, address in use.", null)
+		return false
+		
 	get_tree().set_network_peer(host)
 	
 	return true
@@ -183,7 +186,6 @@ func quit_game():
 	end_game()
 	_close_connection()
 	_players.clear()
-	emit_signal("server_ended")
 
 # Call it locally as well as calling it remotely
 sync func ready_player(id, player):
@@ -468,6 +470,7 @@ func _on_connected_to_server():
 func _on_server_disconnected():
 	_print("_on_server_disconnected", null)
 	quit_game()
+	emit_signal("server_ended")
 
 func _ready():
 	_handler_chat = _initialize_chat()
