@@ -1,6 +1,7 @@
 extends RigidBody2D
 
 const SIDES = preload("res://game/sides.gd")
+const wall_class = preload("res://game/wall.gd")
 
 var _direction = Vector2(-1, 0)
 var _stopped = false
