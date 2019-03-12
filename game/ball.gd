@@ -30,8 +30,8 @@ func _reset(state):
 	angular_velocity = 0
 
 	var t = state.get_transform()
-	t.origin.x = initial_pos.x
-	t.origin.y = initial_pos.y
+	t.origin.x = _initial_pos.x
+	t.origin.y = _initial_pos.y
 	state.set_transform(t)
 
 func _integrate_forces(state):
