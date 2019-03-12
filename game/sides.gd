@@ -2,5 +2,6 @@ enum SIDES {
 	left,
 	right,
 	top,
-	bottom
+	bottom,
+	none
 }
