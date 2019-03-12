@@ -9,15 +9,26 @@ custom_solver_bias = 0.0
 radius = 4.78568
 height = 23.6064
 
-[node name="paddle" type="Area2D"]
+[node name="paddle" type="RigidBody2D" index="0"]
 
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+input_pickable = false
+collision_layer = 1
+collision_mask = 1
+mode = 0
+mass = 1.0
+friction = 1.0
+bounce = 0.0
+gravity_scale = 1.0
+custom_integrator = false
+continuous_cd = 0
+contacts_reported = 0
+contact_monitor = false
+sleeping = false
+can_sleep = true
+linear_velocity = Vector2( 0, 0 )
+linear_damp = -1.0
+angular_velocity = 0.0
+angular_damp = -1.0
 script = ExtResource( 1 )
 _sections_unfolded = [ "Collision", "Pickable", "Visibility" ]
 side = 0
@@ -54,7 +65,5 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Visibility" ]
-
-[connection signal="area_entered" from="." to="." method="_on_paddle_area_entered"]
 
 

@@ -1,21 +1,14 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://game/pong.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.tscn" type="PackedScene" id=2]
-[ext_resource path="res://game/paddle.gd" type="Script" id=3]
-[ext_resource path="res://game/paddle.png" type="Texture" id=4]
-[ext_resource path="res://game/spawn_point_2d.gd" type="Script" id=5]
-[ext_resource path="res://game/ball.tscn" type="PackedScene" id=6]
-[ext_resource path="res://game/separator.png" type="Texture" id=7]
-[ext_resource path="res://game/wall.gd" type="Script" id=8]
+[ext_resource path="res://game/paddle.png" type="Texture" id=3]
+[ext_resource path="res://game/spawn_point_2d.gd" type="Script" id=4]
+[ext_resource path="res://game/ball.tscn" type="PackedScene" id=5]
+[ext_resource path="res://game/separator.png" type="Texture" id=6]
+[ext_resource path="res://game/wall.gd" type="Script" id=7]
 
 [sub_resource type="CapsuleShape2D" id=1]
-
-custom_solver_bias = 0.0
-radius = 4.78568
-height = 23.6064
-
-[sub_resource type="CapsuleShape2D" id=4]
 
 custom_solver_bias = 0.0
 radius = 4.78568
@@ -41,36 +34,17 @@ BALL_BOUNCE = 1.1
 BALL_SPEED = 100
 PADDLE_SPEED = 5000
 
-[node name="left" type="RigidBody2D" parent="." index="0" instance=ExtResource( 2 )]
+[node name="left" parent="." index="0" instance=ExtResource( 2 )]
 
 editor/display_folded = true
 position = Vector2( 67.6285, 192.594 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-mode = 0
-mass = 1.0
-friction = 1.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = false
-continuous_cd = 0
-contacts_reported = 0
-contact_monitor = false
-sleeping = false
-can_sleep = true
-linear_velocity = Vector2( 0, 0 )
 linear_damp = 5.0
-angular_velocity = 0.0
-angular_damp = -1.0
-script = ExtResource( 3 )
 _sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
-side = 0
 
 [node name="sprite" type="Sprite" parent="left" index="0"]
 
 self_modulate = Color( 0.960784, 0.364706, 0.968627, 1 )
-texture = ExtResource( 4 )
+texture = ExtResource( 3 )
 _sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="collision" type="CollisionShape2D" parent="left" index="1"]
@@ -101,76 +75,25 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Visibility" ]
 
-[node name="sprite2" type="Sprite" parent="left" index="3"]
-
-texture = ExtResource( 4 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="collision2" type="CollisionShape2D" parent="left" index="4"]
-
-shape = SubResource( 4 )
-_sections_unfolded = [ "Material", "Visibility" ]
-
-[node name="you2" type="Label" parent="left" index="5"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = -26.0
-margin_top = -33.0
-margin_right = 27.0
-margin_bottom = -19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "You"
-align = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Visibility" ]
-
 [node name="spawn_left" type="Position2D" parent="." index="1"]
 
 position = Vector2( 67.6285, 192.594 )
-script = ExtResource( 5 )
+script = ExtResource( 4 )
 _sections_unfolded = [ "Transform" ]
 side = 0
 
-[node name="right" type="RigidBody2D" parent="." index="2" instance=ExtResource( 2 )]
+[node name="right" parent="." index="2" instance=ExtResource( 2 )]
 
 editor/display_folded = true
 position = Vector2( 563.815, 192.594 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-mode = 0
-mass = 1.0
-friction = 1.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = false
-continuous_cd = 0
-contacts_reported = 0
-contact_monitor = false
-sleeping = false
-can_sleep = true
-linear_velocity = Vector2( 0, 0 )
 linear_damp = 5.0
-angular_velocity = 0.0
-angular_damp = -1.0
-script = ExtResource( 3 )
 _sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
 side = 1
 
 [node name="sprite" type="Sprite" parent="right" index="0"]
 
 self_modulate = Color( 0.202698, 0.889853, 0.960938, 1 )
-texture = ExtResource( 4 )
+texture = ExtResource( 3 )
 _sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="collision" type="CollisionShape2D" parent="right" index="1"]
@@ -201,52 +124,19 @@ lines_skipped = 0
 max_lines_visible = -1
 _sections_unfolded = [ "Visibility" ]
 
-[node name="sprite2" type="Sprite" parent="right" index="3"]
-
-texture = ExtResource( 4 )
-_sections_unfolded = [ "Transform", "Visibility" ]
-
-[node name="collision2" type="CollisionShape2D" parent="right" index="4"]
-
-shape = SubResource( 4 )
-_sections_unfolded = [ "Material", "Visibility" ]
-
-[node name="you2" type="Label" parent="right" index="5"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = -26.0
-margin_top = -33.0
-margin_right = 27.0
-margin_bottom = -19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-text = "You"
-align = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Visibility" ]
-
 [node name="spawn_right" type="Position2D" parent="." index="3"]
 
 position = Vector2( 563.815, 192.594 )
-script = ExtResource( 5 )
+script = ExtResource( 4 )
 _sections_unfolded = [ "Transform" ]
 side = 1
 
-[node name="ball" parent="." index="4" instance=ExtResource( 6 )]
+[node name="ball" parent="." index="4" instance=ExtResource( 5 )]
 
 [node name="separator" type="Sprite" parent="." index="5"]
 
 position = Vector2( 320, 200 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 _sections_unfolded = [ "Visibility" ]
 
 [node name="left_wall" type="StaticBody2D" parent="." index="6"]
@@ -260,7 +150,7 @@ constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
 friction = 1.0
 bounce = 0.0
-script = ExtResource( 8 )
+script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Pickable", "Transform" ]
 side = 0
 
@@ -272,7 +162,7 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 [node name="Sprite" type="Sprite" parent="left_wall" index="1"]
 
 position = Vector2( 10, 0 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="right_wall" type="StaticBody2D" parent="." index="7"]
@@ -286,7 +176,7 @@ constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
 friction = 1.0
 bounce = 0.0
-script = ExtResource( 8 )
+script = ExtResource( 7 )
 _sections_unfolded = [ "Transform" ]
 side = 1
 
@@ -298,7 +188,7 @@ _sections_unfolded = [ "Transform", "Z Index" ]
 [node name="Sprite" type="Sprite" parent="right_wall" index="1"]
 
 position = Vector2( -10, 0 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="ceiling" type="StaticBody2D" parent="." index="8"]
@@ -312,7 +202,7 @@ constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
 friction = 1.0
 bounce = 0.0
-script = ExtResource( 8 )
+script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]
 side = 2
 
@@ -326,7 +216,7 @@ _sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
 position = Vector2( 0, 10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="floor" type="StaticBody2D" parent="." index="9"]
@@ -340,7 +230,7 @@ constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
 friction = 1.0
 bounce = 0.0
-script = ExtResource( 8 )
+script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]
 side = 3
 
@@ -353,7 +243,7 @@ shape = SubResource( 3 )
 position = Vector2( 0, -10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
-texture = ExtResource( 7 )
+texture = ExtResource( 6 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="score_left" type="Label" parent="." index="10"]
