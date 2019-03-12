@@ -5,7 +5,7 @@ const SIDES = preload("res://game/sides.gd")
 export var SCORE_TO_WIN = 2 #10
 export var BALL_BOUNCE = 1.1
 export var BALL_SPEED = 100
-export var PADDLE_SPEED = 150
+export var PADDLE_SPEED = 5000
 
 var _timer
 var _countdown = 0

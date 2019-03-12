@@ -8,7 +8,7 @@
 custom_solver_bias = 0.0
 radius = 5.00558
 
-[node name="ball" type="RigidBody2D" index="0"]
+[node name="ball" type="RigidBody2D"]
 
 position = Vector2( 320.5, 191.124 )
 input_pickable = false

@@ -15,11 +15,11 @@ func _process(delta):
 	var velocity = Vector2(0, 0)
 #	if (is_network_master()):
 	if (Input.is_action_pressed("move_up")):
-		velocity = Vector2(0, -1 * MOVE_SPEED)
+		velocity = Vector2(0, -1 * _paddle_speed)
 	elif (Input.is_action_pressed("move_down")):
-		velocity = Vector2(0, MOVE_SPEED)
+		velocity = Vector2(0, _paddle_speed)
 
-	apply_impulse(Vector2(0,0), velocity * 500)
+	apply_impulse(Vector2(0,0), velocity)
 
 	# using unreliable to make sure position is updated as fast as possible, 
 	# even if one of the calls is dropped

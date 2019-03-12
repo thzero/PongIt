@@ -32,7 +32,7 @@ _sections_unfolded = [ "Pause", "Transform", "Visibility", "Z Index" ]
 SCORE_TO_WIN = 2
 BALL_BOUNCE = 1.1
 BALL_SPEED = 100
-PADDLE_SPEED = 150
+PADDLE_SPEED = 5000
 
 [node name="left" parent="." index="0" instance=ExtResource( 2 )]
 
