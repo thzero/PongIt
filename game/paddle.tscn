@@ -3,7 +3,7 @@
 [ext_resource path="res://game/paddle.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.png" type="Texture" id=2]
 
-[sub_resource type="CapsuleShape2D" id=1]
+[sub_resource type="CapsuleShape2D" id=4]
 
 custom_solver_bias = 0.0
 radius = 4.78568
@@ -29,7 +29,7 @@ _sections_unfolded = [ "Transform", "Visibility" ]
 
 [node name="collision" type="CollisionShape2D" parent="." index="1"]
 
-shape = SubResource( 1 )
+shape = SubResource( 4 )
 _sections_unfolded = [ "Material", "Visibility" ]
 
 [node name="you" type="Label" parent="." index="2"]
