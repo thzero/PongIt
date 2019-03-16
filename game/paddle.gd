@@ -2,7 +2,8 @@ extends RigidBody2D
 
 const SIDES = preload("res://game/sides.gd")
 
-export var side = SIDES.left
+#export var side = SIDES.left
+export var side = SIDES.SIDES.left
 
 var _paddle_speed = 0;
 

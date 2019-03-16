@@ -2,7 +2,7 @@ extends StaticBody2D
 
 const SIDES = preload("res://game/sides.gd")
 
-export var side = SIDES.left
+export var side = SIDES.SIDES.left
 
 #func _on_wall_area_entered(area):
 #	if area.get_name() != "ball":

@@ -66,7 +66,7 @@ func _integrate_forces(state):
 #			direction = Vector2(-1, 0)
 		
 #		reset()
-		get_parent().rpc("score", cc.wall_side)
+		get_parent().rpc("score", cc.side)
 
 func _ready():
 	_ball_speed = get_parent().BALL_SPEED

@@ -38,7 +38,6 @@ PADDLE_SPEED = 5000
 
 editor/display_folded = true
 position = Vector2( 67.6285, 192.594 )
-linear_damp = 5.0
 _sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
 
 [node name="sprite" type="Sprite" parent="left" index="0"]
@@ -86,7 +85,6 @@ side = 0
 
 editor/display_folded = true
 position = Vector2( 563.815, 192.594 )
-linear_damp = 5.0
 _sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
 side = 1
 
@@ -133,6 +131,9 @@ side = 1
 
 [node name="ball" parent="." index="4" instance=ExtResource( 5 )]
 
+linear_damp = 0.0
+_sections_unfolded = [ "Collision", "Linear", "Pickable" ]
+
 [node name="separator" type="Sprite" parent="." index="5"]
 
 position = Vector2( 320, 200 )
@@ -148,7 +149,7 @@ collision_layer = 1
 collision_mask = 1
 constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
-friction = 1.0
+friction = 0.0
 bounce = 0.0
 script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Pickable", "Transform" ]
@@ -174,7 +175,7 @@ collision_layer = 1
 collision_mask = 1
 constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
-friction = 1.0
+friction = 0.0
 bounce = 0.0
 script = ExtResource( 7 )
 _sections_unfolded = [ "Transform" ]
@@ -200,7 +201,7 @@ collision_layer = 1
 collision_mask = 1
 constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
-friction = 1.0
+friction = 0.0
 bounce = 0.0
 script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]
@@ -228,7 +229,7 @@ collision_layer = 1
 collision_mask = 1
 constant_linear_velocity = Vector2( 0, 0 )
 constant_angular_velocity = 0.0
-friction = 1.0
+friction = 0.0
 bounce = 0.0
 script = ExtResource( 7 )
 _sections_unfolded = [ "Collision", "Transform" ]

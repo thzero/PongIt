@@ -257,7 +257,7 @@ remote func register_in_lobby_player(id, player):
 		var playerT
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
-			playerT = get_by_player_id(peer_id)
+			playerT = get_player_by_id(peer_id)
 			if (playerT == null):
 				continue
 			
@@ -520,7 +520,7 @@ class state extends "res://fsm/menu_fsm.gd":
 	func set_state_empty():
 		set_state(Empty)
 	
-	func _initialize():
-		._initialize()
+	func _initialize(parent):
+		._initialize(parent)
 		add_state(Complete)
 		add_state(Empty)
