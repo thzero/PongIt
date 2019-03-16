@@ -40,7 +40,8 @@ func chat_message_emit(player_from, message, type, args):
 	emit_signal("chat_message", player_from, message, type, args)
 	
 func chat_message_send(id, message, type, args, id_to):
-	args = null if args == null else inst2dict(args)
+	if (args != null):
+		args = inst2dict(args)
 	
 	if (id_to != null):
 		rpc_id(id_to, "chat_send", id, message, type, args)
