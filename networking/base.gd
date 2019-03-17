@@ -173,7 +173,10 @@ func join_game(ip_address, port):
 	
 	# Initializing the network as server
 	var host = _create_host()
-	host.create_client(ip_address, port)
+	var err = host.create_client(ip_address, port)
+	if (err != OK):
+		_print("Can't join, address not available.", null)
+		return false
 	get_tree().set_network_peer(host)
 	
 	return true

@@ -35,10 +35,10 @@ extents = Vector2( 320, 10 )
 [sub_resource type="PhysicsMaterial" id=8]
 friction = 0.0
 
-[sub_resource type="DynamicFont" id=10]
+[sub_resource type="DynamicFont" id=9]
 font_data = ExtResource( 8 )
 
-[sub_resource type="DynamicFont" id=9]
+[sub_resource type="DynamicFont" id=10]
 size = 32
 use_mipmaps = true
 use_filter = true
@@ -169,7 +169,7 @@ margin_left = 140.0
 margin_top = 20.0
 margin_right = 180.0
 margin_bottom = 40.0
-custom_fonts/font = SubResource( 10 )
+custom_fonts/font = SubResource( 9 )
 align = 1
 valign = 1
 
@@ -178,12 +178,13 @@ margin_left = 302.0
 margin_top = 210.0
 margin_right = 342.0
 margin_bottom = 263.0
-custom_fonts/font = SubResource( 9 )
+custom_fonts/font = SubResource( 10 )
 text = "1"
 align = 1
 valign = 1
 
 [node name="winner_left" type="Label" parent="."]
+visible = false
 margin_left = 120.0
 margin_top = 40.0
 margin_right = 200.0
@@ -203,6 +204,7 @@ align = 1
 valign = 1
 
 [node name="winner_right" type="Label" parent="."]
+visible = false
 margin_left = 440.0
 margin_top = 40.0
 margin_right = 520.0
