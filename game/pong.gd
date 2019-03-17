@@ -1,6 +1,6 @@
 extends "res://game/game.gd"
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
 export var SCORE_TO_WIN = 2 #10
 export var BALL_BOUNCE = 1.1
@@ -12,14 +12,14 @@ var _countdown = 0
 
 var score_left = 0
 var score_right = 0
-var _last_scored = SIDES.none
+var _last_scored = enums.SIDES.none
 
 sync func finished(left, right, winner):
 	update_score(left, right)
 	
-	if (winner == SIDES.left):
+	if (winner == enums.SIDES.left):
 		get_node("winner_left").show()
-	elif (winner == SIDES.right):
+	elif (winner == enums.SIDES.right):
 		get_node("winner_right").show()
 	
 	get_node("button_exit").show()
@@ -32,20 +32,20 @@ master func score(side):
 		return
 	
 	_last_scored = side
-	if (side == SIDES.left):
+	if (side == enums.SIDES.left):
 		score_left += 1
-	elif (side == SIDES.right):
+	elif (side == enums.SIDES.right):
 		score_right += 1
 		
 	var game_ended = false
-	var winner = SIDES.left
+	var winner = enums.SIDES.left
 	
 	if (score_left == SCORE_TO_WIN):
 		game_ended = true
-		winner = SIDES.left
+		winner = enums.SIDES.left
 	elif (score_right == SCORE_TO_WIN):
 		game_ended = true
-		winner = SIDES.right
+		winner = enums.SIDES.right
 	
 	if (game_ended):
 		get_node("ball").rpc("game_finished")
@@ -80,7 +80,7 @@ func _reset():
 	if (!get_tree().is_network_server()):
 		return
 	
-	_last_scored = SIDES.none
+	_last_scored = enums.SIDES.none
 	_countdown = 0
 	_timer.start()
 
@@ -109,7 +109,7 @@ func _ready():
 	update_score(0, 0)
 	
 	var rand = bool(randi() % 2)
-	_last_scored = SIDES.left if rand else SIDES.right
+	_last_scored = enums.SIDES.left if rand else enums.SIDES.right
 	
 	if (!get_tree().is_network_server()):
 		return

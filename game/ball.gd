@@ -1,6 +1,6 @@
 extends RigidBody2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 const wall_class = preload("res://game/wall.gd")
 
 var _direction = Vector2(-1, 0)
@@ -22,7 +22,7 @@ sync func reset(side):
 #	set_mode(RigidBody.MODE_RIGID)
 	_collision_shape.disabled = false
 	
-	var direction = Vector2(-1, 0) if side == SIDES.left else Vector2(1, 0)
+	var direction = Vector2(-1, 0) if side == enums.SIDES.left else Vector2(1, 0)
 	var impulse = direction * _ball_speed * 2
 	apply_impulse(Vector2(0, 0), impulse)
 

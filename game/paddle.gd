@@ -1,9 +1,8 @@
 extends RigidBody2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
-#export var side = SIDES.left
-export var side = SIDES.SIDES.left
+export var side = enums.SIDES.left
 
 var _paddle_speed = 0;
 

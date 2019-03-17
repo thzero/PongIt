@@ -1,8 +1,8 @@
 extends Node2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
-export var side = SIDES.left
+export var side = enums.SIDES.left
 
 func _ready():
 	pass
