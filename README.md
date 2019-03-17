@@ -1,4 +1,4 @@
-> Extension of the multiplayer pong (https://github.com/godotengine/godot-demo-projects/tree/master/networking/multiplayer_pong) demo that covers the basic stuff of high level networking in Godot Engine (3.X).
+> Extension of the multiplayer pong (https://github.com/godotengine/godot-demo-projects/tree/master/networking/multiplayer_pong) demo that covers the basic stuff of high level networking in Godot Engine (3.1).
 
 ## Some features
 
