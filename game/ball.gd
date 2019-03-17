@@ -1,6 +1,6 @@
 extends Area2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
 var _direction = Vector2(-1, 0)
 var _speed = 0
@@ -13,16 +13,16 @@ var _bounce = 0
 onready var _initial_pos = self.position
 	
 sync func bounce_paddle(side, random):
-	if (!((side == SIDES.left) || (side == SIDES.right))):
+	if (!((side == enums.SIDES.left) || (side == enums.SIDES.right))):
 		return
 	
 	#using sync because both players can make it bounce
 	_speed *= _ball_bounce
 
 	print("bounce_paddle - side: " + str(side) + " random: " + str(random), " direction: " + str(_direction))
-	if (side == SIDES.left):		
+	if (side == enums.SIDES.left):		
 		_direction.x = abs(_direction.x)
-	elif (side == SIDES.right):
+	elif (side == enums.SIDES.right):
 		_direction.x = -abs(_direction.x)
 	print("bounce_paddle - side: " + str(side) + " random: " + str(random), " direction: " + str(_direction))
 	
@@ -31,7 +31,7 @@ sync func bounce_paddle(side, random):
 	print("bounce_paddle - side: " + str(side) + " random: " + str(random), " direction: " + str(_direction))
 
 sync func bounce_side(side):
-	if (!((side == SIDES.top) || (side == SIDES.bottom))):
+	if (!((side == enums.SIDES.top) || (side == enums.SIDES.bottom))):
 		return
 	
 	#using sync because both players can make it bounce
@@ -48,9 +48,9 @@ sync func game_finished():
 
 sync func reset(side):
 	position = _initial_pos
-	if (side == SIDES.left):
+	if (side == enums.SIDES.left):
 		_direction = Vector2(-1, 0)
-	elif (side == SIDES.right):
+	elif (side == enums.SIDES.right):
 		_direction = Vector2( 1, 0)
 
 	_speed = _ball_speed

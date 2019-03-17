@@ -1,8 +1,8 @@
 extends Area2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
-export var side = SIDES.left
+export var side = enums.SIDES.left
 
 func _on_wall_area_entered(area):
 	if area.get_name() != "ball":
@@ -15,13 +15,13 @@ func _on_wall_area_entered(area):
 	_wall_left_right(area)
 
 func _wall_floor_ceiling(area):
-	if (!((side == SIDES.top) || (side == SIDES.bottom))):
+	if (!((side == enums.SIDES.top) || (side == enums.SIDES.bottom))):
 		return
 	
 	area.rpc("bounce_side", side)
 	
 func _wall_left_right(area):
-	if (!((side == SIDES.left) || (side == SIDES.right))):
+	if (!((side == enums.SIDES.left) || (side == enums.SIDES.right))):
 		return
 	
 	area.rpc("reset", side)

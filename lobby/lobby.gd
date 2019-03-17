@@ -5,7 +5,6 @@ signal lobby_finished()
 var _fsm
 var _chat
 var _button_start = false
-var _history_current = 0
 
 onready var _menu_container = get_node("menu_container")
 onready var _host_container = get_node("menu_container/Panel/vbox_container/host_container")

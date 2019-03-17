@@ -40,7 +40,8 @@ func chat_message_emit(player_from, message, type, args):
 	emit_signal("chat_message", player_from, message, type, args)
 	
 func chat_message_send(id, message, type, args, id_to):
-	args = null if args == null else inst2dict(args)
+	if (args != null):
+		args = inst2dict(args)
 	
 	if (id_to != null):
 		rpc_id(id_to, "chat_send", id, message, type, args)
@@ -147,11 +148,12 @@ func host_game(name, port):
 	
 	# Initializing the network as client
 	var host = _create_host()
+	
 	var err = host.create_server(port, Constants.MAX_PLAYERS)
 	if (err != OK):
 		_print("Can't host, address in use.", null)
 		return false
-		
+	
 	get_tree().set_network_peer(host)
 	
 	return true
@@ -175,7 +177,7 @@ func join_game(ip_address, port):
 	get_tree().set_network_peer(host)
 	
 	return true
-	
+
 remote func ping(delta):
 	#print("ping " + str(delta))
 	pass
@@ -257,7 +259,7 @@ remote func register_in_lobby_player(id, player):
 		var playerT
 		# For each player, send the new guy info of all players (from server)
 		for peer_id in _players:
-			playerT = get_by_player_id(peer_id)
+			playerT = get_player_by_id(peer_id)
 			if (playerT == null):
 				continue
 			
@@ -323,20 +325,29 @@ func validator():
 
 func _can_join_in_game():
 	return true
-	
+
+func _clear_network_peer():
+	get_tree().set_meta("network_peer", null)
+	get_tree().set_network_peer(null)
+
 func _close_connection():
 	if (get_tree().is_network_server()):
-		var host = get_tree().get_meta("network_peer")
+		var host = _get_network_peer()
 		if (host != null):
 			host.close_connection()
 	
-	get_tree().set_network_peer(null)
+	_clear_network_peer()
+#	get_tree().set_network_peer(null)
 
 func _create_host():
 	var host = NetworkedMultiplayerENet.new()
 	host.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	get_tree().set_meta("network_peer", host)
+	_set_network_peer(host)
 	return host
+
+func _get_network_peer():
+	var peer = get_tree().get_meta("network_peer")
+	return peer
 
 func _get_world():
 	return _world
@@ -370,6 +381,9 @@ func _print(method, args):
 	
 	if (args == null):
 		args = {}
+		
+	if (_get_network_peer() == null):
+		return
 	
 	args["id"] = str(get_tree().get_network_unique_id())
 	args["server"] = str(get_tree().is_network_server())
@@ -421,6 +435,9 @@ func _ready_players_reset():
 			playerT.ready = false
 			rpc("ready_player", peer_id, inst2dict(playerT))
 
+func _set_network_peer(host):
+	get_tree().set_meta("network_peer", host)
+
 func _set_player(id, player):
 	_players[id] = player;
 
@@ -438,7 +455,8 @@ func _unload_world():
 # Could not connect to server (client)
 func _on_connection_failed():
 	_print("_on_connection_failed", null)
-	get_tree().set_network_peer(null)
+#	get_tree().set_network_peer(null)
+	_clear_network_peer()
 	emit_signal("connection_fail")
 
 func _on_game_ended():
@@ -520,7 +538,7 @@ class state extends "res://fsm/menu_fsm.gd":
 	func set_state_empty():
 		set_state(Empty)
 	
-	func _initialize():
-		._initialize()
+	func _initialize(parent):
+		._initialize(parent)
 		add_state(Complete)
 		add_state(Empty)

@@ -1,8 +1,8 @@
 extends Area2D
 
-const SIDES = preload("res://game/sides.gd")
+const enums = preload("res://game/enums.gd")
 
-export var side = SIDES.left
+export var side = enums.SIDES.left
 
 var motion = 0
 var _paddle_speed = 0;
