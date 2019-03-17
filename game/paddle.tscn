@@ -3,67 +3,30 @@
 [ext_resource path="res://game/paddle.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.png" type="Texture" id=2]
 
-[sub_resource type="CapsuleShape2D" id=4]
-
-custom_solver_bias = 0.0
+[sub_resource type="CapsuleShape2D" id=1]
 radius = 4.78568
 height = 23.6064
 
 [node name="paddle" type="RigidBody2D"]
-
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-mode = 0
 mass = 5000.0
-friction = 1.0
-bounce = 0.0
-gravity_scale = 1.0
-custom_integrator = false
-continuous_cd = 0
-contacts_reported = 0
-contact_monitor = false
-sleeping = false
-can_sleep = true
-linear_velocity = Vector2( 0, 0 )
+can_sleep = false
 linear_damp = 5.0
-angular_velocity = 0.0
-angular_damp = -1.0
+angular_damp = 100.0
 script = ExtResource( 1 )
-_sections_unfolded = [ "Collision", "Linear", "Pickable", "Visibility" ]
-side = 0
 
-[node name="sprite" type="Sprite" parent="." index="0"]
-
+[node name="sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
-_sections_unfolded = [ "Transform", "Visibility" ]
 
-[node name="collision" type="CollisionShape2D" parent="." index="1"]
+[node name="collision" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
 
-shape = SubResource( 4 )
-_sections_unfolded = [ "Material", "Visibility" ]
-
-[node name="you" type="Label" parent="." index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="you" type="Label" parent="."]
 margin_left = -26.0
 margin_top = -33.0
 margin_right = 27.0
 margin_bottom = -19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
 size_flags_horizontal = 2
 size_flags_vertical = 0
 text = "You"
 align = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Visibility" ]
-
 

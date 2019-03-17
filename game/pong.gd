@@ -5,16 +5,19 @@ const enums = preload("res://game/enums.gd")
 export var SCORE_TO_WIN = 2 #10
 export var BALL_BOUNCE = 1.1
 export var BALL_SPEED = 100
-export var PADDLE_SPEED = 5000
+export var PADDLE_SPEED = 500
 
 var _timer
 var _countdown = 0
-
 var score_left = 0
 var score_right = 0
 var _last_scored = enums.SIDES.none
 
-sync func finished(left, right, winner):
+sync func finish(left, right, winner):
+	get_node("ball").reset(true)
+	get_node("left").reset(true)
+	get_node("right").reset(true)
+	
 	update_score(left, right)
 	
 	if (winner == enums.SIDES.left):
@@ -24,21 +27,29 @@ sync func finished(left, right, winner):
 	
 	get_node("button_exit").show()
 
-sync func reset_ball(side):
-	find_node("ball").reset(side)
+sync func reset(side):
+	get_node("ball").reset(true)
+	get_node("left").reset(true)
+	get_node("right").reset(true)
+	
+	if (get_tree().is_network_server()):
+		_timer.start()
 
 master func score(side):
 	if (!get_tree().is_network_server()):
 		return
 	
-	_last_scored = side
 	if (side == enums.SIDES.left):
-		score_left += 1
-	elif (side == enums.SIDES.right):
 		score_right += 1
-		
+		_last_scored = enums.SIDES.right
+	elif (side == enums.SIDES.right):
+		score_left += 1
+		_last_scored = enums.SIDES.left
+	
+	rpc("update_score", score_left, score_right)
+	
 	var game_ended = false
-	var winner = enums.SIDES.left
+	var winner = enums.SIDES.none
 	
 	if (score_left == SCORE_TO_WIN):
 		game_ended = true
@@ -48,16 +59,20 @@ master func score(side):
 		winner = enums.SIDES.right
 	
 	if (game_ended):
-		get_node("ball").rpc("game_finished")
-		rpc("finished", score_left, score_right, winner)
+		rpc("finish", score_left, score_right, winner)
 		return
-		
+	
 	_reset()
-		
-	rpc("update_score", score_left, score_right)
+
+sync func start(side):
+	get_node("countdown").hide()
+	get_node("left").reset(false)
+	get_node("right").reset(false)
+	get_node("ball").launch(_last_scored)
 
 sync func update_countdown(countdown):
-	print('countdown ' + str(countdown))
+	get_node("countdown").show()
+	get_node("countdown").set_text(str(countdown))
 
 sync func update_score(left, right):
 	get_node("score_left").set_text(str(left))
@@ -69,12 +84,13 @@ func _on_button_exit_pressed():
 func _on_timer_timeout():
 	_countdown += 1
 	
-	if (_countdown < 5):
+	if (_countdown <= 5):
 		rpc("update_countdown", _countdown)
 		return
+	rpc("update_countdown", _countdown)
 	
 	_timer.stop()
-	rpc("reset_ball", _last_scored)
+	rpc("start", _last_scored)
 
 func _reset():
 	if (!get_tree().is_network_server()):
@@ -82,15 +98,29 @@ func _reset():
 	
 	_last_scored = enums.SIDES.none
 	_countdown = 0
-	_timer.start()
+	
+	rpc("reset", _last_scored)
 
 func _ready():
 	._ready()
 	
+	var window_size = OS.get_window_size()
+	
 	randomize()
+	
+#	var t = get_transform()
+#	t.x = 500
+#	t.y = 500
+#	set_transform(t)
+	var vector = Vector2(500, 500)
+#	translate (vector)
 	
 	var left = get_node("left")
 	var right = get_node("right")
+	var ball = get_node("right")
+#	left.init(vector)
+#	right.init(vector)
+#	ball.init(vector)
 	
 	# by default, all nodes in server inherit from master
 	# while all nodes in clients inherit from slave
@@ -119,5 +149,5 @@ func _ready():
 	_timer.wait_time = 1
 	add_child(_timer) 
 	_timer.connect("timeout", self, "_on_timer_timeout") 
-
+	
 	_reset()

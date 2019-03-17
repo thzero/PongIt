@@ -3,33 +3,37 @@ extends RigidBody2D
 const enums = preload("res://game/enums.gd")
 const wall_class = preload("res://game/wall.gd")
 
+var _collision_shape
 var _direction = Vector2(-1, 0)
+var _initial_pos
+var _speed = 0
 var _stopped = false
 
-var _ball_speed = 0
-
-var _initial_pos
-var _collision_shape
-
 sync func game_finished():
-	_stopped = true
+	reset(true)
 
-sync func reset(side):
-	print('reset ball!! ' + str(side))
-	
+sync func launch(side):
+	reset(false)
 	show()
+	call_deferred('_enable_collision', true)
 	
-#	set_mode(RigidBody.MODE_RIGID)
-	_collision_shape.disabled = false
+	if (!get_tree().is_network_server()):
+		return
 	
 	var direction = Vector2(-1, 0) if side == enums.SIDES.left else Vector2(1, 0)
-	var impulse = direction * _ball_speed * 2
+	var impulse = direction * _speed * 2
 	apply_impulse(Vector2(0, 0), impulse)
+
+func reset(value):
+	_stopped = value
+
+func _enable_collision(value):
+	_collision_shape.disabled = !value
 
 func _reset(state):
 	linear_velocity = Vector2(0, 0)
 	angular_velocity = 0
-
+	
 	var t = state.get_transform()
 	t.origin.x = _initial_pos.x
 	t.origin.y = _initial_pos.y
@@ -42,7 +46,10 @@ func _integrate_forces(state):
 	if (_stopped):
 		_reset(state)
 		return
-#
+	
+	if (!get_tree().is_network_server()):
+		return
+	
 	for i in range(state.get_contact_count()):
 		var cc = state.get_contact_collider_object(i)
 		var dp = state.get_contact_local_normal(i)
@@ -53,22 +60,13 @@ func _integrate_forces(state):
 		if !(cc is wall_class):
 			return
 		
-		_collision_shape.disabled = true
+		call_deferred('_enable_collision', false)
 		hide()
-		
 		_reset(state)
 		
-#		if (cc.wall_side == 0):
-#			print('score for left')
-#			direction = Vector2(1, 0)
-#		elif (cc.wall_side == 1):
-#			print('score for right')
-#			direction = Vector2(-1, 0)
-		
-#		reset()
 		get_parent().rpc("score", cc.side)
 
 func _ready():
-	_ball_speed = get_parent().BALL_SPEED
-	_initial_pos = get_global_transform().origin
+	_speed = get_parent().BALL_SPEED
 	_collision_shape = find_node('collision')
+	_initial_pos = get_global_transform().origin

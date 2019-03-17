@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://game/pong.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.tscn" type="PackedScene" id=2]
@@ -7,362 +7,221 @@
 [ext_resource path="res://game/ball.tscn" type="PackedScene" id=5]
 [ext_resource path="res://game/separator.png" type="Texture" id=6]
 [ext_resource path="res://game/wall.gd" type="Script" id=7]
+[ext_resource path="res://assets/fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://game/pong.tres" type="DynamicFont" id=9]
 
 [sub_resource type="CapsuleShape2D" id=1]
-
-custom_solver_bias = 0.0
 radius = 4.78568
 height = 23.6064
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="PhysicsMaterial" id=2]
+bounce = 1.0
 
-custom_solver_bias = 0.0
+[sub_resource type="PhysicsMaterial" id=3]
+friction = 0.0
+
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 10, 200 )
 
-[sub_resource type="RectangleShape2D" id=3]
+[sub_resource type="PhysicsMaterial" id=5]
+friction = 0.0
 
-custom_solver_bias = 0.0
+[sub_resource type="PhysicsMaterial" id=6]
+friction = 0.0
+
+[sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 320, 10 )
 
-[node name="game" type="Node2D" index="0"]
+[sub_resource type="PhysicsMaterial" id=8]
+friction = 0.0
 
-position = Vector2( 319.791, 195.976 )
+[sub_resource type="DynamicFont" id=10]
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 32
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 8 )
+
+[node name="game" type="Node2D"]
+position = Vector2( 320, 200 )
 script = ExtResource( 1 )
-_sections_unfolded = [ "Pause", "Transform", "Visibility", "Z Index" ]
-SCORE_TO_WIN = 2
-BALL_BOUNCE = 1.1
-BALL_SPEED = 100
-PADDLE_SPEED = 5000
 
-[node name="left" parent="." index="0" instance=ExtResource( 2 )]
-
+[node name="left" parent="." instance=ExtResource( 2 )]
 editor/display_folded = true
 position = Vector2( 67.6285, 192.594 )
-_sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
 
-[node name="sprite" type="Sprite" parent="left" index="0"]
-
+[node name="sprite" type="Sprite" parent="left"]
 self_modulate = Color( 0.960784, 0.364706, 0.968627, 1 )
 texture = ExtResource( 3 )
-_sections_unfolded = [ "Transform", "Visibility" ]
 
-[node name="collision" type="CollisionShape2D" parent="left" index="1"]
-
+[node name="collision" type="CollisionShape2D" parent="left"]
 shape = SubResource( 1 )
-_sections_unfolded = [ "Material", "Visibility" ]
 
-[node name="you" type="Label" parent="left" index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="you" type="Label" parent="left"]
 margin_left = -26.0
 margin_top = -33.0
 margin_right = 27.0
 margin_bottom = -19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
 size_flags_horizontal = 2
 size_flags_vertical = 0
 text = "You"
 align = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Visibility" ]
 
-[node name="spawn_left" type="Position2D" parent="." index="1"]
-
+[node name="spawn_left" type="Position2D" parent="."]
 position = Vector2( 67.6285, 192.594 )
 script = ExtResource( 4 )
-_sections_unfolded = [ "Transform" ]
-side = 0
 
-[node name="right" parent="." index="2" instance=ExtResource( 2 )]
-
+[node name="right" parent="." instance=ExtResource( 2 )]
 editor/display_folded = true
 position = Vector2( 563.815, 192.594 )
-_sections_unfolded = [ "Collision", "Linear", "Pickable", "Transform", "Visibility" ]
 side = 1
 
-[node name="sprite" type="Sprite" parent="right" index="0"]
-
+[node name="sprite" type="Sprite" parent="right"]
 self_modulate = Color( 0.202698, 0.889853, 0.960938, 1 )
 texture = ExtResource( 3 )
-_sections_unfolded = [ "Transform", "Visibility" ]
 
-[node name="collision" type="CollisionShape2D" parent="right" index="1"]
-
+[node name="collision" type="CollisionShape2D" parent="right"]
 shape = SubResource( 1 )
-_sections_unfolded = [ "Material", "Visibility" ]
 
-[node name="you" type="Label" parent="right" index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="you" type="Label" parent="right"]
 margin_left = -26.0
 margin_top = -33.0
 margin_right = 27.0
 margin_bottom = -19.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
 size_flags_horizontal = 2
 size_flags_vertical = 0
 text = "You"
 align = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Visibility" ]
 
-[node name="spawn_right" type="Position2D" parent="." index="3"]
-
+[node name="spawn_right" type="Position2D" parent="."]
 position = Vector2( 563.815, 192.594 )
 script = ExtResource( 4 )
-_sections_unfolded = [ "Transform" ]
 side = 1
 
-[node name="ball" parent="." index="4" instance=ExtResource( 5 )]
-
+[node name="ball" parent="." instance=ExtResource( 5 )]
+physics_material_override = SubResource( 2 )
 linear_damp = 0.0
-_sections_unfolded = [ "Collision", "Linear", "Pickable" ]
 
-[node name="separator" type="Sprite" parent="." index="5"]
-
+[node name="separator" type="Sprite" parent="."]
 position = Vector2( 320, 200 )
 texture = ExtResource( 6 )
-_sections_unfolded = [ "Visibility" ]
 
-[node name="left_wall" type="StaticBody2D" parent="." index="6"]
-
-editor/display_folded = true
+[node name="left_wall" type="StaticBody2D" parent="."]
 position = Vector2( -10, 200 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-constant_linear_velocity = Vector2( 0, 0 )
-constant_angular_velocity = 0.0
-friction = 0.0
-bounce = 0.0
+physics_material_override = SubResource( 3 )
 script = ExtResource( 7 )
-_sections_unfolded = [ "Collision", "Pickable", "Transform" ]
-side = 0
 
-[node name="collision" type="CollisionShape2D" parent="left_wall" index="0"]
+[node name="collision" type="CollisionShape2D" parent="left_wall"]
+shape = SubResource( 4 )
 
-shape = SubResource( 2 )
-_sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
-
-[node name="Sprite" type="Sprite" parent="left_wall" index="1"]
-
+[node name="Sprite" type="Sprite" parent="left_wall"]
 position = Vector2( 10, 0 )
 texture = ExtResource( 6 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="right_wall" type="StaticBody2D" parent="." index="7"]
-
-editor/display_folded = true
+[node name="right_wall" type="StaticBody2D" parent="."]
 position = Vector2( 650, 200 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-constant_linear_velocity = Vector2( 0, 0 )
-constant_angular_velocity = 0.0
-friction = 0.0
-bounce = 0.0
+physics_material_override = SubResource( 5 )
 script = ExtResource( 7 )
-_sections_unfolded = [ "Transform" ]
 side = 1
 
-[node name="collision" type="CollisionShape2D" parent="right_wall" index="0"]
+[node name="collision" type="CollisionShape2D" parent="right_wall"]
+shape = SubResource( 4 )
 
-shape = SubResource( 2 )
-_sections_unfolded = [ "Transform", "Z Index" ]
-
-[node name="Sprite" type="Sprite" parent="right_wall" index="1"]
-
+[node name="Sprite" type="Sprite" parent="right_wall"]
 position = Vector2( -10, 0 )
 texture = ExtResource( 6 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="ceiling" type="StaticBody2D" parent="." index="8"]
-
+[node name="ceiling" type="StaticBody2D" parent="."]
 editor/display_folded = true
 position = Vector2( 320, -10 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-constant_linear_velocity = Vector2( 0, 0 )
-constant_angular_velocity = 0.0
-friction = 0.0
-bounce = 0.0
+physics_material_override = SubResource( 6 )
 script = ExtResource( 7 )
-_sections_unfolded = [ "Collision", "Transform" ]
 side = 2
 
-[node name="collision" type="CollisionShape2D" parent="ceiling" index="0"]
+[node name="collision" type="CollisionShape2D" parent="ceiling"]
+shape = SubResource( 7 )
 
-shape = SubResource( 3 )
-_sections_unfolded = [ "Material", "Transform", "Visibility", "Z Index" ]
-
-[node name="Sprite" type="Sprite" parent="ceiling" index="1"]
-
+[node name="Sprite" type="Sprite" parent="ceiling"]
 position = Vector2( 0, 10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
 texture = ExtResource( 6 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="floor" type="StaticBody2D" parent="." index="9"]
-
-editor/display_folded = true
+[node name="floor" type="StaticBody2D" parent="."]
 position = Vector2( 320, 410 )
-input_pickable = false
-collision_layer = 1
-collision_mask = 1
-constant_linear_velocity = Vector2( 0, 0 )
-constant_angular_velocity = 0.0
-friction = 0.0
-bounce = 0.0
+physics_material_override = SubResource( 8 )
 script = ExtResource( 7 )
-_sections_unfolded = [ "Collision", "Transform" ]
 side = 3
 
-[node name="collision" type="CollisionShape2D" parent="floor" index="0"]
+[node name="collision" type="CollisionShape2D" parent="floor"]
+shape = SubResource( 7 )
 
-shape = SubResource( 3 )
-
-[node name="Sprite" type="Sprite" parent="floor" index="1"]
-
+[node name="Sprite" type="Sprite" parent="floor"]
 position = Vector2( 0, -10 )
 rotation = 1.5708
 scale = Vector2( 1, 1.60139 )
 texture = ExtResource( 6 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="score_left" type="Label" parent="." index="10"]
+[node name="score_left" type="Label" parent="."]
+margin_left = 140.0
+margin_top = 20.0
+margin_right = 180.0
+margin_bottom = 40.0
+custom_fonts/font = SubResource( 10 )
+align = 1
+valign = 1
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 183.0
-margin_top = 24.0
-margin_right = 223.0
-margin_bottom = 38.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
+[node name="countdown" type="Label" parent="."]
+margin_left = 302.0
+margin_top = 210.0
+margin_right = 342.0
+margin_bottom = 263.0
+custom_fonts/font = SubResource( 9 )
+text = "1"
+align = 1
+valign = 1
 
-[node name="winner_left" type="Label" parent="." index="11"]
-
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 183.0
+[node name="winner_left" type="Label" parent="."]
+margin_left = 120.0
 margin_top = 40.0
-margin_right = 223.0
-margin_bottom = 54.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
+margin_right = 200.0
+margin_bottom = 60.0
+custom_fonts/font = ExtResource( 9 )
 text = "WINNER"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
+align = 1
+valign = 1
 
-[node name="score_right" type="Label" parent="." index="12"]
+[node name="score_right" type="Label" parent="."]
+margin_left = 460.0
+margin_top = 20.0
+margin_right = 500.0
+margin_bottom = 40.0
+custom_fonts/font = ExtResource( 9 )
+align = 1
+valign = 1
 
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 425.0
-margin_top = 23.0
-margin_right = 465.0
-margin_bottom = 37.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
-
-[node name="winner_right" type="Label" parent="." index="13"]
-
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 425.0
+[node name="winner_right" type="Label" parent="."]
+margin_left = 440.0
 margin_top = 40.0
-margin_right = 465.0
-margin_bottom = 54.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
+margin_right = 520.0
+margin_bottom = 60.0
+custom_fonts/font = ExtResource( 9 )
 text = "WINNER"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
+align = 1
+valign = 1
 
-[node name="button_exit" type="Button" parent="." index="14"]
-
+[node name="button_exit" type="Button" parent="."]
 visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_left = 250.0
 margin_top = 319.0
 margin_right = 393.0
 margin_bottom = 339.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
 text = "GAME_BUTTON_EXIT"
-flat = false
-align = 1
 
 [connection signal="pressed" from="button_exit" to="." method="_on_button_exit_pressed"]
 
-
 [editable path="left"]
+
 [editable path="right"]
