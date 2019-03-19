@@ -1,4 +1,4 @@
-extends "res://game/game.gd"
+extends "res://base/game.gd"
 
 const enums = preload("res://game/enums.gd")
 
@@ -12,6 +12,7 @@ var _countdown = 0
 var score_left = 0
 var score_right = 0
 var _last_scored = enums.SIDES.none
+var _game_started = false
 
 sync func finish(left, right, winner):
 	get_node("ball").reset(true)
@@ -28,6 +29,10 @@ sync func finish(left, right, winner):
 	get_node("button_exit").show()
 
 sync func reset(side):
+	if (!_game_started):
+		_game_started = true
+		start_game()
+	
 	get_node("ball").reset(true)
 	get_node("left").reset(true)
 	get_node("right").reset(true)
@@ -123,7 +128,6 @@ func _ready():
 #	ball.init(vector)
 	
 	# by default, all nodes in server inherit from master
-	# while all nodes in clients inherit from slave
 	if (get_tree().is_network_server()):
 		# if in the server, give control of player 2 to the other peer, 
 		# this function is tree recursive by default

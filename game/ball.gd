@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends "res://game/syncableRigidBody2D.gd"
 
 const enums = preload("res://game/enums.gd")
 const wall_class = preload("res://game/wall.gd")
@@ -48,6 +48,7 @@ func _integrate_forces(state):
 		return
 	
 	if (!get_tree().is_network_server()):
+#		_integrate_forces_transform(state)
 		return
 	
 	for i in range(state.get_contact_count()):
@@ -65,6 +66,12 @@ func _integrate_forces(state):
 		_reset(state)
 		
 		get_parent().rpc("score", cc.side)
+
+func _physics_process(delta):
+	if (!get_tree().is_network_server()):
+		return
+	
+#	_process_send(delta)
 
 func _ready():
 	_speed = get_parent().BALL_SPEED

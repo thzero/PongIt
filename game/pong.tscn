@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://game/pong.gd" type="Script" id=1]
 [ext_resource path="res://game/paddle.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://game/wall.gd" type="Script" id=7]
 [ext_resource path="res://assets/fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=8]
 [ext_resource path="res://game/pong.tres" type="DynamicFont" id=9]
+[ext_resource path="res://game/player.gd" type="Script" id=10]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 4.78568
@@ -109,6 +110,7 @@ position = Vector2( 320, 200 )
 texture = ExtResource( 6 )
 
 [node name="left_wall" type="StaticBody2D" parent="."]
+editor/display_folded = true
 position = Vector2( -10, 200 )
 physics_material_override = SubResource( 3 )
 script = ExtResource( 7 )
@@ -121,6 +123,7 @@ position = Vector2( 10, 0 )
 texture = ExtResource( 6 )
 
 [node name="right_wall" type="StaticBody2D" parent="."]
+editor/display_folded = true
 position = Vector2( 650, 200 )
 physics_material_override = SubResource( 5 )
 script = ExtResource( 7 )
@@ -150,6 +153,7 @@ scale = Vector2( 1, 1.60139 )
 texture = ExtResource( 6 )
 
 [node name="floor" type="StaticBody2D" parent="."]
+editor/display_folded = true
 position = Vector2( 320, 410 )
 physics_material_override = SubResource( 8 )
 script = ExtResource( 7 )
@@ -221,6 +225,14 @@ margin_top = 319.0
 margin_right = 393.0
 margin_bottom = 339.0
 text = "GAME_BUTTON_EXIT"
+
+[node name="players" type="Node" parent="."]
+
+[node name="player_left" type="Node2D" parent="players"]
+script = ExtResource( 10 )
+
+[node name="player_right" type="Node2D" parent="players"]
+script = ExtResource( 10 )
 
 [connection signal="pressed" from="button_exit" to="." method="_on_button_exit_pressed"]
 
