@@ -88,7 +88,11 @@ func _on_host_button_continue_pressed():
 	if (!Gamestate.host_game(values.server_name, values.port)):
 		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
-		
+	
+	ConfigurationUser.Settings.User.Host.Name = values.server_name
+	ConfigurationUser.Settings.User.Host.Port = values.port
+	ConfigurationUser.save()
+	
 	_button_start = false
 	_fsm.set_state_lobby()
 	_refresh_lobby()
@@ -115,6 +119,10 @@ func _on_join_button_connect_pressed():
 	
 	if (Gamestate.join_game(values.ip_address, values.port)):
 		return
+	
+	ConfigurationUser.Settings.User.Join.IpAddress = values.ip_address
+	ConfigurationUser.Settings.User.Join.Port = values.port
+	ConfigurationUser.save()
 	
 	# While we are attempting to connect, disable button for 'continue'
 	_fsm.menu().set_state_join()
@@ -321,6 +329,12 @@ func _on_state_lobby_changed(state_from, state_to, args):
 func _on_state_menu_changed(state_from, state_to, args):
 	_fsm.menu()._print_state(state_from, state_to, args)
 	if (state_to == _fsm.menu().Host):
+		var user = ConfigurationUser.Settings.User
+		if ((user.Host != null) && (user.Host.Name != null) && (user.Host.Name != "")):
+			_host_container.find_node("text_server_name").set_text(user.Host.Name)
+		if ((user.Host != null) && (user.Host.Port != null)):
+			_host_container.find_node("text_port").set_text(str(user.Host.Port))
+		
 		_menu_container.show()
 		_join_container.hide()
 		_host_container.show()
@@ -338,6 +352,12 @@ func _on_state_menu_changed(state_from, state_to, args):
 		return
 	
 	if (state_to == _fsm.menu().Join):
+		var user = ConfigurationUser.Settings.User
+		if ((user.Join != null) && (user.Join.IpAddress != null) && (user.Join.IpAddress != "")):
+			_join_container.find_node("text_ip_address").set_text(user.Join.IpAddress)
+		if ((user.Join != null) && (user.Join.Port != null)):
+			_join_container.find_node("text_port").set_text(str(user.Join.Port))
+		
 		_menu_container.show()
 		_host_container.hide()
 		_join_container.show()

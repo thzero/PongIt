@@ -1,7 +1,6 @@
 extends Control
 
 var _fsm
-var _user
 var _lobby
 var _regExLib
 
@@ -14,8 +13,6 @@ func _initialize_lobby():
 
 func _load_settings():
 	_main_container.find_node("line_name").text = ConfigurationUser.Settings.User.Name
-	
-	_user.name = ConfigurationUser.Settings.User.Name
 
 func _on_button_about_pressed():
 	_fsm.set_state_about()
@@ -24,9 +21,9 @@ func _on_button_exit_pressed():
 	get_tree().quit()
 
 func _on_button_ok_pressed():
-	if (_validate_name(_user.name)):
+	if (_validate_name(ConfigurationUser.Settings.User.Name)):
 		_fsm.user_name().set_state_complete()
-		ConfigurationUser.update_settings(_user)
+		ConfigurationUser.save()
 		return
 
 func _on_button_mutiplayer_pressed():
@@ -63,11 +60,11 @@ func _on_end_settings():
 
 func _on_line_name_text_changed(new_text):
 	var text = _main_container.find_node("line_name").get_text()
-	if (text == _user.name):
+	if (text == ConfigurationUser.Settings.User.Name):
 		return
 	
 	if (_validate_name(text)):
-		_user.name = text
+		ConfigurationUser.Settings.User.Name = text
 		_fsm.user_name().set_state_dirty()
 		return
 	
@@ -120,14 +117,13 @@ func _on_state_user_name_changed(state_from, state_to, args):
 
 func _ready():
 	_regExLib = regExLib.new()
-	_user = load("res://user.gd").new()
 	
 	_fsm = state.new()
 	_fsm.initialize(self)
 	_fsm.set_state_main()
 	
 	_load_settings()
-	if (_validate_name(_user.name)):
+	if (_validate_name(ConfigurationUser.Settings.User.Name)):
 		_fsm.user_name().set_state_complete()
 	
 	_about_container.connect("about_finished", self, "_on_end_about")
