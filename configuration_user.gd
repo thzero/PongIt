@@ -21,11 +21,11 @@ var Settings = {
 	}
 }
 
-func update(temp):
-	Settings = temp
-
 func _settings():
 	return Settings
-	
+
 func _settings_path():
 	return Settings_Path
+
+func _update(temp):
+	Settings = temp
