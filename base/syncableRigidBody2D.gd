@@ -18,7 +18,8 @@ puppet func send_packet(packet):
 	_state = dict2inst(packet)
 
 func _create_packet():
-	return null
+	var packet = load("res://networking/packet.gd").new()
+	return packet
 	
 func _network_delay():
 	# TODO: determine network delay
