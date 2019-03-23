@@ -1,4 +1,4 @@
-extends "res://game/syncableRigidBody2D.gd"
+extends "res://base/pawnRigidBody2D.gd"
 
 const enums = preload("res://game/enums.gd")
 const MOVE_SPEED = 100

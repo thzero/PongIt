@@ -1,4 +1,4 @@
-extends Node
+extends "res://base/player.gd"
 
 var _stopped
 var _accumulator_movement = 0
