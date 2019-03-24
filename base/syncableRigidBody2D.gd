@@ -31,13 +31,13 @@ func _integrate_forces_transform(state):
 	if (_state != null && (_state_timer < STATE_EXPIRATION_TIME)):
 		_state_timer += state.get_step()
 		var transform = state.get_transform()
-		var pos = lerp_pos(transform.get_origin(), _state[0], 1.0 - ALPHA)
-		var rot = slerp_rot(transform.get_rotation(), _state[1], ALPHA)
+		var pos = lerp_pos(transform.get_origin(), _state.position, 1.0 - ALPHA)
+		var rot = slerp_rot(transform.get_rotation(), _state.rotation, ALPHA)
 		var x_axis = Vector2(cos(rot), -sin(rot))
 		var y_axis = Vector2(sin(rot), cos(rot))
 		state.set_transform(Transform2D(x_axis, y_axis, pos))
-		state.set_linear_velocity(_state[2])
-		state.set_angular_velocity(_state[3])
+		state.set_linear_velocity(_state.linear_velocity)
+		state.set_angular_velocity(_state.angular_velocity)
 
 func _process_send(delta):
 	var duration = 1.0 / 40 #network_fps.get_value()
@@ -62,6 +62,7 @@ func _process_send(delta):
 	if (_seq > 10000):
 		_seq = 0
 	packet.position = position
+	packet.rotation = rotation
 	packet.angular_velocity = angular_velocity
 	packet.linear_velocity = linear_velocity
 	_init_packet(packet)
