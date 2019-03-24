@@ -49,7 +49,7 @@ func _process_send(delta):
 	
 	if (_last_packet != null):
 		var at_rest = (_last_packet.position == position)
-		at_rest &= (_last_packet.velocity == angular_velocity)
+		at_rest &= (_last_packet.angular_velocity == angular_velocity)
 		at_rest &= (_last_packet.linear_velocity == linear_velocity)
 		if (at_rest):
 			return
