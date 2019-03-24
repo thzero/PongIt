@@ -15,11 +15,13 @@ var _last_packet = null
 var _seq = 0
 
 puppet func send_packet(packet):
-	_state = dict2inst(packet)
+	_state = packet
 
 func _create_packet():
-	var packet = load("res://networking/packet.gd").new()
-	return packet
+	return {}
+	
+func _init_packet(packet):
+	pass
 	
 func _network_delay():
 	# TODO: determine network delay
@@ -62,11 +64,12 @@ func _process_send(delta):
 	packet.position = position
 	packet.angular_velocity = angular_velocity
 	packet.linear_velocity = linear_velocity
+	_init_packet(packet)
 	_last_packet = packet
 	
 #	using unreliable to make sure position is updated as fast as possible, 
 #	even if one of the calls is dropped
-	rpc_unreliable("send_packet", inst2dict(packet))
+	rpc_unreliable("send_packet", packet)
 
 # Lerp vector
 func lerp_pos(v1, v2, alpha):
