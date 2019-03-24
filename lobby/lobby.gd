@@ -117,7 +117,8 @@ func _on_join_button_connect_pressed():
 	if (values == null):
 		return
 	
-	if (Gamestate.join_game(values.ip_address, values.port)):
+	if (!Gamestate.join_game(values.ip_address, values.port)):
+		_set_error("host", tr("LOBBY_MESSAGE_JOIN_FAILED"))
 		return
 	
 	ConfigurationUser.Settings.User.Join.IpAddress = values.ip_address
@@ -392,6 +393,7 @@ func _ready():
 	# Set default nicknames on host/join
 	_host_container.find_node("text_server_name").set_text(Constants.DEFAULT_SERVER_NAME)
 	_host_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
+	
 	_join_container.find_node("text_ip_address").set_text(Constants.DEFAULT_SERVER_ADDRESS)
 	_join_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
 	

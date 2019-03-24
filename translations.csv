@@ -27,6 +27,7 @@ LOBBY_MESSAGE_CANT_CONNECT,Can't connect.
 LOBBY_MESSAGE_CONNECTING,Connecting.
 LOBBY_MESSAGE_EXITING,Exiting.
 LOBBY_MESSAGE_PORT_INVALID,"Invalid port, must be between 1024 and 65535."
+LOBBY_MESSAGE_JOIN_FAILED,Joining to the server failed.
 LOBBY_MESSAGE_SERVER_ALREADY_IN_USE,"Server can't start, address in use."
 LOBBY_MESSAGE_SERVER_NAME_INVALID,Server name cannot be empty.
 LOBBY_MULTIPLAYER,Multiplayer
