@@ -29,6 +29,10 @@ func reset(value):
 
 func _enable_collision(value):
 	_collision_shape.disabled = !value
+	
+func _init_packet(packet):
+	._init_packet(packet)
+	packet.position = get_global_transform().origin
 
 func _reset(state):
 	linear_velocity = Vector2(0, 0)
@@ -48,7 +52,7 @@ func _integrate_forces(state):
 		return
 	
 	if (!get_tree().is_network_server()):
-		_integrate_forces_transform(state)
+		_integrate_forces_update(state)
 		return
 	
 	for i in range(state.get_contact_count()):

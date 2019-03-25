@@ -5,8 +5,8 @@ const EPSILON = 0.0005
 const SCALE_FACTOR = 25
 const STATE_EXPIRATION_TIME = 1.0 / 20.0
 
-var _state = null
-var _state_timer = 0
+var _packet = null
+var _packet_timer = 0
 
 var _accumulator = 0
 
@@ -15,38 +15,41 @@ var _last_packet = null
 var _seq = 0
 
 puppet func send_packet(packet):
-	_state = packet
+	_packet = packet
 
 func _create_packet():
 	return {}
 	
 func _init_packet(packet):
-	pass
+	packet.position = position
+	packet.rotation = rotation
+	packet.angular_velocity = angular_velocity
+	packet.linear_velocity = linear_velocity
 	
 func _network_delay():
 	# TODO: determine network delay
 	return 50
 
-func _integrate_forces_transform(state):
-	if (_state == null): # && (_state_timer < STATE_EXPIRATION_TIME)):
-		return
-	
-	_state_timer += state.get_step()
-	var transform = state.get_transform()
-#	var pos = lerp_pos(transform.get_origin(), _state.position, 1.0 - ALPHA)
-#	var rot = slerp_rot(transform.get_rotation(), _state.rotation, ALPHA)
+func _integrate_forces_transform(state, packet):
+#	var pos = lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
+#	var rot = slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
 #	var x_axis = Vector2(cos(rot), -sin(rot))
 #	var y_axis = Vector2(sin(rot), cos(rot))
 #	state.set_transform(Transform2D(x_axis, y_axis, pos))
-#	state.set_linear_velocity(_state.linear_velocity)
-#	state.set_angular_velocity(_state.angular_velocity)
-	transform.origin = _state.position
-	state.set_transform(transform)
-	state.linear_velocity = _state.linear_velocity
-	state.angular_velocity = _state.angular_velocity
+	transform.origin = _packet.position
+
+func _integrate_forces_update(state):
+	if (_packet == null): # && (_packet < STATE_EXPIRATION_TIME)):
+		return
 	
-	linear_velocity = _state.linear_velocity
-	angular_velocity = _state.angular_velocity
+	_packet_timer += state.get_step()
+	var transform = state.get_transform()
+	_integrate_forces_transform(state, _packet)
+	
+	linear_velocity = _packet.linear_velocity
+	angular_velocity = _packet.angular_velocity
+	
+	state.set_transform(transform)
 
 func _process_send(delta):
 	var duration = 1.0 / 40 #network_fps.get_value()
@@ -70,10 +73,6 @@ func _process_send(delta):
 	_seq += 1
 	if (_seq > 10000):
 		_seq = 0
-	packet.position = position
-	packet.rotation = rotation
-	packet.angular_velocity = angular_velocity
-	packet.linear_velocity = linear_velocity
 	_init_packet(packet)
 	_last_packet = packet
 	

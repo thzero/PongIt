@@ -40,13 +40,13 @@ func _integrate_forces(state):
 		_reset(state)
 		return
 	
-#	_integrate_forces_transform(state)
+#	_integrate_forces_update(state)
 
 #func _physics_process(delta):
 #	if (!is_network_master()):
 #		return
 #
-##	_process_send(delta)
+#	_process_send(delta)
 
 func _process(delta):
 	if (!is_network_master()):
