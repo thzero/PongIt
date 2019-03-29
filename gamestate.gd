@@ -10,8 +10,10 @@ func register_in_game_player_ext(id, player):
 func start_game_ext():
 	.start_game_ext()
 	
-	var world = load("res://game/pong.tscn").instance()
-	_load_world(world)
+	# TODO: From map...
+	var map = load("res://maps/pillars/map.tscn").instance()
+	map.init()
+	_load_world(map)
 	
 func unregister_player_ext(id):
 	.unregister_player_ext(id)
