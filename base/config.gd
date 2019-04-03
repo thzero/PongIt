@@ -38,11 +38,19 @@ func _load():
 		return LOAD_ERROR_COULDNT_OPEN
 	
 	var temp = _clone()
+	var temp2 = null
 	for section in temp.keys():
 		for key in temp[section]:
 			var val = config.get_value(section, key)
 			if (val != null):
-				temp[section][key] = val
+#				temp[section][key] = val
+				temp2 = temp[section][key]
+				if (temp2 is Dictionary):
+					for key2 in temp2.keys():
+						if (val.has(key2)):
+							temp[section][key][key2] = val[key2]
+				else:
+					temp[section][key] = val
 	
 	if (_validate(temp)):
 		_update(temp)

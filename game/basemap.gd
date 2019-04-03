@@ -10,13 +10,14 @@ func init():
 		if (viewport == null):
 			return
 		
+		# TODO: Maybe not needed?  Should be part of the map...
 		game = load("res://game/pong.tscn").instance()
 		game.set_name("game")
 		viewport.add_child(game)
 	
 	if (game == null):
 		return
-		
+	
 	game.connect("game_ended", self, "_on_game_ended")
 	game.connect("game_started", self, "_on_game_started")
 
@@ -39,4 +40,8 @@ func _on_game_started():
 	emit_signal("game_started")
 
 func _ready():
+	var game = get_node("game")
+	game.connect("game_ended", self, "_on_game_ended")
+	game.connect("game_started", self, "_on_game_started")
+	
 	_init_viewport()

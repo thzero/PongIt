@@ -12,6 +12,7 @@ var Settings = {
 		"Name": "",
 		"Host": {
 			"Name": "",
+			"IpAddress": "",
 			"Port": null
 		},
 		"Join": {

@@ -13,25 +13,22 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 
 [node name="Panel" type="Panel" parent="menu_container"]
-editor/display_folded = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -199.5
-margin_top = -100.0
+margin_top = -128.5
 margin_right = 199.5
-margin_bottom = 100.0
+margin_bottom = 128.5
 
 [node name="vbox_container" type="VBoxContainer" parent="menu_container/Panel"]
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
 margin_left = -184.5
-margin_top = -81.0
+margin_top = 15.0
 margin_right = 184.5
-margin_bottom = 81.0
+margin_bottom = 177.0
 
 [node name="label_title" type="Label" parent="menu_container/Panel/vbox_container"]
 margin_right = 369.0
@@ -46,6 +43,7 @@ margin_right = 369.0
 margin_bottom = 22.0
 
 [node name="hbox_tabs" type="HBoxContainer" parent="menu_container/Panel/vbox_container"]
+editor/display_folded = true
 margin_top = 26.0
 margin_right = 369.0
 margin_bottom = 46.0
@@ -72,14 +70,13 @@ align = 1
 valign = 1
 
 [node name="host_container" type="VBoxContainer" parent="menu_container/Panel/vbox_container"]
-visible = false
 margin_top = 68.0
 margin_right = 369.0
-margin_bottom = 162.0
+margin_bottom = 204.0
 
 [node name="grid_host" type="GridContainer" parent="menu_container/Panel/vbox_container/host_container"]
 margin_right = 369.0
-margin_bottom = 52.0
+margin_bottom = 94.0
 columns = 2
 
 [node name="label_server_name" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
@@ -94,31 +91,55 @@ margin_right = 312.0
 margin_bottom = 24.0
 custom_constants/minimum_spaces = 40
 
-[node name="label_port" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
-margin_top = 33.0
+[node name="Label" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
+margin_top = 28.0
 margin_right = 138.0
-margin_bottom = 47.0
+margin_bottom = 42.0
+
+[node name="label_address_meta" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
+margin_left = 142.0
+margin_top = 28.0
+margin_right = 312.0
+margin_bottom = 42.0
+
+[node name="label_address" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
+margin_top = 49.0
+margin_right = 138.0
+margin_bottom = 63.0
+text = "LOBBY_ADDRESS"
+
+[node name="option_addresses" type="OptionButton" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
+margin_left = 142.0
+margin_top = 46.0
+margin_right = 312.0
+margin_bottom = 66.0
+shortcut_in_tooltip = false
+
+[node name="label_port" type="Label" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
+margin_top = 75.0
+margin_right = 138.0
+margin_bottom = 89.0
 text = "LOBBY_PORT"
 
 [node name="text_port" type="LineEdit" parent="menu_container/Panel/vbox_container/host_container/grid_host"]
 margin_left = 142.0
-margin_top = 28.0
+margin_top = 70.0
 margin_right = 312.0
-margin_bottom = 52.0
+margin_bottom = 94.0
 custom_constants/minimum_spaces = 40
 
 [node name="label_error" type="Label" parent="menu_container/Panel/vbox_container/host_container"]
-margin_top = 56.0
+margin_top = 98.0
 margin_right = 369.0
-margin_bottom = 70.0
+margin_bottom = 112.0
 custom_colors/font_color = Color( 1, 0.410156, 0.410156, 1 )
 align = 1
 valign = 1
 
 [node name="hbox_host_buttons" type="HBoxContainer" parent="menu_container/Panel/vbox_container/host_container"]
-margin_top = 74.0
+margin_top = 116.0
 margin_right = 369.0
-margin_bottom = 94.0
+margin_bottom = 136.0
 alignment = 2
 
 [node name="button_cancel" type="Button" parent="menu_container/Panel/vbox_container/host_container/hbox_host_buttons"]
@@ -134,9 +155,10 @@ margin_bottom = 20.0
 text = "LOBBY_BUTTON_CONTINUE"
 
 [node name="join_container" type="VBoxContainer" parent="menu_container/Panel/vbox_container"]
-margin_top = 68.0
+visible = false
+margin_top = 194.0
 margin_right = 369.0
-margin_bottom = 162.0
+margin_bottom = 288.0
 
 [node name="grid_join" type="GridContainer" parent="menu_container/Panel/vbox_container/join_container"]
 margin_right = 369.0
@@ -195,6 +217,8 @@ margin_bottom = 20.0
 text = "LOBBY_BUTTON_CONNECT"
 
 [node name="lobby_container" type="Control" parent="."]
+editor/display_folded = true
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -327,10 +351,10 @@ margin_left = 206.0
 margin_right = 365.0
 margin_bottom = 20.0
 text = "LOBBY_BUTTON_START"
-
 [connection signal="pressed" from="menu_container/Panel/vbox_container/hbox_tabs/button_host" to="." method="_on_button_host_pressed"]
 [connection signal="pressed" from="menu_container/Panel/vbox_container/hbox_tabs/button_join" to="." method="_on_button_join_pressed"]
 [connection signal="focus_exited" from="menu_container/Panel/vbox_container/host_container/grid_host/text_server_name" to="." method="_on_host_text_server_name_focus_exited"]
+[connection signal="item_selected" from="menu_container/Panel/vbox_container/host_container/grid_host/option_addresses" to="." method="_on_option_addresses_item_selected"]
 [connection signal="focus_exited" from="menu_container/Panel/vbox_container/host_container/grid_host/text_port" to="." method="_on_host_text_port_focus_exited"]
 [connection signal="pressed" from="menu_container/Panel/vbox_container/host_container/hbox_host_buttons/button_cancel" to="." method="_on_button_cancel_pressed"]
 [connection signal="pressed" from="menu_container/Panel/vbox_container/host_container/hbox_host_buttons/button_continue" to="." method="_on_host_button_continue_pressed"]
