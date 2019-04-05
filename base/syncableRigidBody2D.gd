@@ -10,7 +10,8 @@ var _packet_timer = 0
 
 var _accumulator = 0
 
-var _last_packet = null
+var _last_packet_received = null
+var _last_packet_sent = null
 
 var _seq = 0
 
@@ -41,8 +42,15 @@ func _integrate_forces_transform(state, packet):
 func _integrate_forces_update(state):
 	if (_packet == null): # && (_packet < STATE_EXPIRATION_TIME)):
 		return
-	
+		
 	_packet_timer += state.get_step()
+	
+	if (_last_packet_received != null):
+		if (_packet.seq < _last_packet_received.seq):
+			return
+	
+	_last_packet_received = _packet
+	
 	var transform = state.get_transform()
 	_integrate_forces_transform(state, _packet)
 	
@@ -59,10 +67,10 @@ func _process_send(delta):
 	
 	_accumulator = 0
 	
-	if (_last_packet != null):
-		var at_rest = (_last_packet.position == position)
-		at_rest = at_rest && (_last_packet.angular_velocity == angular_velocity)
-		at_rest = at_rest && (_last_packet.linear_velocity == linear_velocity)
+	if (_last_packet_sent != null):
+		var at_rest = (_last_packet_sent.position == position)
+		at_rest = at_rest && (_last_packet_sent.angular_velocity == angular_velocity)
+		at_rest = at_rest && (_last_packet_sent.linear_velocity == linear_velocity)
 		if (at_rest):
 			return
 	
@@ -74,11 +82,12 @@ func _process_send(delta):
 	if (_seq > 10000):
 		_seq = 0
 	_init_packet(packet)
-	_last_packet = packet
 	
 #	using unreliable to make sure position is updated as fast as possible, 
 #	even if one of the calls is dropped
 	rpc_unreliable("send_packet", packet)
+	
+	_last_packet_sent = packet
 
 # Lerp vector
 func lerp_pos(v1, v2, alpha):
