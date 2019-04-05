@@ -480,6 +480,8 @@ func _ready():
 			_addresses[ip.friendly] = { "name": ip.friendly }
 		temp = _addresses[ip.friendly]
 		temp["type"] = ip.type
+		temp["v4"] = null
+		temp["v6"] = null
 		if (ip.type == IP.TYPE_IPV4):
 			temp["v4"] = ip.address
 		elif (ip.type == IP.TYPE_IPV6):
