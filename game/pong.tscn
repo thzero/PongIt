@@ -166,8 +166,7 @@ script = ExtResource( 8 )
 [node name="player_right" type="Node2D" parent="players"]
 script = ExtResource( 8 )
 
-[node name="Container" parent="." instance=ExtResource( 9 )]
-
+[node name="hud" parent="." instance=ExtResource( 9 )]
 
 [editable path="left"]
 

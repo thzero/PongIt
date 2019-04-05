@@ -22,11 +22,11 @@ sync func finish(left, right, winner):
 	update_score(left, right)
 	
 	if (winner == enums.SIDES.left):
-		get_node("winner_left").show()
+		find_node("winner_left").show()
 	elif (winner == enums.SIDES.right):
-		get_node("winner_right").show()
+		find_node("winner_right").show()
 	
-	get_node("button_exit").show()
+	find_node("button_exit").show()
 
 sync func reset(side):
 	if (!_game_started):
@@ -70,18 +70,18 @@ master func score(side):
 	_reset()
 
 sync func start(side):
-	get_node("countdown").hide()
+	find_node("countdown").hide()
 	get_node("left").reset(false)
 	get_node("right").reset(false)
 	get_node("ball").launch(_last_scored)
 
 sync func update_countdown(countdown):
-	get_node("countdown").show()
-	get_node("countdown").set_text(str(countdown))
+	find_node("countdown").show()
+	find_node("countdown").set_text(str(countdown))
 
 sync func update_score(left, right):
-	get_node("score_left").set_text(str(left))
-	get_node("score_right").set_text(str(right))
+	find_node("score_left").set_text(str(left))
+	find_node("score_right").set_text(str(right))
 
 func _on_button_exit_pressed():
 	end_game()
@@ -137,8 +137,8 @@ func _ready():
 		# this function is tree recursive by default
 		right.set_network_master(get_tree().get_network_unique_id())
 	
-	get_node("winner_left").hide()
-	get_node("winner_right").hide()
+	find_node("winner_left").hide()
+	find_node("winner_right").hide()
 	
 	update_score(0, 0)
 	
