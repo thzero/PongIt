@@ -47,6 +47,3 @@ func _ready():
 	init()
 	
 	_init_viewport()
-	
-	_game.connect("game_ended", self, "_on_game_ended")
-	_game.connect("game_started", self, "_on_game_started")
