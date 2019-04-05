@@ -40,7 +40,7 @@ func _on_game_started():
 	emit_signal("game_started")
 
 func _ready():
-	var game = get_node("game")
+	var game = find_node("game")
 	game.connect("game_ended", self, "_on_game_ended")
 	game.connect("game_started", self, "_on_game_started")
 	
