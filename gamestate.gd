@@ -12,7 +12,6 @@ func start_game_ext():
 	
 	# TODO: From map...
 	var map = load("res://maps/pillars/map.tscn").instance()
-	map.init()
 	_load_world(map)
 	
 func unregister_player_ext(id):

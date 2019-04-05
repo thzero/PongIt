@@ -73,7 +73,7 @@ script = SubResource( 11 )
 
 [sub_resource type="SpatialMaterial" id=13]
 
-[node name="2D_in_3D" type="Spatial"]
+[node name="map" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
@@ -144,7 +144,7 @@ shadow_enabled = true
 directional_shadow_blend_splits = true
 directional_shadow_normal_bias = 0.2
 
-[node name="Viewport_quad" type="MeshInstance" parent="."]
+[node name="ViewportQuad" type="MeshInstance" parent="."]
 transform = Transform( 2, 0, -5.82673e-08, -8.74228e-08, 1.91069e-15, -1.333, 0, 1, 2.54694e-15, 0, 1.20996, -5.25875 )
 material_override = SubResource( 13 )
 mesh = SubResource( 1 )

@@ -3,35 +3,39 @@ extends Spatial
 signal game_ended()
 signal game_started()
 
+var _game = null
+var _viewport = null
+var _viewport_quad = null
+
 func init():
-	var game = get_node("game")
-	if (game == null):
-		var viewport = get_node("Viewport")
-		if (viewport == null):
-			return
-		
+	_viewport = get_node("Viewport")
+	assert(_viewport != null)
+	
+	_viewport_quad = get_node("ViewportQuad")
+	assert(_viewport_quad != null)
+	
+	_game = get_node("game")
+	if (_game == null):
 		# TODO: Maybe not needed?  Should be part of the map...
-		game = load("res://game/pong.tscn").instance()
-		game.set_name("game")
-		viewport.add_child(game)
+		_game = load("res://game/pong.tscn").instance()
+		_game.set_name("game")
+		_viewport.add_child(_game)
 	
-	if (game == null):
-		return
+	assert(_game != null)
 	
-	game.connect("game_ended", self, "_on_game_ended")
-	game.connect("game_started", self, "_on_game_started")
+	_game.connect("game_ended", self, "_on_game_ended")
+	_game.connect("game_started", self, "_on_game_started")
 
 func _init_viewport():
 	# Get the viewport and clear it
-	var viewport = get_node("Viewport")
-	viewport.set_clear_mode(Viewport.CLEAR_MODE_ALWAYS)
+	_viewport.set_clear_mode(Viewport.CLEAR_MODE_ALWAYS)
 	
 	# Let two frames pass to make sure the vieport's is captured
 	yield(get_tree(), "idle_frame")
 	yield(get_tree(), "idle_frame")
 	
 	# Retrieve the texture and set it to the viewport quad
-	get_node("Viewport_quad").material_override.albedo_texture = viewport.get_texture()
+	_viewport_quad.material_override.albedo_texture = _viewport.get_texture()
 
 func _on_game_ended():
 	emit_signal("game_ended")
@@ -40,8 +44,9 @@ func _on_game_started():
 	emit_signal("game_started")
 
 func _ready():
-	var game = find_node("game")
-	game.connect("game_ended", self, "_on_game_ended")
-	game.connect("game_started", self, "_on_game_started")
+	init()
 	
 	_init_viewport()
+	
+	_game.connect("game_ended", self, "_on_game_ended")
+	_game.connect("game_started", self, "_on_game_started")
