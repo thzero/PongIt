@@ -27,7 +27,7 @@
 
 ## Requirements
 
-The updated repo requires the use of PR# (TBD).   This PR request implements new network capabilities; see the Updated Network Capabilities section.
+The updated repo requires the use of PR#27731 (https://github.com/godotengine/godot/pull/27731).   This PR request implements new network capabilities; see the Updated Network Capabilities section.
 
 ## Updated Network Capabilities
 
