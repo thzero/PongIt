@@ -40,6 +40,10 @@ func _integrate_forces_transform(state, packet):
 	transform.origin = _packet.position
 
 func _integrate_forces_update(state):
+	# TODO: Needs to be the network master?
+	if (get_tree().is_network_server()):
+		return
+	
 	if (_packet == null): # && (_packet < STATE_EXPIRATION_TIME)):
 		return
 		
@@ -60,6 +64,10 @@ func _integrate_forces_update(state):
 	state.set_transform(transform)
 
 func _process_send(delta):
+	# TODO: Needs to be the network master?
+	if (!get_tree().is_network_server()):
+		return
+	
 	var duration = 1.0 / 40 #network_fps.get_value()
 	if (_accumulator < duration):
 		_accumulator += delta
@@ -74,8 +82,6 @@ func _process_send(delta):
 		if (at_rest):
 			return
 	
-#	var packet = ["update", client.seq]
-#	client.seq += 1
 	var packet = _create_packet()
 	packet.seq = _seq
 	_seq += 1

@@ -15,10 +15,9 @@ sync func game_finished():
 sync func launch(side):
 	reset(false)
 	show()
-	call_deferred('_enable_collision', true)
 	
-	if (!get_tree().is_network_server()):
-		return
+	if (get_tree().is_network_server()):
+		call_deferred('_enable_collision', true)
 	
 	var direction = Vector2(-1, 0) if side == enums.SIDES.left else Vector2(1, 0)
 	var impulse = direction * _speed * 2
@@ -44,9 +43,6 @@ func _reset(state):
 	state.set_transform(t)
 
 func _integrate_forces(state):
-	var lv = state.get_linear_velocity()
-	var step = state.get_step()
-	
 	if (_stopped):
 		_reset(state)
 		return
