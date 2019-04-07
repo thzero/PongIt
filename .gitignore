@@ -1,3 +1,3 @@
 .import
-locale/
-*.translation
+**/*.import
+**/*.translation
