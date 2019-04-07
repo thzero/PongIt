@@ -47,7 +47,7 @@ func _integrate_forces(state):
 		_reset(state)
 		return
 	
-	if (!get_tree().is_network_server()):
+	if (!is_network_master()):
 		_integrate_forces_update(state)
 		return
 	
@@ -57,8 +57,11 @@ func _integrate_forces(state):
 		
 		if !cc:
 			return
-			
+		
 		if !(cc is wall_class):
+			return
+		
+		if (!cc.is_scoreable()):
 			return
 		
 		call_deferred('_enable_collision', false)

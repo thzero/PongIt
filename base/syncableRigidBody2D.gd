@@ -2,7 +2,6 @@ extends RigidBody2D
 
 const ALPHA = 0.1
 const EPSILON = 0.0005
-const SCALE_FACTOR = 25
 const STATE_EXPIRATION_TIME = 1.0 / 20.0
 
 var _packet = null
@@ -17,6 +16,7 @@ var _seq = 0
 
 puppet func send_packet(packet):
 	_packet = packet
+	_packet_timer = 0
 
 func _create_packet():
 	return {}
@@ -32,19 +32,19 @@ func _network_delay():
 	return 50
 
 func _integrate_forces_transform(state, packet):
-#	var pos = lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
-#	var rot = slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
-#	var x_axis = Vector2(cos(rot), -sin(rot))
-#	var y_axis = Vector2(sin(rot), cos(rot))
-#	state.set_transform(Transform2D(x_axis, y_axis, pos))
+	var pos = lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
+	var rot = slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
+	var x_axis = Vector2(cos(rot), -sin(rot))
+	var y_axis = Vector2(sin(rot), cos(rot))
+	state.set_transform(Transform2D(x_axis, y_axis, pos))
 	transform.origin = _packet.position
 
 func _integrate_forces_update(state):
-	# TODO: Needs to be the network master?
-	if (get_tree().is_network_server()):
+	# TODO: Needs to not be the network master?
+	if (is_network_master()):
 		return
 	
-	if (_packet == null): # && (_packet < STATE_EXPIRATION_TIME)):
+	if ((_packet == null)): # || (_packet_timer > STATE_EXPIRATION_TIME)):
 		return
 		
 	_packet_timer += state.get_step()
@@ -65,7 +65,7 @@ func _integrate_forces_update(state):
 
 func _process_send(delta):
 	# TODO: Needs to be the network master?
-	if (!get_tree().is_network_server()):
+	if (!is_network_master()):
 		return
 	
 	var duration = 1.0 / 40 #network_fps.get_value()

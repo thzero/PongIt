@@ -103,7 +103,7 @@ func _on_host_button_continue_pressed():
 
 func _on_host_text_server_name_focus_exited():
 	_validate_host()
-		
+
 func _on_host_text_port_focus_exited():
 	_validate_host()
 

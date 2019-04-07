@@ -16,3 +16,4 @@ func start_game_ext():
 	
 func unregister_player_ext(id):
 	.unregister_player_ext(id)
+
