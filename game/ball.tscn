@@ -4,30 +4,14 @@
 [ext_resource path="res://game/ball.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-
-custom_solver_bias = 0.0
 extents = Vector2( 4, 4 )
 
 [node name="ball" type="Area2D"]
-
 position = Vector2( 320.5, 191.124 )
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
 script = ExtResource( 1 )
-_sections_unfolded = [ "Collision", "Pickable" ]
 
-[node name="sprite" type="Sprite" parent="." index="0"]
-
+[node name="sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="collision" type="CollisionShape2D" parent="." index="1"]
-
+[node name="collision" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
-
-
