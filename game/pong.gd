@@ -7,8 +7,10 @@ export var BALL_BOUNCE = 1.1
 export var BALL_SPEED = 100
 export var PADDLE_SPEED = 500
 
+const COUNTDOWN_LENGTH = 5
+
 var _timer
-var _countdown = 0
+var _countdown = COUNTDOWN_LENGTH
 var score_left = 0
 var score_right = 0
 var _last_scored = enums.SIDES.none
@@ -87,9 +89,9 @@ func _on_button_exit_pressed():
 	end_game()
 
 func _on_timer_timeout():
-	_countdown += 1
+	_countdown -= 1
 	
-	if (_countdown <= 5):
+	if (_countdown > 0):
 		rpc("update_countdown", _countdown)
 		return
 	rpc("update_countdown", _countdown)
@@ -102,7 +104,7 @@ func _reset():
 		return
 	
 	_last_scored = enums.SIDES.none
-	_countdown = 0
+	_countdown = COUNTDOWN_LENGTH
 	
 	rpc("reset", _last_scored)
 
