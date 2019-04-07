@@ -133,7 +133,7 @@ func get_player_by_selector(selector):
 	
 	return _handler_player_selector.get_player(selector)
 
-func host_game(name, port):
+func host_game(name, port, address):
 	if (_handler_validator.validate_port(port, null) == null):
 		return false
 	
@@ -148,6 +148,9 @@ func host_game(name, port):
 	
 	# Initializing the network as client
 	var host = _create_host()
+	
+	if (address != null):
+		host.set_bind_ip(address)
 	
 	var err = host.create_server(port, Constants.MAX_PLAYERS)
 	if (err != OK):
@@ -173,7 +176,10 @@ func join_game(ip_address, port):
 	
 	# Initializing the network as server
 	var host = _create_host()
-	host.create_client(ip_address, port)
+	var err = host.create_client(ip_address, port)
+	if (err != OK):
+		_print("Can't join, address not available.", null)
+		return false
 	get_tree().set_network_peer(host)
 	
 	return true
