@@ -4,7 +4,7 @@ signal lobby_finished()
 
 var _fsm
 var _chat
-var _button_start = false
+var _button_start_disabled = true
 
 onready var _menu_container = get_node("menu_container")
 onready var _host_container = get_node("menu_container/Panel/vbox_container/host_container")
@@ -88,14 +88,14 @@ func _on_host_button_continue_pressed():
 	if (!Gamestate.host_game(values.server_name, values.port, null)):
 		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
-		
-	_button_start = false
+	
+	_button_start_disabled = true
 	_fsm.set_state_lobby()
 	_refresh_lobby()
 
 func _on_host_text_server_name_focus_exited():
 	_validate_host()
-		
+
 func _on_host_text_port_focus_exited():
 	_validate_host()
 
@@ -175,14 +175,18 @@ func _on_refresh_lobby():
 	_refresh_lobby()
 	
 func _on_refresh_lobby_start_enabled():
-	if (get_tree().is_network_server()):
-		_button_start = false
-		_lobby_container.find_node("button_start").set_disabled(false)
+	if (!get_tree().is_network_server()):
+		return
+	
+	_button_start_disabled = false
+	_lobby_container.find_node("button_start").set_disabled(false)
 
 func _on_refresh_lobby_start_disabled():
-	if (get_tree().is_network_server()):
-		_button_start = true
-		_lobby_container.find_node("button_start").set_disabled(true)
+	if (!get_tree().is_network_server()):
+		return
+	
+	_button_start_disabled = true
+	_lobby_container.find_node("button_start").set_disabled(true)
 	
 func _clear_error(type):
 	_set_error(type, "")
@@ -238,7 +242,7 @@ func _refresh_lobby():
 	
 	# If you are the server, enable the 'start game' button
 	if (get_tree().is_network_server()):
-		_lobby_container.find_node("button_start").set_disabled(_button_start)
+		_lobby_container.find_node("button_start").set_disabled(_button_start_disabled)
 
 func _refresh_lobby_ready(ready):
 	var state = "Unready"
@@ -290,6 +294,10 @@ func _on_state_changed(state_from, state_to, args):
 		return
 		
 	if (state_to == _fsm.Lobby):
+		if (get_tree().is_network_server()):
+			_button_start_disabled = true
+			_lobby_container.find_node("button_start").set_disabled(_button_start_disabled)
+		
 		_menu_container.hide()
 		_host_container.hide()
 		_join_container.hide()
