@@ -82,8 +82,6 @@ func _on_button_join_pressed():
 # HOST CONTAINER - Continue (from choosing a nickname)
 # Opens the server for connectivity from clients
 func _on_host_button_continue_pressed():
-#	_fsm.menu().set_state_host()
-	
 	var values = _validate_host()
 	if (values == null):
 		return
