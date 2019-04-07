@@ -85,7 +85,7 @@ func _on_host_button_continue_pressed():
 	if (values == null):
 		return
 	
-	if (!Gamestate.host_game(values.server_name, values.port)):
+	if (!Gamestate.host_game(values.server_name, values.port, null)):
 		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
 		
