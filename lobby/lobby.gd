@@ -6,6 +6,9 @@ var _fsm
 var _chat
 var _button_start_disabled = true
 
+var _addresses = {}
+var _address_selected = null
+
 onready var _menu_container = get_node("menu_container")
 onready var _host_container = get_node("menu_container/Panel/vbox_container/host_container")
 onready var _join_container = get_node("menu_container/Panel/vbox_container/join_container")
@@ -79,15 +82,20 @@ func _on_button_join_pressed():
 # HOST CONTAINER - Continue (from choosing a nickname)
 # Opens the server for connectivity from clients
 func _on_host_button_continue_pressed():
-	_fsm.menu().set_state_host()
+#	_fsm.menu().set_state_host()
 	
 	var values = _validate_host()
 	if (values == null):
 		return
 	
-	if (!Gamestate.host_game(values.server_name, values.port, null)):
+	if (!Gamestate.host_game(values.server_name, values.port, values.ip_address)):
 		_set_error("host", tr("LOBBY_MESSAGE_SERVER_ALREADY_IN_USE"))
 		return
+	
+	ConfigurationUser.Settings.User.Host.Name = values.server_name
+	ConfigurationUser.Settings.User.Host.IpAddress = values.ip_address
+	ConfigurationUser.Settings.User.Host.Port = values.port
+	ConfigurationUser.save()
 	
 	_button_start_disabled = true
 	_fsm.set_state_lobby()
@@ -113,8 +121,13 @@ func _on_join_button_connect_pressed():
 	if (values == null):
 		return
 	
-	if (Gamestate.join_game(values.ip_address, values.port)):
+	if (!Gamestate.join_game(values.ip_address, values.port)):
+		_set_error("host", tr("LOBBY_MESSAGE_JOIN_FAILED"))
 		return
+	
+	ConfigurationUser.Settings.User.Join.IpAddress = values.ip_address
+	ConfigurationUser.Settings.User.Join.Port = values.port
+	ConfigurationUser.save()
 	
 	# While we are attempting to connect, disable button for 'continue'
 	_fsm.menu().set_state_join()
@@ -269,9 +282,21 @@ func _validate_host():
 	if (port == null):
 		return null
 	
+	var ip_address = null
+	if (_address_selected != null):
+		if (_address_selected.type == IP.TYPE_IPV4):
+			ip_address = _address_selected.v4
+		elif (_address_selected.type == IP.TYPE_IPV6):
+			ip_address = _address_selected.v6
+	
+	if (ip_address != null):
+		ip_address = Gamestate.validator().validate_address(ip_address, _get_error("host"))
+		if (ip_address == null):
+			return null
+	
 	_fsm.menu().set_state_host_ready()
 	
-	return { "server_name": server_name, "port": port }
+	return { "server_name": server_name, "port": port, "ip_address": ip_address }
 	
 func _validate_join():
 	_disable_button("join", "button_connect", true)
@@ -287,6 +312,33 @@ func _validate_join():
 	_fsm.menu().set_state_join_ready()
 	
 	return { "ip_address": ip_address, "port": port }
+
+func _on_option_addresses_item_selected(ID):
+	_address_selected = null
+	var label_meta = _host_container.find_node("label_address_meta")
+	label_meta.set_text("")
+	
+	if (ID < 0):
+		return
+	
+	var addresses = _host_container.find_node("option_addresses")
+	var address = addresses.get_item_metadata(ID)
+	if (address == null):
+		return
+	
+	if (address.type == IP.TYPE_ANY):
+		return
+	
+	var text = ""
+	if ((address.v4 != null) && (address.v4 != "")):
+		text += "v4: " + address.v4
+	if ((address.v6 != null) && (address.v6 != "")):
+		if (text != ""):
+			text += "\n"
+		text += "v6: " + address.v6
+	label_meta.set_text(text)
+	
+	_address_selected = address
 
 func _on_state_changed(state_from, state_to, args):
 	_fsm._print_state(state_from, state_to, args)
@@ -329,6 +381,30 @@ func _on_state_lobby_changed(state_from, state_to, args):
 func _on_state_menu_changed(state_from, state_to, args):
 	_fsm.menu()._print_state(state_from, state_to, args)
 	if (state_to == _fsm.menu().Host):
+		var user = ConfigurationUser.Settings.User
+		if ((user.Host != null) && (user.Host.Name != null) && (user.Host.Name != "")):
+			_host_container.find_node("text_server_name").set_text(user.Host.Name)
+		if ((user.Host != null) && (user.Host.Port != null)):
+			_host_container.find_node("text_port").set_text(str(user.Host.Port))
+		
+		var addresses = _host_container.find_node("option_addresses")
+
+		var ipAddressSelected = null
+		if ((user.Host != null) && (user.Host.IpAddress != null) && (user.Host.IpAddress != "")):
+			ipAddressSelected = user.Host.IpAddress
+		
+		var index = 0
+		var selected_index = 0
+		var address = null
+		for key in _addresses:
+			address = _addresses[key]
+			if ((ipAddressSelected == address.v4) || (ipAddressSelected == address.v6)):
+				selected_index = index
+			index += 1
+		
+		addresses.select(selected_index)
+		_on_option_addresses_item_selected(selected_index)
+		
 		_menu_container.show()
 		_join_container.hide()
 		_host_container.show()
@@ -346,6 +422,12 @@ func _on_state_menu_changed(state_from, state_to, args):
 		return
 	
 	if (state_to == _fsm.menu().Join):
+		var user = ConfigurationUser.Settings.User
+		if ((user.Join != null) && (user.Join.IpAddress != null) && (user.Join.IpAddress != "")):
+			_join_container.find_node("text_ip_address").set_text(user.Join.IpAddress)
+		if ((user.Join != null) && (user.Join.Port != null)):
+			_join_container.find_node("text_port").set_text(str(user.Join.Port))
+		
 		_menu_container.show()
 		_host_container.hide()
 		_join_container.show()
@@ -380,6 +462,7 @@ func _ready():
 	# Set default nicknames on host/join
 	_host_container.find_node("text_server_name").set_text(Constants.DEFAULT_SERVER_NAME)
 	_host_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
+	
 	_join_container.find_node("text_ip_address").set_text(Constants.DEFAULT_SERVER_ADDRESS)
 	_join_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
 	
@@ -394,6 +477,33 @@ func _ready():
 	Gamestate.connect("server_error", self, "_on_server_error")
 	Gamestate.connect("connection_success", self, "_on_connection_success")
 	Gamestate.connect("connection_fail", self, "_on_connection_fail")
+	
+	var ips = IP.get_local_addresses_full()
+	
+	_addresses[tr("LOBBY_ADDRESS_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_WILDCARD"), "type": IP.TYPE_ANY, "v4": "*", "v6": "*" }
+	
+	var temp = null
+	for ip in ips:
+		if (!_addresses.has(ip.friendly)):
+			_addresses[ip.friendly] = { "name": ip.friendly }
+		temp = _addresses[ip.friendly]
+		temp["type"] = ip.type
+		temp["v4"] = null
+		temp["v6"] = null
+		if (ip.type == IP.TYPE_IPV4):
+			temp["v4"] = ip.address
+		elif (ip.type == IP.TYPE_IPV6):
+			temp["v6"] = ip.address
+	
+	var addresses = _host_container.find_node("option_addresses")
+	
+	var index = 0
+	var address = null
+	for key in _addresses:
+		address = _addresses[key]
+		addresses.add_item(address.name, index)
+		addresses.set_item_metadata(index, address)
+		index += 1
 
 class state_lobby extends "res://fsm/base_fsm.gd":
 	
