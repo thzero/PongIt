@@ -3,7 +3,10 @@ extends RigidBody2D
 const ALPHA = 0.1
 const EPSILON = 0.0005
 const STATE_EXPIRATION_TIME = 1.0 / 20.0
+const SEND_RATE = 1.0 / 10
+const DELAY = 1.0 / 3
 
+var _packets = []
 var _packet = null
 var _packet_timer = 0
 
@@ -17,6 +20,7 @@ var _seq = 0
 puppet func send_packet(packet):
 	_packet = packet
 	_packet_timer = 0
+	_packets.push_back(packet)
 
 func _create_packet():
 	return {}
@@ -32,12 +36,15 @@ func _network_delay():
 	return 50
 
 func _integrate_forces_transform(state, packet):
+	var transform = state.get_transform()
 	var pos = lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
 	var rot = slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
 	var x_axis = Vector2(cos(rot), -sin(rot))
 	var y_axis = Vector2(sin(rot), cos(rot))
 	state.set_transform(Transform2D(x_axis, y_axis, pos))
-	transform.origin = _packet.position
+	
+	linear_velocity = packet.linear_velocity
+	angular_velocity = packet.angular_velocity
 
 func _integrate_forces_update(state):
 	# TODO: Needs to not be the network master?
@@ -55,20 +62,14 @@ func _integrate_forces_update(state):
 	
 	_last_packet_received = _packet
 	
-	var transform = state.get_transform()
 	_integrate_forces_transform(state, _packet)
-	
-	linear_velocity = _packet.linear_velocity
-	angular_velocity = _packet.angular_velocity
-	
-	state.set_transform(transform)
 
 func _process_send(delta):
 	# TODO: Needs to be the network master?
 	if (!is_network_master()):
 		return
 	
-	var duration = 1.0 / 40 #network_fps.get_value()
+	var duration = _send_rate()
 	if (_accumulator < duration):
 		_accumulator += delta
 		return
@@ -94,6 +95,9 @@ func _process_send(delta):
 	rpc_unreliable("send_packet", packet)
 	
 	_last_packet_sent = packet
+
+func _send_rate():
+	return SEND_RATE #network_fps.get_value()
 
 # Lerp vector
 func lerp_pos(v1, v2, alpha):

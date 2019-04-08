@@ -142,6 +142,7 @@ func _ready():
 	find_node("winner_left").hide()
 	find_node("winner_right").hide()
 	
+	find_node("countdown").set_text(str(_countdown))
 	update_score(0, 0)
 	
 	var rand = bool(randi() % 2)

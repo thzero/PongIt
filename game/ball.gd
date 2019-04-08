@@ -16,8 +16,7 @@ sync func launch(side):
 	reset(false)
 	show()
 	
-	if (get_tree().is_network_server()):
-		call_deferred('_enable_collision', true)
+	call_deferred('_enable_collision', true)
 	
 	var direction = Vector2(-1, 0) if side == enums.SIDES.left else Vector2(1, 0)
 	var impulse = direction * _speed * 2
@@ -49,26 +48,26 @@ func _integrate_forces(state):
 	
 	if (!is_network_master()):
 		_integrate_forces_update(state)
-		return
 	
 	for i in range(state.get_contact_count()):
 		var cc = state.get_contact_collider_object(i)
 		var dp = state.get_contact_local_normal(i)
 		
 		if !cc:
-			return
+			continue
 		
 		if !(cc is wall_class):
-			return
+			continue
 		
 		if (!cc.is_scoreable()):
-			return
+			continue
 		
 		call_deferred('_enable_collision', false)
 		hide()
 		_reset(state)
 		
-		get_parent().rpc("score", cc.side)
+		if (is_network_master()):
+			get_parent().rpc("score", cc.side)
 
 func _physics_process(delta):
 	if (!get_tree().is_network_server()):
