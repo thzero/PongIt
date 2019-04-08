@@ -32,6 +32,8 @@ remote func ping_receive(query_id):
 	_moving_rtt_average = average / _moving_rtt_average_frame.length
 	
 	emit_signal("rtt_update", { "rtt": rtt, "rtt_average": _moving_rtt_average })
+	
+	print("rtt: " + str(rtt) + " rtt_average: " + str(_moving_rtt_average))
 
 func initialize(gamestate):
 	_gamestate = gamestate
