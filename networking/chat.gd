@@ -25,7 +25,7 @@ func message(id, message, type, args):
 	
 	#rpc("chat_send", get_tree().get_network_unique_id(), message, type, inst2dict(args))
 	_gamestate.chat_message_send(id, message, type, args, null)
-	
+
 func initialize(gamestate):
 	_gamestate = gamestate
 

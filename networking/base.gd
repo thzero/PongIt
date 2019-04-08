@@ -4,9 +4,9 @@ extends Node
 # Port Tip: Check the web for available ports that is not preoccupied by other important services
 # Port Tip #2: If you are the server; you may want to open it (NAT, Firewall)
 
-var _accumulator = 0
 var _fsm
 var _handler_chat
+var _handler_monitor
 var _handler_player_selector
 var _handler_print = preload("res://utility/print.gd").new()
 var _handler_validator
@@ -184,10 +184,6 @@ func join_game(ip_address, port):
 	
 	return true
 
-remote func ping(delta):
-	#print("ping " + str(delta))
-	pass
-
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
 	_print("quit_game", null)
@@ -364,6 +360,9 @@ func _has_world():
 func _initialize_chat():
 	return load(Constants.PATH_GAMESTATE_CHAT).new()
 
+func _initialize_monitor():
+	return load(Constants.PATH_GAMESTATE_MONITOR).new()
+
 func _initialize_player_selector():
 	return load(Constants.PATH_GAMESTATE_PLAYER_SELECTOR).new()
 
@@ -501,6 +500,8 @@ func _on_server_disconnected():
 func _ready():
 	_handler_chat = _initialize_chat()
 	_handler_chat.initialize(self)
+	_handler_monitor = _initialize_monitor()
+	_handler_monitor.initialize(self)
 	_handler_player_selector = _initialize_player_selector()
 	_handler_player_selector.initialize(self)
 	_handler_validator = _initialize_validator()
@@ -514,19 +515,7 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
-	if (!Constants.PING_ENABLED):
-		return
-	
-	if (Constants.PING_DELAY <= 0):
-		return
-	
-	if (!get_tree().has_network_peer()):
-		return
-	
-	_accumulator += delta
-	if (_accumulator > Constants.PING_DELAY):
-		rpc_unreliable("ping", _accumulator)
-		_accumulator = 0
+	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":
 	const Complete = "complete"
