@@ -7,19 +7,16 @@ var _game = null
 var _viewport = null
 var _viewport_quad = null
 
-func init():
-	_viewport = get_node("Viewport")
+func _init_game():
 	assert(_viewport != null)
 	
-	_viewport_quad = get_node("ViewportQuad")
-	assert(_viewport_quad != null)
-	
-	_game = get_node("game")
-	if (_game == null):
+	if (!has_node("game")):
 		# TODO: Maybe not needed?  Should be part of the map...
 		_game = load("res://game/pong.tscn").instance()
 		_game.set_name("game")
 		_viewport.add_child(_game)
+	else:
+		_game = get_node("game")
 	
 	assert(_game != null)
 	
@@ -44,6 +41,12 @@ func _on_game_started():
 	emit_signal("game_started")
 
 func _ready():
-	init()
+	_viewport = get_node("Viewport")
+	assert(_viewport != null)
+	
+	_viewport_quad = get_node("ViewportQuad")
+	assert(_viewport_quad != null)
+	
+	_init_game()
 	
 	_init_viewport()
