@@ -21,6 +21,15 @@ puppet func send_packet(packet):
 	_packet = packet
 	_packet_timer = 0
 	_packets.push_back(packet)
+	
+func _at_rest():
+	if (_last_packet_sent == null):
+		return false
+	
+	var at_rest = (_last_packet_sent.position == position)
+	at_rest = at_rest && (_last_packet_sent.angular_velocity == angular_velocity)
+	at_rest = at_rest && (_last_packet_sent.linear_velocity == linear_velocity)
+	return at_rest
 
 func _create_packet():
 	return {}
@@ -28,9 +37,13 @@ func _create_packet():
 func _init_packet(packet):
 	packet.position = position
 	packet.rotation = rotation
-	packet.angular_velocity = angular_velocity
-	packet.linear_velocity = linear_velocity
 	
+	packet.at_rest = _at_rest()
+	
+	if (!packet.at_rest):
+		packet.angular_velocity = angular_velocity
+		packet.linear_velocity = linear_velocity
+
 func _network_delay():
 	# TODO: determine network delay
 	return 50
@@ -43,8 +56,14 @@ func _integrate_forces_transform(state, packet):
 	var y_axis = Vector2(sin(rot), cos(rot))
 	state.set_transform(Transform2D(x_axis, y_axis, pos))
 	
-	linear_velocity = packet.linear_velocity
-	angular_velocity = packet.angular_velocity
+	var angular_velocity_temp = Vector2(0, 0)
+	var linear_velocity_temp = Vector2(0, 0)
+	if (!packet.at_rest):
+		angular_velocity_temp = packet.angular_velocity
+		linear_velocity_temp = packet.linear_velocity
+	
+	angular_velocity = angular_velocity_temp
+	linear_velocity = linear_velocity_temp
 
 func _integrate_forces_update(state):
 	# TODO: Needs to not be the network master?
@@ -77,9 +96,7 @@ func _process_send(delta):
 	_accumulator = 0
 	
 	if (_last_packet_sent != null):
-		var at_rest = (_last_packet_sent.position == position)
-		at_rest = at_rest && (_last_packet_sent.angular_velocity == angular_velocity)
-		at_rest = at_rest && (_last_packet_sent.linear_velocity == linear_velocity)
+		var at_rest = _at_rest()
 		if (at_rest):
 			return
 	
@@ -101,6 +118,7 @@ func _send_rate():
 
 # Lerp vector
 func lerp_pos(v1, v2, alpha):
+#	https://en.wikipedia.org/wiki/Linear_interpolation
 	return v1 * alpha + v2 * (1.0 - alpha)
 
 # Spherically linear interpolation of rotation
