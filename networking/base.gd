@@ -515,6 +515,9 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
+	if (!get_tree().has_network_peer()):
+		return
+	
 	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":

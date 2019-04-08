@@ -43,9 +43,6 @@ func process(delta):
 	if (Constants.PING_DELAY <= 0):
 		return
 	
-	if (!get_tree().has_network_peer()):
-		return
-	
 	_accumulator += delta
 	if (_accumulator > Constants.PING_DELAY):
 		_accumulator = 0
