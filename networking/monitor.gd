@@ -14,7 +14,7 @@ var _moving_rtt_average = 0;
 var _moving_rtt_average_frame = [];
 var _moving_fps_average_size = Constants.PRING_RTT_SAMPLE
 
-master func ping_query(id, _query_id, delta):
+remote func ping_query(id, _query_id, delta):
 	#print("ping " + str(delta))
 	rpc_id(id, "ping_receive", _query_id)
 
@@ -24,7 +24,7 @@ remote func ping_receive(query_id):
 	_moving_rtt_average_frame.push(rtt);
 	if (_moving_rtt_average_frame.length > _moving_fps_average_size):
 		_moving_rtt_average_frame.shift()
-		
+	
 	var average = 0
 	for rtt_average_frame in _moving_rtt_average_frame:
 		average += rtt_average_frame
@@ -43,6 +43,12 @@ func process(delta):
 		return
 	
 	if (Constants.PING_DELAY <= 0):
+		return
+	
+	if (!get_tree().has_network_peer()):
+		return
+	
+	if (_gamestate.get_player_id() == 1):
 		return
 	
 	_accumulator += delta

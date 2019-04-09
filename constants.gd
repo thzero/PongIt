@@ -18,7 +18,7 @@ const PATH_GAMESTATE_VALIDATOR = "res://networking/validator.gd"
 const PATH_LOBBY = "res://lobby/lobby.tscn"
 
 const PING_ENABLED = true
-const PING_DELAY = 1000
+const PING_DELAY = 1.0 / 60
 const PRING_RTT_SAMPLE = 10
 
 const REGEX_PLAYER_NAME = "[\\w-]"

@@ -500,12 +500,14 @@ func _on_server_disconnected():
 func _ready():
 	_handler_chat = _initialize_chat()
 	_handler_chat.initialize(self)
-	_handler_monitor = _initialize_monitor()
-	_handler_monitor.initialize(self)
 	_handler_player_selector = _initialize_player_selector()
 	_handler_player_selector.initialize(self)
 	_handler_validator = _initialize_validator()
 	_handler_validator.initialize(self)
+	
+	_handler_monitor = _initialize_monitor()
+	_handler_monitor.initialize(self)
+	add_child(_handler_monitor)
 	
 	# Networking signals (high level networking)
 	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
@@ -515,9 +517,6 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
-	if (!get_tree().has_network_peer()):
-		return
-	
 	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":
