@@ -21,9 +21,9 @@ remote func ping_query(id, _query_id, delta):
 remote func ping_receive(query_id):
 	var rtt = OS.get_ticks_msec() - _rtt_queries[query_id];
 	
-	_moving_rtt_average_frame.push(rtt);
+	_moving_rtt_average_frame.push_back(rtt);
 	if (_moving_rtt_average_frame.length > _moving_fps_average_size):
-		_moving_rtt_average_frame.shift()
+		_moving_rtt_average_frame.pop_front()
 	
 	var average = 0
 	for rtt_average_frame in _moving_rtt_average_frame:
