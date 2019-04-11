@@ -29,7 +29,7 @@ remote func ping_receive(ticks_msec):
 	
 	_moving_rtt_average = average / _moving_rtt_average_frame.length
 	
-	emit_signal("rtt_update", { "rtt": rtt, "rtt_average": _moving_rtt_average })
+	emit_signal("rtt_update", { "rtt": _rtt, "rtt_average": _moving_rtt_average })
 	
 	print("rtt: " + str(_rtt) + " rtt_average: " + str(_moving_rtt_average))
 
