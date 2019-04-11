@@ -7,22 +7,20 @@ var _gamestate = null
 var _accumulator = 0
 var _interval = Constants.PING_DELAY #healthCheckInterval
 
-var _query_id_counter = 0;
-var _rtt_queries = {};
+var _rtt = 0
+var _moving_rtt_average = 0
+var _moving_rtt_average_frame = []
+var _moving_frame_size = Constants.PING_RTT_SAMPLE
 
-var _moving_rtt_average = 0;
-var _moving_rtt_average_frame = [];
-var _moving_fps_average_size = Constants.PRING_RTT_SAMPLE
+remote func ping_query(id, delta, rtt, moving_rtt_average):
+	print("ping: " + str(delta) + "rtt: " + str(rtt) + " rtt_average: " + str(moving_rtt_average))
+	rpc_id(id, "ping_receive", OS.get_ticks_msec())
 
-remote func ping_query(id, _query_id, delta):
-	#print("ping " + str(delta))
-	rpc_id(id, "ping_receive", _query_id)
-
-remote func ping_receive(query_id):
-	var rtt = OS.get_ticks_msec() - _rtt_queries[query_id];
+remote func ping_receive(ticks_msec):
+	_rtt = OS.get_ticks_msec() - ticks_msec;
 	
-	_moving_rtt_average_frame.push_back(rtt);
-	if (_moving_rtt_average_frame.length > _moving_fps_average_size):
+	_moving_rtt_average_frame.push_back(_rtt);
+	if (_moving_rtt_average_frame.size() > _moving_frame_size):
 		_moving_rtt_average_frame.pop_front()
 	
 	var average = 0
@@ -33,7 +31,7 @@ remote func ping_receive(query_id):
 	
 	emit_signal("rtt_update", { "rtt": rtt, "rtt_average": _moving_rtt_average })
 	
-	print("rtt: " + str(rtt) + " rtt_average: " + str(_moving_rtt_average))
+	print("rtt: " + str(_rtt) + " rtt_average: " + str(_moving_rtt_average))
 
 func initialize(gamestate):
 	_gamestate = gamestate
@@ -55,6 +53,4 @@ func process(delta):
 	if (_accumulator > Constants.PING_DELAY):
 		_accumulator = 0
 		var id = _gamestate.get_player_id()
-		_rtt_queries[_query_id_counter] = OS.get_ticks_msec()
-		rpc_id(1, "ping_query", id, _query_id_counter, _accumulator)
-		_query_id_counter += 1
+		rpc_id(1, "ping_query", id, _accumulator, _rtt, _moving_rtt_average)
