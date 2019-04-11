@@ -18,6 +18,8 @@ var _player
 var _server_name
 var _world
 
+var _connected
+
 # SIGNALS to Main Menu (GUI)
 signal chat_message()
 signal connection_success()
@@ -460,6 +462,7 @@ func _unload_world():
 # Could not connect to server (client)
 func _on_connection_failed():
 	_print("_on_connection_failed", null)
+	_connected = false
 #	get_tree().set_network_peer(null)
 	_clear_network_peer()
 	emit_signal("connection_fail")
@@ -486,6 +489,7 @@ func _on_network_peer_disconnected(id):
 # Successfully connected to server (client)
 func _on_connected_to_server():
 	_print("_on_connected_to_server", null)
+	_connected = true
 	# Record the player's id.
 	_player.id = get_tree().get_network_unique_id()
 	# Send signal to server that we are ready to be assigned;
@@ -494,6 +498,7 @@ func _on_connected_to_server():
 # Server disconnected (client)
 func _on_server_disconnected():
 	_print("_on_server_disconnected", null)
+	_connected = false
 	quit_game()	
 	emit_signal("server_ended")
 
@@ -517,6 +522,15 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
+	if (!get_tree().has_network_peer()):
+		return
+	
+	if (!_connected):
+		return
+	
+	if (get_player_id() == 1):
+		return
+	
 	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":
