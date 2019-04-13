@@ -84,12 +84,6 @@ func process(delta):
 	if (Constants.PING_DELAY <= 0):
 		return
 	
-	if (!get_tree().has_network_peer()):
-		return
-	
-	if (_gamestate.get_player_id() == 1):
-		return
-	
 	_accumulator += delta
 	if (_accumulator < _interval):
 		return
@@ -98,8 +92,19 @@ func process(delta):
 	
 	# Send from client to server with the current ticks
 	var ticks_msec = OS.get_ticks_msec()
-	print("client accumulator: " + str(_accumulator), " ticks_msec: " + str(ticks_msec), " fps: " + str(_fps))
+	print("accumulator: " + str(_accumulator), " ticks_msec: " + str(ticks_msec), " fps: " + str(_fps))
 	_accumulator = 0
 	
+	if (!get_tree().has_network_peer()):
+		return
+	
+	if (_gamestate.get_player_connected()):
+		return
+	
+	if (_gamestate.get_player_id() == 1):
+		_gather_rtt(ticks_msec)
+		return
+	
 	var id = _gamestate.get_player_id()
+	# Send a query to the server to determine round trip, also send the fps of this client
 	rpc_id(1, "ping_query", _accumulator, id, ticks_msec, _rtt, _moving_rtt_average, _fps, _moving_fps_average)

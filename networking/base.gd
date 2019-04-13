@@ -117,6 +117,9 @@ func get_player_list(values):
 func get_player():
 	return _player
 
+func get_player_connected():
+	return _connected
+
 func get_player_id():
 	return get_tree().get_network_unique_id()
 
@@ -522,15 +525,6 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
-	if (!get_tree().has_network_peer()):
-		return
-	
-	if (!_connected):
-		return
-	
-	if (get_player_id() == 1):
-		return
-	
 	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":
