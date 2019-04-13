@@ -4,9 +4,9 @@ extends Node
 # Port Tip: Check the web for available ports that is not preoccupied by other important services
 # Port Tip #2: If you are the server; you may want to open it (NAT, Firewall)
 
-var _accumulator = 0
 var _fsm
 var _handler_chat
+var _handler_monitor
 var _handler_player_selector
 var _handler_print = preload("res://utility/print.gd").new()
 var _handler_validator
@@ -17,6 +17,8 @@ var _players = {} # Dictionary containing player names and their ID
 var _player
 var _server_name
 var _world
+
+var _connected
 
 # SIGNALS to Main Menu (GUI)
 signal chat_message()
@@ -115,6 +117,9 @@ func get_player_list(values):
 func get_player():
 	return _player
 
+func get_player_connected():
+	return _connected
+
 func get_player_id():
 	return get_tree().get_network_unique_id()
 
@@ -183,10 +188,6 @@ func join_game(ip_address, port):
 	get_tree().set_network_peer(host)
 	
 	return true
-
-remote func ping(delta):
-	#print("ping " + str(delta))
-	pass
 
 # Quits the game, will automatically tell the server you disconnected; neat.
 func quit_game():
@@ -364,6 +365,9 @@ func _has_world():
 func _initialize_chat():
 	return load(Constants.PATH_GAMESTATE_CHAT).new()
 
+func _initialize_monitor():
+	return load(Constants.PATH_GAMESTATE_MONITOR).new()
+
 func _initialize_player_selector():
 	return load(Constants.PATH_GAMESTATE_PLAYER_SELECTOR).new()
 
@@ -461,6 +465,7 @@ func _unload_world():
 # Could not connect to server (client)
 func _on_connection_failed():
 	_print("_on_connection_failed", null)
+	_connected = false
 #	get_tree().set_network_peer(null)
 	_clear_network_peer()
 	emit_signal("connection_fail")
@@ -487,6 +492,7 @@ func _on_network_peer_disconnected(id):
 # Successfully connected to server (client)
 func _on_connected_to_server():
 	_print("_on_connected_to_server", null)
+	_connected = true
 	# Record the player's id.
 	_player.id = get_tree().get_network_unique_id()
 	# Send signal to server that we are ready to be assigned;
@@ -495,6 +501,7 @@ func _on_connected_to_server():
 # Server disconnected (client)
 func _on_server_disconnected():
 	_print("_on_server_disconnected", null)
+	_connected = false
 	quit_game()	
 	emit_signal("server_ended")
 
@@ -506,6 +513,10 @@ func _ready():
 	_handler_validator = _initialize_validator()
 	_handler_validator.initialize(self)
 	
+	_handler_monitor = _initialize_monitor()
+	_handler_monitor.initialize(self)
+	add_child(_handler_monitor)
+	
 	# Networking signals (high level networking)
 	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
 	get_tree().connect("connection_failed", self, "_on_connection_failed")
@@ -514,19 +525,7 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
-	if (!Constants.PING_ENABLED):
-		return
-	
-	if (Constants.PING_DELAY <= 0):
-		return
-	
-	if (!get_tree().has_network_peer()):
-		return
-	
-	_accumulator += delta
-	if (_accumulator > Constants.PING_DELAY):
-		rpc_unreliable("ping", _accumulator)
-		_accumulator = 0
+	_handler_monitor.process(delta)
 
 class state extends "res://fsm/menu_fsm.gd":
 	const Complete = "complete"
