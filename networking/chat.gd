@@ -9,21 +9,17 @@ func message(id, message, type, args):
 	if ((type == CHAT_TYPES.Whisper) && (typeof(args) == TYPE_INT)):
 		var player_from = _gamestate.get_player_by_id(args)
 		_gamestate.chat_message_emit(_gamestate.get_player(), message, CHAT_TYPES.Whisper, { "player_to" : player_from, "id_from" : id })
-		#rpc_id(args, "chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.Whisper, null)
 		_gamestate.chat_message_send(id, message, CHAT_TYPES.Whisper, null, args)
 		return
 	
 	if (type == CHAT_TYPES.General):
-		#rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.General, null)
 		_gamestate.chat_message_send(id, message, CHAT_TYPES.General, null, null)
 		return
 	
 	if (type == CHAT_TYPES.PrePackaged):
-		#rpc("chat_send", get_tree().get_network_unique_id(), message, CHAT_TYPES.PrePackaged, inst2dict(args))
 		_gamestate.chat_message_send(id, message, CHAT_TYPES.PrePackaged, args, null)
 		return
 	
-	#rpc("chat_send", get_tree().get_network_unique_id(), message, type, inst2dict(args))
 	_gamestate.chat_message_send(id, message, type, args, null)
 
 func initialize(gamestate):
