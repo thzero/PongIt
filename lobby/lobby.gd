@@ -476,27 +476,27 @@ func _ready():
 	Gamestate.connect("connection_success", self, "_on_connection_success")
 	Gamestate.connect("connection_fail", self, "_on_connection_fail")
 	
-	var ips = IP.get_local_addresses_full()
-	
 	_addresses[tr("LOBBY_ADDRESS_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_WILDCARD"), "type": IP.TYPE_ANY, "v4": "*", "v6": "*" }
-	
+
+	var interfaces = IP.get_local_interfaces()
 	var temp = null
-	for ip in ips:
-		if (!_addresses.has(ip.friendly)):
-			_addresses[ip.friendly] = { "name": ip.friendly }
-		temp = _addresses[ip.friendly]
-		temp["type"] = ip.type
+	for ip in interfaces:
+		temp = { "name": ip.friendly }
 		temp["v4"] = null
 		temp["v6"] = null
-		if (ip.type == IP.TYPE_IPV4):
-			temp["v4"] = ip.address
-		elif (ip.type == IP.TYPE_IPV6):
-			temp["v6"] = ip.address
-	
-	var addresses = _host_container.find_node("option_addresses")
+		temp["type"] = IP.TYPE_NONE
+		for address in ip.addresses:
+			if (address.type == IP.TYPE_IPV4):
+				temp["v4"] = address.address
+				temp["type"] = IP.TYPE_IPV4
+			elif (address.type == IP.TYPE_IPV6):
+				temp["v6"] = address.address
+				temp["type"] = IP.TYPE_IPV6
+		_addresses[ip.friendly] = temp
 	
 	var index = 0
 	var address = null
+	var addresses = _host_container.find_node("option_addresses")
 	for key in _addresses:
 		address = _addresses[key]
 		addresses.add_item(address.name, index)
