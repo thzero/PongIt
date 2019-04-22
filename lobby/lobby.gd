@@ -282,10 +282,11 @@ func _validate_host():
 	
 	var ip_address = null
 	if (_address_selected != null):
-		if (_address_selected.type == IP.TYPE_IPV4):
-			ip_address = _address_selected.v4
-		elif (_address_selected.type == IP.TYPE_IPV6):
-			ip_address = _address_selected.v6
+		for address in _address_selected.addresses:
+			# TODO: need to know if using V4 or V6
+			if (address.type == IP.TYPE_IPV4):
+				ip_address = address.address
+				break
 	
 	if (ip_address != null):
 		ip_address = Gamestate.validator().validate_address(ip_address, _get_error("host"))
@@ -323,20 +324,24 @@ func _on_option_addresses_item_selected(ID):
 	var address = addresses.get_item_metadata(ID)
 	if (address == null):
 		return
-	
-	if (address.type == IP.TYPE_ANY):
-		return
+		
+	_address_selected = address
 	
 	var text = ""
-	if ((address.v4 != null) && (address.v4 != "")):
-		text += "v4: " + address.v4
-	if ((address.v6 != null) && (address.v6 != "")):
-		if (text != ""):
-			text += "\n"
-		text += "v6: " + address.v6
-	label_meta.set_text(text)
+	for item in address.addresses:
+		if (item.type == IP.TYPE_ANY):
+			break
+		
+		if (item.type == IP.TYPE_IPV4):
+			if (text != ""):
+				text += "\n"
+			text += "v4: " + item.address
+		if (item.type == IP.TYPE_IPV6):
+			if (text != ""):
+				text += "\n"
+			text += "v6: " + item.address
 	
-	_address_selected = address
+	label_meta.set_text(text)
 
 func _on_state_changed(state_from, state_to, args):
 	_fsm._print_state(state_from, state_to, args)
@@ -396,8 +401,10 @@ func _on_state_menu_changed(state_from, state_to, args):
 		var address = null
 		for key in _addresses:
 			address = _addresses[key]
-			if ((ipAddressSelected == address.v4) || (ipAddressSelected == address.v6)):
-				selected_index = index
+			for temp in address.addresses:
+				if (temp.address == ipAddressSelected):
+					selected_index = index
+					break
 			index += 1
 		
 		addresses.select(selected_index)
@@ -476,22 +483,19 @@ func _ready():
 	Gamestate.connect("connection_success", self, "_on_connection_success")
 	Gamestate.connect("connection_fail", self, "_on_connection_fail")
 	
-	_addresses[tr("LOBBY_ADDRESS_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_WILDCARD"), "type": IP.TYPE_ANY, "v4": "*", "v6": "*" }
+	_addresses[tr("LOBBY_ADDRESS_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_WILDCARD"), "addresses": [ { "type": IP.TYPE_ANY, "address": "*" } ] }
 
 	var interfaces = IP.get_local_interfaces()
 	var temp = null
 	for ip in interfaces:
-		temp = { "name": ip.friendly }
-		temp["v4"] = null
-		temp["v6"] = null
-		temp["type"] = IP.TYPE_NONE
-		for address in ip.addresses:
-			if (address.type == IP.TYPE_IPV4):
-				temp["v4"] = address.address
-				temp["type"] = IP.TYPE_IPV4
-			elif (address.type == IP.TYPE_IPV6):
-				temp["v6"] = address.address
-				temp["type"] = IP.TYPE_IPV6
+		temp = { "name": ip.friendly, "addresses": ip.addresses }
+#		for address in ip.addresses:
+#			if (address.type == IP.TYPE_IPV4):
+#				temp["v4"] = address.address
+#				temp["type"] = IP.TYPE_IPV4
+#			elif (address.type == IP.TYPE_IPV6):
+#				temp["v6"] = address.address
+#				temp["type"] = IP.TYPE_IPV6
 		_addresses[ip.friendly] = temp
 	
 	var index = 0
