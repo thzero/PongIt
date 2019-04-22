@@ -8,6 +8,7 @@ var _button_start_disabled = true
 
 var _addresses = {}
 var _address_selected = null
+var _address_selected_type = IP.TYPE_ANY
 
 onready var _menu_container = get_node("menu_container")
 onready var _host_container = get_node("menu_container/Panel/vbox_container/host_container")
@@ -92,6 +93,7 @@ func _on_host_button_continue_pressed():
 	
 	ConfigurationUser.Settings.User.Host.Name = values.server_name
 	ConfigurationUser.Settings.User.Host.IpAddress = values.ip_address
+	ConfigurationUser.Settings.User.Host.Type = values.ip_address_type
 	ConfigurationUser.Settings.User.Host.Port = values.port
 	ConfigurationUser.save()
 	
@@ -281,21 +283,22 @@ func _validate_host():
 		return null
 	
 	var ip_address = null
+	var ip_address_type = IP.TYPE_ANY
 	if (_address_selected != null):
 		for address in _address_selected.addresses:
-			# TODO: need to know if using V4 or V6
-			if (address.type == IP.TYPE_IPV4):
+			if (address.type == _address_selected_type):
 				ip_address = address.address
+				ip_address_type = address.type
 				break
 	
-	if (ip_address != null):
+	if ((ip_address != null) && (ip_address_type != IP.TYPE_ANY)):
 		ip_address = Gamestate.validator().validate_address(ip_address, _get_error("host"))
 		if (ip_address == null):
 			return null
 	
 	_fsm.menu().set_state_host_ready()
 	
-	return { "server_name": server_name, "port": port, "ip_address": ip_address }
+	return { "server_name": server_name, "port": port, "ip_address": ip_address, "ip_address_type": ip_address_type }
 	
 func _validate_join():
 	_disable_button("join", "button_connect", true)
@@ -312,10 +315,22 @@ func _validate_join():
 	
 	return { "ip_address": ip_address, "port": port }
 
+func _on_checkbox_ipv4_pressed():
+	_address_selected_type = IP.TYPE_IPV4
+
+func _on_checkbox_ipv6_pressed():
+	_address_selected_type = IP.TYPE_IPV6
+
 func _on_option_addresses_item_selected(ID):
+	var checkbox_ipv4 = _host_container.find_node("checkbox_ipv4")
+	var checkbox_ipv6 = _host_container.find_node("checkbox_ipv6")
+	checkbox_ipv4.set_visible(false)
+	checkbox_ipv4.set_pressed(false)
+	checkbox_ipv6.set_visible(false)
+	checkbox_ipv6.set_pressed(false)
+	
 	_address_selected = null
-	var label_meta = _host_container.find_node("label_address_meta")
-	label_meta.set_text("")
+	_address_selected_type = IP.TYPE_ANY
 	
 	if (ID < 0):
 		return
@@ -333,15 +348,11 @@ func _on_option_addresses_item_selected(ID):
 			break
 		
 		if (item.type == IP.TYPE_IPV4):
-			if (text != ""):
-				text += "\n"
-			text += "v4: " + item.address
+			checkbox_ipv4.set_text(item.address)
+			checkbox_ipv4.set_visible(true)
 		if (item.type == IP.TYPE_IPV6):
-			if (text != ""):
-				text += "\n"
-			text += "v6: " + item.address
-	
-	label_meta.set_text(text)
+			checkbox_ipv6.set_text(item.address)
+			checkbox_ipv6.set_visible(true)
 
 func _on_state_changed(state_from, state_to, args):
 	_fsm._print_state(state_from, state_to, args)
@@ -409,6 +420,14 @@ func _on_state_menu_changed(state_from, state_to, args):
 		
 		addresses.select(selected_index)
 		_on_option_addresses_item_selected(selected_index)
+		if (user.Host.Type == IP.TYPE_IPV4):
+			_host_container.find_node("checkbox_ipv4").set_pressed(true)
+			_host_container.find_node("checkbox_ipv6").set_pressed(false)
+			_on_checkbox_ipv4_pressed()
+		if (user.Host.Type == IP.TYPE_IPV6):
+			_host_container.find_node("checkbox_ipv4").set_pressed(false)
+			_host_container.find_node("checkbox_ipv6").set_pressed(true)
+			_on_checkbox_ipv6_pressed()
 		
 		_menu_container.show()
 		_join_container.hide()
@@ -483,19 +502,12 @@ func _ready():
 	Gamestate.connect("connection_success", self, "_on_connection_success")
 	Gamestate.connect("connection_fail", self, "_on_connection_fail")
 	
-	_addresses[tr("LOBBY_ADDRESS_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_WILDCARD"), "addresses": [ { "type": IP.TYPE_ANY, "address": "*" } ] }
+	_addresses[tr("LOBBY_ADDRESS_TYPE_WILDCARD")] = { "name": tr("LOBBY_ADDRESS_TYPE_WILDCARD"), "addresses": [ { "type": IP.TYPE_ANY, "address": "*" } ] }
 
 	var interfaces = IP.get_local_interfaces()
 	var temp = null
 	for ip in interfaces:
 		temp = { "name": ip.friendly, "addresses": ip.addresses }
-#		for address in ip.addresses:
-#			if (address.type == IP.TYPE_IPV4):
-#				temp["v4"] = address.address
-#				temp["type"] = IP.TYPE_IPV4
-#			elif (address.type == IP.TYPE_IPV6):
-#				temp["v6"] = address.address
-#				temp["type"] = IP.TYPE_IPV6
 		_addresses[ip.friendly] = temp
 	
 	var index = 0
@@ -506,6 +518,8 @@ func _ready():
 		addresses.add_item(address.name, index)
 		addresses.set_item_metadata(index, address)
 		index += 1
+	
+	_host_container.find_node("text_port").set_text(str(Constants.DEFAULT_SERVER_PORT))
 
 class state_lobby extends "res://fsm/base_fsm.gd":
 	
