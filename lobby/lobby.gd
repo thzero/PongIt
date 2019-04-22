@@ -358,11 +358,17 @@ func _on_state_changed(state_from, state_to, args):
 	_fsm._print_state(state_from, state_to, args)
 	if (state_to ==  _fsm.InGame):
 		return
-		
+	
 	if (state_to == _fsm.Lobby):
 		if (get_tree().is_network_server()):
 			_button_start_disabled = true
 			_lobby_container.find_node("button_start").set_disabled(_button_start_disabled)
+			if (_address_selected_type != IP.TYPE_ANY):
+				var title = _lobby_container.find_node("label_container_title")
+				for address in _address_selected.addresses:
+					if (address.type == _address_selected_type):
+						title.set_text(tr("LOBBY_SERVER_TITLE") + " (" + address.address + ")")
+						break
 		
 		_menu_container.hide()
 		_host_container.hide()
@@ -482,6 +488,7 @@ func _ready():
 	
 	var text_chat = _lobby_container.find_node("line_chat")
 	text_chat.connect("input", self, "_on_lobby_line_chat_input")
+	_lobby_container.find_node("label_container_title").set_text(tr("LOBBY_SERVER_TITLE"))
 	
 	# Set default nicknames on host/join
 	_host_container.find_node("text_server_name").set_text(Constants.DEFAULT_SERVER_NAME)

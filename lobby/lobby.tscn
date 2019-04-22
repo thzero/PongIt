@@ -71,11 +71,13 @@ align = 1
 valign = 1
 
 [node name="host_container" type="VBoxContainer" parent="menu_container/Panel/vbox_container"]
+editor/display_folded = true
 margin_top = 68.0
 margin_right = 369.0
 margin_bottom = 242.0
 
 [node name="grid_host" type="GridContainer" parent="menu_container/Panel/vbox_container/host_container"]
+editor/display_folded = true
 margin_right = 369.0
 margin_bottom = 132.0
 columns = 2
@@ -234,8 +236,6 @@ margin_bottom = 20.0
 text = "LOBBY_BUTTON_CONNECT"
 
 [node name="lobby_container" type="Control" parent="."]
-editor/display_folded = true
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -252,7 +252,6 @@ margin_right = 199.0
 margin_bottom = 200.0
 
 [node name="vbox_container" type="VBoxContainer" parent="lobby_container/Panel"]
-editor/display_folded = true
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -184.5
@@ -276,7 +275,7 @@ margin_bottom = 22.0
 margin_top = 26.0
 margin_right = 370.0
 margin_bottom = 40.0
-text = "Waiting for Players"
+text = "LOBBY_SERVER_TITLE"
 align = 1
 valign = 1
 
