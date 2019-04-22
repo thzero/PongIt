@@ -272,8 +272,6 @@ func _set_error(type, message):
 	label.set_text(message)
 	
 func _validate_host():
-	_disable_button("host", "button_continue", true)
-	
 	var server_name = Gamestate.validator().validate_server_name(_host_container.find_node("text_server_name").get_text(), _get_error("host"))
 	if (server_name == null):
 		return null
@@ -283,13 +281,17 @@ func _validate_host():
 		return null
 	
 	var ip_address = null
-	var ip_address_type = IP.TYPE_ANY
+	var ip_address_type = IP.TYPE_NONE
 	if (_address_selected != null):
 		for address in _address_selected.addresses:
 			if (address.type == _address_selected_type):
 				ip_address = address.address
 				ip_address_type = address.type
 				break
+	
+	if (ip_address_type == IP.TYPE_NONE):
+		_get_error("host").set_text(tr("LOBBY_MESSAGE_ADDRESS_INVALID_TYPE"))
+		return null
 	
 	if ((ip_address != null) && (ip_address_type != IP.TYPE_ANY)):
 		ip_address = Gamestate.validator().validate_address(ip_address, _get_error("host"))
