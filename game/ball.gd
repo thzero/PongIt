@@ -70,7 +70,7 @@ func _integrate_forces(state):
 			get_parent().rpc("score", cc.side)
 
 func _physics_process(delta):
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	_process_send(delta)

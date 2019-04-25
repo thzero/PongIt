@@ -36,7 +36,7 @@ func chat(message, type, args):
 	if (_handler_chat == null):
 		return
 	
-	_handler_chat.message(get_tree().get_network_unique_id(), message, type, args)
+	_handler_chat.message(multiplayer.get_network_unique_id(), message, type, args)
 	
 func chat_message_emit(player_from, message, type, args):
 	emit_signal("chat_message", player_from, message, type, args)
@@ -72,7 +72,7 @@ func end_game():
 
 func end_game_announce(by_id):
 	_print("end_game_announce", { "by_id": by_id })
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		_print("end_game_announce_server", { "by_id": by_id })
 		
 		# Server sends out the announcement to each player that the game ended
@@ -86,7 +86,7 @@ func end_game_announce(by_id):
 	
 	_print("end_game_announce_request", null)
 	# Non-server player requests the server to end the game
-	rpc_id(1, "end_game_announce_request", get_tree().get_network_unique_id())
+	rpc_id(1, "end_game_announce_request", multiplayer.get_network_unique_id())
 
 remote func end_game_announce_player(by_id):
 	_print("end_game_announce_player", { "by_id": by_id })
@@ -98,7 +98,7 @@ remote func end_game_announce_player(by_id):
 # player requesting game has ended
 remote func end_game_announce_request(by_id):
 	_print("end_game_announce_request", { "by_id": by_id })
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	# server to send out announcement that the game has ended
@@ -121,10 +121,10 @@ func get_player_connected():
 	return _connected
 
 func get_player_id():
-	return get_tree().get_network_unique_id()
+	return multiplayer.get_network_unique_id()
 
 func get_player_by_id(id):
-	if (id == get_tree().get_network_unique_id()):
+	if (id == multiplayer.get_network_unique_id()):
 		return _player
 	
 	if (_players.has(id)):
@@ -162,7 +162,7 @@ func host_game(name, port, address):
 		_print("Can't host, address in use.", null)
 		return false
 	
-	get_tree().set_network_peer(host)
+	multiplayer.set_network_peer(host)
 	
 	return true
 
@@ -185,7 +185,7 @@ func join_game(ip_address, port):
 	if (err != OK):
 		_print("Can't join, address not available.", null)
 		return false
-	get_tree().set_network_peer(host)
+	multiplayer.set_network_peer(host)
 	
 	return true
 
@@ -206,20 +206,20 @@ sync func ready_player(id, player):
 	
 	emit_signal("refresh_lobby")
 	
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		_ready_players_check()
 
 func ready_player_request(ready):
 	_player.ready = ready
 	_print("ready_player", { "ready": ready })
-	rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
+	rpc("ready_player", multiplayer.get_network_unique_id(), inst2dict(_player))
 
 # Register yourself directly ingame
 remote func register_in_game():
 	if (!_is_in_game() || !_can_join_in_game()):
 		return
 	
-	rpc("register_in_game_player", get_tree().get_network_unique_id(), inst2dict(_player))
+	rpc("register_in_game_player", multiplayer.get_network_unique_id(), inst2dict(_player))
 	
 	emit_signal("connection_success") # Sends command to gui
 
@@ -227,7 +227,7 @@ remote func register_in_game():
 remote func register_in_game_player(id, player):
 	var temp = inst2dict(_player)
 	
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		# Send info about server to new player
 		rpc_id(id, "register_in_game_player", 1, temp)
 		
@@ -253,14 +253,14 @@ remote func register_in_lobby():
 	if (_is_in_game()):
 		return
 		
-	rpc("register_in_lobby_player", get_tree().get_network_unique_id(), inst2dict(_player))
+	rpc("register_in_lobby_player", multiplayer.get_network_unique_id(), inst2dict(_player))
 	
 	emit_signal("connection_success") # Sends command to gui 
 
 remote func register_in_lobby_player(id, player):
 	var temp = inst2dict(_player)
 	
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		rpc_id(id, "register_in_lobby_player", 1, temp) # Send info about server to new player
 		
 		var playerT
@@ -279,7 +279,7 @@ remote func register_in_lobby_player(id, player):
 	emit_signal("refresh_lobby")
 
 func start_game():
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	rpc("start_game_player", 1)
@@ -291,7 +291,7 @@ func start_game_ext():
 	pass
 
 remote func start_game_player(id):
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		for peer_id in _players:
 			rpc_id(peer_id, "start_game_player")
 	
@@ -314,7 +314,7 @@ func unregister_player_ext(id):
 
 # Server receives this from players that have just connected
 remote func user_connected(id):
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 
 	# If we are ingame, add player to session, else send to lobby	
@@ -335,16 +335,16 @@ func _can_join_in_game():
 
 func _clear_network_peer():
 	get_tree().set_meta("network_peer", null)
-	get_tree().set_network_peer(null)
+	multiplayer.set_network_peer(null)
 
 func _close_connection():
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		var host = _get_network_peer()
 		if (host != null):
 			host.close_connection()
 	
 	_clear_network_peer()
-#	get_tree().set_network_peer(null)
+#	multiplayer.set_network_peer(null)
 
 func _create_host():
 	var host = NetworkedMultiplayerENet.new()
@@ -395,8 +395,8 @@ func _print(method, args):
 	if (_get_network_peer() == null):
 		return
 	
-	args["id"] = str(get_tree().get_network_unique_id())
-	args["server"] = str(get_tree().is_network_server())
+	args["id"] = str(multiplayer.get_network_unique_id())
+	args["server"] = str(multiplayer.is_network_server())
 	
 	_handler_print.output(method, args)
 
@@ -429,11 +429,11 @@ func _ready_players_reset():
 	if (_player == null):
 		return
 	
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		_print("_ready_players_reset_server", null)
 		
 		# Send server resets
-		rpc("ready_player", get_tree().get_network_unique_id(), inst2dict(_player))
+		rpc("ready_player", multiplayer.get_network_unique_id(), inst2dict(_player))
 		
 		# Send client resets
 		var playerT
@@ -466,13 +466,13 @@ func _unload_world():
 func _on_connection_failed():
 	_print("_on_connection_failed", null)
 	_connected = false
-#	get_tree().set_network_peer(null)
+#	multiplayer.set_network_peer(null)
 	_clear_network_peer()
 	emit_signal("connection_fail")
 
 func _on_game_ended():
 	_print("_on_game_ended", null)
-	end_game_announce(get_tree().get_network_unique_id())
+	end_game_announce(multiplayer.get_network_unique_id())
 
 # Client connected with you (can be both server or client)
 func _on_network_peer_connected(id):
@@ -483,7 +483,7 @@ func _on_network_peer_connected(id):
 func _on_network_peer_disconnected(id):
 	_print("_on_network_peer_disconnected", null)
 	# If I am server, send a signal to inform that an player disconnected
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	unregister_player(id)
@@ -494,9 +494,9 @@ func _on_connected_to_server():
 	_print("_on_connected_to_server", null)
 	_connected = true
 	# Record the player's id.
-	_player.id = get_tree().get_network_unique_id()
+	_player.id = multiplayer.get_network_unique_id()
 	# Send signal to server that we are ready to be assigned;
-	rpc_id(1, "user_connected", get_tree().get_network_unique_id())
+	rpc_id(1, "user_connected", multiplayer.get_network_unique_id())
 
 # Server disconnected (client)
 func _on_server_disconnected():
@@ -518,11 +518,11 @@ func _ready():
 	add_child(_handler_monitor)
 	
 	# Networking signals (high level networking)
-	get_tree().connect("connected_to_server", self, "_on_connected_to_server")
-	get_tree().connect("connection_failed", self, "_on_connection_failed")
-	get_tree().connect("network_peer_connected", self, "_on_network_peer_connected")
-	get_tree().connect("network_peer_disconnected", self, "_on_network_peer_disconnected")
-	get_tree().connect("server_disconnected", self, "_on_server_disconnected")
+	multiplayer.connect("connected_to_server", self, "_on_connected_to_server")
+	multiplayer.connect("connection_failed", self, "_on_connection_failed")
+	multiplayer.connect("network_peer_connected", self, "_on_network_peer_connected")
+	multiplayer.connect("network_peer_disconnected", self, "_on_network_peer_disconnected")
+	multiplayer.connect("server_disconnected", self, "_on_server_disconnected")
 
 func _process(delta):
 	_handler_monitor.process(delta)

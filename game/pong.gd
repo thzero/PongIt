@@ -39,11 +39,11 @@ sync func reset(side):
 	get_node("left").reset(true)
 	get_node("right").reset(true)
 	
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		_timer.start()
 
 master func score(side):
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	if (side == enums.SIDES.left):
@@ -100,7 +100,7 @@ func _on_timer_timeout():
 	rpc("start", _last_scored)
 
 func _reset():
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	_last_scored = enums.SIDES.none
@@ -130,14 +130,14 @@ func _ready():
 #	ball.init(vector)
 	
 	# by default, all nodes in server inherit from master
-	if (get_tree().is_network_server()):
+	if (multiplayer.is_network_server()):
 		# if in the server, give control of player 2 to the other peer, 
 		# this function is tree recursive by default
-		right.set_network_master(get_tree().get_network_connected_peers()[0])
+		right.set_network_master(multiplayer.get_network_connected_peers()[0])
 	else:
 		# if in the client, give control of player 2 to itself, 
 		# this function is tree recursive by default
-		right.set_network_master(get_tree().get_network_unique_id())
+		right.set_network_master(multiplayer.get_network_unique_id())
 	
 	find_node("winner_left").hide()
 	find_node("winner_right").hide()
@@ -148,7 +148,7 @@ func _ready():
 	var rand = bool(randi() % 2)
 	_last_scored = enums.SIDES.left if rand else enums.SIDES.right
 	
-	if (!get_tree().is_network_server()):
+	if (!multiplayer.is_network_server()):
 		return
 	
 	_timer = Timer.new()
