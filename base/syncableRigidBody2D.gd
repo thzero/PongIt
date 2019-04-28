@@ -44,7 +44,10 @@ func _init_packet(packet):
 		packet.angular_velocity = angular_velocity
 		packet.linear_velocity = linear_velocity
 
-func _integrate_forces_transform(state, packet):
+func _integrate_forces_transform_packet(state, packet):
+	if (packet == null):
+		return
+	
 	var transform = state.get_transform()
 	var pos = _lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
 	var rot = _slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
@@ -76,7 +79,7 @@ func _integrate_forces_update(state):
 	
 	_last_packet_received = _packet
 	
-	_integrate_forces_transform(state, _packet)
+	_integrate_forces_transform_packet(state, _packet)
 
 # Lerp vector
 func _lerp_pos(v1, v2, alpha):
@@ -87,7 +90,7 @@ func _network_delay():
 	# TODO: determine network delay
 	return 50
 
-func _process_send(delta):
+func _send_packet(delta):
 	if (!is_network_master()):
 		return
 	
@@ -162,6 +165,6 @@ func _physics_process(delta):
 	_physics_process_pre(delta)
 	
 	if (is_network_master()):
-		_process_send(delta)
+		_send_packet(delta)
 	
 	_physics_process_post(delta)
