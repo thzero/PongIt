@@ -72,4 +72,6 @@ margin_left = 250.0
 margin_top = 319.0
 margin_right = 393.0
 margin_bottom = 339.0
+shortcut_in_tooltip = false
+action_mode = 0
 text = "GAME_BUTTON_EXIT"

@@ -108,12 +108,24 @@ func _reset():
 	
 	rpc("reset", _last_scored)
 
+func _process(delta):
+	var action_exit_game = Input.is_action_pressed("exit_game")
+	if (action_exit_game):
+		_on_button_exit_pressed()
+
 func _ready():
 	._ready()
 	
 	var window_size = OS.get_window_size()
 	
 	randomize()
+	
+	# TODO: buttont is not getting event.
+	var button_exit = find_node("button_exit")
+	button_exit.connect("pressed", self, "_on_button_exit_pressed")
+	button_exit.set_process(true)
+	button_exit.set_process_input(true)
+	button_exit._input_event();
 	
 #	var t = get_transform()
 #	t.x = 500

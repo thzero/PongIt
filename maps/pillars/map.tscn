@@ -90,7 +90,6 @@ material/0 = SubResource( 3 )
 environment = SubResource( 6 )
 
 [node name="Pillar" type="Spatial" parent="."]
-editor/display_folded = true
 transform = Transform( 0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, -3, -0.255171, -5 )
 
 [node name="Pillar_bottom" type="MeshInstance" parent="Pillar"]
