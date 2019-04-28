@@ -32,22 +32,9 @@ func _init_packet(packet):
 	._init_packet(packet)
 	packet.position = get_global_transform().origin
 
-func _reset(state):
-	linear_velocity = Vector2(0, 0)
-	angular_velocity = 0
-	
-	var t = state.get_transform()
-	t.origin.x = _initial_pos.x
-	t.origin.y = _initial_pos.y
-	state.set_transform(t)
-
-func _integrate_forces(state):
-	if (_stopped):
-		_reset(state)
-		return
-	
+func _integrate_forces_post(state):
 	if (!is_network_master()):
-		_integrate_forces_update(state)
+		return
 	
 	for i in range(state.get_contact_count()):
 		var cc = state.get_contact_collider_object(i)
@@ -69,11 +56,19 @@ func _integrate_forces(state):
 		if (is_network_master()):
 			get_parent().rpc("score", cc.side)
 
-func _physics_process(delta):
-	if (!multiplayer.is_network_server()):
+func _integrate_forces_pre(state):
+	if (_stopped):
+		_reset(state)
 		return
+
+func _reset(state):
+	linear_velocity = Vector2(0, 0)
+	angular_velocity = 0
 	
-	_process_send(delta)
+	var t = state.get_transform()
+	t.origin.x = _initial_pos.x
+	t.origin.y = _initial_pos.y
+	state.set_transform(t)
 
 func _ready():
 	_speed = get_parent().BALL_SPEED

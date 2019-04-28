@@ -44,14 +44,10 @@ func _init_packet(packet):
 		packet.angular_velocity = angular_velocity
 		packet.linear_velocity = linear_velocity
 
-func _network_delay():
-	# TODO: determine network delay
-	return 50
-
 func _integrate_forces_transform(state, packet):
 	var transform = state.get_transform()
-	var pos = lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
-	var rot = slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
+	var pos = _lerp_pos(transform.get_origin(), _packet.position, 1.0 - ALPHA)
+	var rot = _slerp_rot(transform.get_rotation(), _packet.rotation, ALPHA)
 	var x_axis = Vector2(cos(rot), -sin(rot))
 	var y_axis = Vector2(sin(rot), cos(rot))
 	state.set_transform(Transform2D(x_axis, y_axis, pos))
@@ -66,7 +62,6 @@ func _integrate_forces_transform(state, packet):
 	linear_velocity = linear_velocity_temp
 
 func _integrate_forces_update(state):
-	# TODO: Needs to not be the network master?
 	if (is_network_master()):
 		return
 	
@@ -83,8 +78,16 @@ func _integrate_forces_update(state):
 	
 	_integrate_forces_transform(state, _packet)
 
+# Lerp vector
+func _lerp_pos(v1, v2, alpha):
+#	https://en.wikipedia.org/wiki/Linear_interpolation
+	return v1 * alpha + v2 * (1.0 - alpha)
+
+func _network_delay():
+	# TODO: determine network delay
+	return 50
+
 func _process_send(delta):
-	# TODO: Needs to be the network master?
 	if (!is_network_master()):
 		return
 	
@@ -116,26 +119,49 @@ func _process_send(delta):
 func _send_rate():
 	return SEND_RATE #network_fps.get_value()
 
-# Lerp vector
-func lerp_pos(v1, v2, alpha):
-#	https://en.wikipedia.org/wiki/Linear_interpolation
-	return v1 * alpha + v2 * (1.0 - alpha)
-
 # Spherically linear interpolation of rotation
-func slerp_rot(r1, r2, alpha):
+func _slerp_rot(r1, r2, alpha):
 	var v1 = Vector2(cos(r1), sin(r1))
 	var v2 = Vector2(cos(r2), sin(r2))
-	var v = slerp(v1, v2, alpha)
+	var v = _slerp(v1, v2, alpha)
 	return atan2(v.y, v.x)
 
 # Spherical linear interpolation of two 2D vectors
-func slerp(v1, v2, alpha):
+func _slerp(v1, v2, alpha):
 	var cos_angle = clamp(v1.dot(v2), -1.0, 1.0)
 	
 	if (cos_angle > 1.0 - EPSILON):
-		return lerp_pos(v1, v2, alpha).normalized()
+		return _lerp_pos(v1, v2, alpha).normalized()
 	
 	var angle = acos(cos_angle)
 	var angle_alpha = angle * alpha
 	var v3 = (v2 - (cos_angle * v1)).normalized()
 	return v1 * cos(angle_alpha) + v3 * sin(angle_alpha)
+
+func _integrate_forces_post(state):
+	pass
+
+func _integrate_forces_pre(state):
+	pass
+
+func _integrate_forces(state):
+	_integrate_forces_pre(state)
+	
+	if (!is_network_master()):
+		_integrate_forces_update(state)
+	
+	_integrate_forces_post(state)
+
+func _physics_process_post(delta):
+	pass
+
+func _physics_process_pre(delta):
+	pass
+
+func _physics_process(delta):
+	_physics_process_pre(delta)
+	
+	if (is_network_master()):
+		_process_send(delta)
+	
+	_physics_process_post(delta)

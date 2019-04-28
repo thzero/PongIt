@@ -13,61 +13,11 @@ var _stopped = true;
 var _accumulator_movement = 0
 var _inputs = []
 
-func _create_packet():
-	var packet = paddle_packet.new()
-	return packet
-
 sync func game_finished():
 	reset(true)
 
 func reset(value):
 	_stopped = value
-
-func _reset(state):
-	linear_velocity = Vector2(0, 0)
-	angular_velocity = 0
-	
-	var t = state.get_transform()
-	t.origin.x = _initial_pos.x
-	t.origin.y = _initial_pos.y
-	state.set_transform(t)
-
-func _integrate_forces(state):
-	if (!is_network_master()):
-		return
-	
-	if (_stopped):
-		_reset(state)
-		return
-	
-#	_integrate_forces_update(state)
-
-#func _physics_process(delta):
-#	if (!is_network_master()):
-#		return
-#
-#	_process_send(delta)
-
-func _process(delta):
-	if (!is_network_master()):
-		return
-	
-	if (_stopped):
-		return
-	
-	var action1 = Input.is_action_pressed("move_up")
-	var action2 = Input.is_action_pressed("move_down")
-	if (action1):
-		#velocity = Vector2(0, -1 * MOVE_SPEED)
-		_inputs.push_back(-1)
-	elif (action2):
-		#velocity = Vector2(0, MOVE_SPEED)
-		_inputs.push_back(1)
-	
-	if (!(action1 || action2)):
-		return
-	
-	_apply_input(delta)
 
 func _apply_input(delta):
 	# TODO
@@ -86,13 +36,45 @@ func _apply_input(delta):
 	
 	var velocity = Vector2(0, direction * MOVE_SPEED)
 	apply_impulse(Vector2(0,0), velocity * _speed)
+	
+func _init_packet(packet):
+	._init_packet(packet)
+	packet.position = get_global_transform().origin
+
+func _integrate_forces_pre(state):
+	if (_stopped):
+		_reset(state)
+		return
+
+func _reset(state):
+	linear_velocity = Vector2(0, 0)
+	angular_velocity = 0
+	
+	var t = state.get_transform()
+	t.origin.x = _initial_pos.x
+	t.origin.y = _initial_pos.y
+	state.set_transform(t)
+
+func _process(delta):
+	if (!is_network_master()):
+		return
+	
+	if (_stopped):
+		return
+	
+	var action1 = Input.is_action_pressed("move_up")
+	var action2 = Input.is_action_pressed("move_down")
+	if (action1):
+		_inputs.push_back(-1)
+	elif (action2):
+		_inputs.push_back(1)
+	
+	if (!(action1 || action2)):
+		return
+	
+	_apply_input(delta)
 
 func _ready():
 	_speed = get_parent().PADDLE_SPEED
 	_collision_shape = find_node('collision')
 	_initial_pos = get_global_transform().origin
-
-class paddle_packet extends Reference:
-	var position = null
-	var angular_velocity = null
-	var linear_velocity = null
